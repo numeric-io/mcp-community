@@ -1,0 +1,31 @@
+{
+  "name": "numeric-mcp-toolkit",
+  "owner": {
+    "name": "Numeric",
+    "email": "support@numeric.io"
+  },
+  "metadata": {
+    "description": "AI skills for the Numeric MCP — purpose-built workflows for accounting teams using the Numeric financial close platform.",
+    "version": "1.0.3"
+  },
+  "plugins": [
+    {
+      "name": "numeric-mcp-toolkit",
+      "source": {
+        "source": "github",
+        "repo": "numeric-io/mcp-community"
+      },
+      "description": "AI skills for the Numeric MCP — close pulse, close retro, close checklist diagnostic, flux drafting, accruals, journal entries, rec workbooks, rec-assignment imports, department anomaly scanning, cross-workspace dashboards, audit evidence exports, consolidated flux, financial metrics, clean report exports, executive reports, AR/AP aging, and more.",
+      "version": "1.0.3",
+      "author": {
+        "name": "Numeric",
+        "email": "support@numeric.io"
+      },
+      "homepage": "https://numeric.io",
+      "repository": "https://github.com/numeric-io/mcp-community",
+      "license": "MIT",
+      "keywords": ["numeric", "financial-close", "accounting", "reconciliation", "flux", "audit", "journal-entry", "accruals"],
+      "category": "productivity"
+    }
+  ]
+}
