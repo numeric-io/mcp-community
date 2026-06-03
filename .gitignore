@@ -4,3 +4,6 @@
 __pycache__/
 *.pyc
 .env
+# Generated copies of skills/ for non-Claude agents (tools/sync_skills.py).
+# skills/ is canonical; .agents/skills/ is disposable and rebuilt on demand.
+/.agents/

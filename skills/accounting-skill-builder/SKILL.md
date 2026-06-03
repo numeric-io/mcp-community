@@ -3,13 +3,14 @@ name: accounting-skill-builder
 metadata:
   user-invocable: true
 description: >
-  Builds a new Cowork skill for an accountant who wants to automate a workflow. Uses
+  Builds a new, production-ready Cowork skill for an accountant who wants to automate a
+  workflow — one that survives a real close, not a demo. Uses
   compound engineering — four phases (Ideate, Plan, Build, Review), each producing a
   document that becomes required input to the next. Plan fans out specialists (data,
   accounting controls, Numeric integration, architecture, pressure-test). Build
   assembles the new skill with performance discipline baked in. Review fans out a
   five-reviewer panel (controller, accounting process expert, auditor, adversarial,
-  on-call) plus a synthesizer that renders one verdict. Trigger when the user says
+  on-call) plus a synthesizer that renders one verdict before the skill ships. Trigger when the user says
   "build me a skill", "build an accounting skill", "automate this workflow",
   "automate my close process", "build me an automation", "compound automation",
   "ideate plan build review", "I want to automate [X]", "design an automation",
@@ -21,9 +22,11 @@ description: >
 
 Walks the user through automating an accounting workflow using compound engineering — each phase produces a doc that becomes the required input to the next, so context compounds rather than resets. Four phases — Ideate, Plan, Build, Review. Stop after Review.
 
-The user is an accountant working in their own Cowork. They have access to the Numeric MCP Toolkit (existing skills covering close pulse, retro, flux, accruals, JE generation, rec workbooks, anomaly scans, audit evidence, AR/AP aging, etc.) plus their own connectors. The output of this skill is a working automation tailored to their workflow — most often a refinement of an existing toolkit skill, sometimes a new script or scheduled task, sometimes a Cowork artifact.
+The user is an accountant working in their own Cowork. They have access to the Numeric MCP Toolkit (existing skills covering close pulse, retro, flux, accruals, JE generation, rec workbooks, anomaly scans, audit evidence, AR/AP aging, etc.) plus their own connectors. The output of this skill is a **production-ready** automation tailored to their workflow — most often a refinement of an existing toolkit skill, sometimes a new script or scheduled task, sometimes a Cowork artifact.
 
-The four phases pin scope progressively: brief pins what to solve, plan pins how, build pins what's actually shipped, review pins what works.
+Production-ready is the bar, not a working demo. The skill must hold up against a real close: correct accounting treatment, the right controls and approval gates, deterministic outputs, graceful failure, and performance that scales to real data volumes. The Phase 4 review panel exists to enforce that bar — nothing is declared done until a controller, process expert, auditor, adversarial reviewer, and on-call engineer have each signed off.
+
+The four phases pin scope progressively: brief pins what to solve, plan pins how, build pins what's actually shipped, review pins what works in production.
 
 ## Phase 1 — Ideate
 

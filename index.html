@@ -127,9 +127,37 @@ select:focus { outline: none; border-color: var(--ink); }
 .modal-actions { padding: 16px 28px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: flex-end; background: #FAF7F1; }
 .modal-actions button { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); transition: all .15s; }
 .modal-actions button:hover { border-color: var(--ink); }
-.btn-claude { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
-.btn-claude:hover { background: var(--accent-deep) !important; border-color: var(--accent-deep) !important; }
+.btn-primary { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+.btn-primary:hover { background: var(--accent-deep) !important; border-color: var(--accent-deep) !important; }
 .btn-copy.copied { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
+
+/* PROVIDER PICKER */
+.prov-sub { font-size: 13px; color: var(--ink-2); margin: 0 0 16px; line-height: 1.5; }
+.prov-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; }
+.prov-list { display: flex; flex-direction: column; gap: 6px; }
+.prov-opt { display: flex; align-items: flex-start; gap: 10px; padding: 11px 12px; border: 1px solid var(--line-2); border-radius: 9px; background: var(--surface); cursor: pointer; text-align: left; font-family: inherit; transition: all .12s; width: 100%; }
+.prov-opt:hover { border-color: var(--ink); }
+.prov-opt.active { border-color: var(--accent); background: var(--accent-soft); }
+.prov-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; background: var(--prov-color, var(--ink-3)); }
+.prov-opt-text { display: flex; flex-direction: column; gap: 1px; }
+.prov-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.prov-tag { font-size: 10.5px; color: var(--ink-3); }
+.prov-panel { border: 1px solid var(--line); border-radius: 10px; background: #FBF9F4; padding: 16px 18px; }
+.prov-panel-title { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 12px; }
+.prov-steps { margin: 0; padding: 0; list-style: none; counter-reset: prov; }
+.prov-steps li { position: relative; padding: 0 0 14px 30px; font-size: 13px; line-height: 1.5; color: var(--ink-2); counter-increment: prov; }
+.prov-steps li:last-child { padding-bottom: 0; }
+.prov-steps li::before { content: counter(prov); position: absolute; left: 0; top: -1px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.prov-steps code { font-family: "SF Mono", Menlo, monospace; font-size: 11.5px; background: rgba(20,19,15,0.06); color: var(--ink); padding: 1px 5px; border-radius: 3px; }
+.prov-steps a { color: var(--accent-deep); font-weight: 500; }
+.prov-note { display: flex; gap: 8px; align-items: baseline; margin-top: 16px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 12px; color: var(--ink-2); line-height: 1.45; }
+.prov-note strong { color: var(--ink); font-weight: 600; }
+.prov-note a { color: var(--accent-deep); font-weight: 500; }
+.hero-providers { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+.hero-providers strong { color: var(--ink-2); font-weight: 600; }
+.btn-dl { background: var(--dl-color, var(--accent)) !important; color: #fff !important; border-color: var(--dl-color, var(--accent)) !important; transition: background .25s ease, border-color .25s ease; display: inline-flex; align-items: center; gap: 7px; }
+.btn-dl .btn-dl-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.85); }
+@media (max-width: 560px) { .prov-layout { grid-template-columns: 1fr; } }
 
 
 .m-tabs { display: flex; gap: 4px; margin: 16px 0 12px; border-bottom: 1px solid var(--line); }
@@ -282,13 +310,14 @@ select:focus { outline: none; border-color: var(--ink); }
       <div>
         <h1 class="hero-title">Community <em>Skills Library</em></h1>
         <p class="hero-subtitle">Purpose-built AI skills for accounting teams on Numeric. Each skill is a pre-built workflow your AI assistant can run on top of the Numeric MCP — close, flux, JE, recon, audit.</p>
-        <p class="hero-subtitle hero-subtitle-2"><strong>Starting points, not endpoints.</strong> Every skill here is battle-tested and gets you most of the way there. Customize them to your team's process by asking Claude in any conversation — your modified version becomes the default.</p>
+        <p class="hero-subtitle hero-subtitle-2"><strong>Starting points, not endpoints.</strong> Every skill here is battle-tested and gets you most of the way there. Customize them to your team's process by asking your AI assistant in any conversation — your modified version becomes the default.</p>
         <p class="hero-subtitle hero-subtitle-3"><a href="#" onclick="openAbout();return false">How to think about these skills →</a></p>
       </div>
     </div>
     <div class="hero-right">
       <span class="hero-eyebrow">Numeric MCP Toolkit · Latest</span>
       <button class="dl-toolkit" onclick="downloadToolkit()">⬇ Download toolkit</button>
+      <span class="hero-providers">Works with <strong>Claude, Codex, Gemini</strong> &amp; any MCP agent</span>
       <a class="text-link" href="https://github.com/numeric-io/mcp-community" target="_blank" rel="noopener">View on GitHub →</a>
     </div>
   </header>
@@ -358,7 +387,7 @@ select:focus { outline: none; border-color: var(--ink); }
     <div class="modal-body" id="m-body"></div>
     <div class="modal-actions">
       <button onclick="closeModal()">Close</button>
-      <button class="btn-claude" id="m-download" onclick="downloadActive()">⬇ Download</button>
+      <button class="btn-primary" id="m-download" onclick="downloadActive()">⬇ Download</button>
     </div>
   </div>
 </div>
@@ -381,7 +410,8 @@ select:focus { outline: none; border-color: var(--ink); }
       <button class="modal-close" onclick="closeAbout()">✕</button>
     </div>
     <div class="modal-body">
-      <p class="modal-sub">Each skill in this library is a working recipe — battle-tested defaults baked in by the community. Run it, tell Claude what to change, and your version becomes the team default. The library is the starting point; what you ship is yours.</p>
+      <p class="modal-sub">Each skill in this library is a working recipe — battle-tested defaults baked in by the community. Run it, tell your AI assistant what to change, and your version becomes the team default. The library is the starting point; what you ship is yours.</p>
+      <p class="modal-sub" style="margin-bottom:18px"><strong style="color:var(--ink)">Bring your own assistant.</strong> Skills follow the open <a href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills" target="_blank" rel="noopener" style="color:var(--accent-deep);font-weight:500">Agent Skills</a> standard, so the same files run in Claude, OpenAI Codex, Gemini CLI, Cursor, and 30+ other tools. Pick your tool at download for one-step install instructions.</p>
 
       <div class="how-flow-v">
 
@@ -390,7 +420,7 @@ select:focus { outline: none; border-color: var(--ink); }
           <div class="how-step-body">
             <div class="how-row1"><span class="how-chip">install</span></div>
             <h3 class="how-headline">Start from a template.</h3>
-            <p class="how-desc">A skill is a folder: a <code>SKILL.md</code> file that tells Claude what to do, plus the scripts and prompts that do it. Download one from the library and drop it into Claude — no setup, no config screens. It activates automatically the next time you ask for something the skill knows how to handle.</p>
+            <p class="how-desc">A skill is a folder: a <code>SKILL.md</code> file that tells your AI assistant what to do, plus the scripts and prompts that do it. Download one from the library and install it in your tool of choice — no setup, no config screens. It activates automatically the next time you ask for something the skill knows how to handle.</p>
             <p class="how-desc">Every skill here ships with sensible defaults written for a standard close. The community has already done the hard part of picking the right Numeric MCP calls, the right thresholds, the right output format.</p>
           </div>
         </div>
@@ -399,9 +429,9 @@ select:focus { outline: none; border-color: var(--ink); }
           <div class="how-step-rail"><span class="how-step-num">02</span></div>
           <div class="how-step-body">
             <div class="how-row1"><span class="how-chip">invoke</span></div>
-            <h3 class="how-headline">Ask Claude in plain language.</h3>
-            <p class="how-desc">You don't pick a skill from a menu. You describe what you need — <em>"run the accruals for April"</em>, <em>"send overdue nudges for the close"</em>, <em>"build me the rec workbook for prepaid"</em> — and the right skill activates. Claude pulls the period and workspace context from Numeric, finds the matching task, and starts work.</p>
-            <p class="how-desc">Each run reads context from two places: the Numeric task description (period-specific notes from the preparer or reviewer) and the skill itself (your team's standing methodology). Together they give Claude the full picture before any work begins.</p>
+            <h3 class="how-headline">Ask in plain language.</h3>
+            <p class="how-desc">You don't pick a skill from a menu. You describe what you need — <em>"run the accruals for April"</em>, <em>"send overdue nudges for the close"</em>, <em>"build me the rec workbook for prepaid"</em> — and the right skill activates. Your assistant pulls the period and workspace context from Numeric, finds the matching task, and starts work.</p>
+            <p class="how-desc">Each run reads context from two places: the Numeric task description (period-specific notes from the preparer or reviewer) and the skill itself (your team's standing methodology). Together they give your assistant the full picture before any work begins.</p>
           </div>
         </div>
 
@@ -409,10 +439,10 @@ select:focus { outline: none; border-color: var(--ink); }
           <div class="how-step-rail"><span class="how-step-num">03</span></div>
           <div class="how-step-body">
             <div class="how-row1"><span class="how-chip">refine</span></div>
-            <h3 class="how-headline">Tell Claude what to change.</h3>
-            <p class="how-desc">A starter skill won't match your process out of the box. That's the point. When something is off — wrong format, wrong threshold, wrong channel — you say so in chat. Claude rewrites the skill in place.</p>
+            <h3 class="how-headline">Tell it what to change.</h3>
+            <p class="how-desc">A starter skill won't match your process out of the box. That's the point. When something is off — wrong format, wrong threshold, wrong channel — you say so in chat. Your assistant rewrites the skill in place.</p>
             <p class="how-quote">"Update close-pulse to group overdue tasks by assignee, skip anything tagged 'on hold', and post the summary to #accounting-close in Slack instead of responding here."</p>
-            <p class="how-desc">Refinements can live in three places, depending on scope: <strong>the skill file</strong> for team-wide rules, <strong>the Numeric task description</strong> for period-specific notes (<em>"exclude vendor AG Grid — bundled with the parent agreement"</em>), or <strong>the close checklist</strong> for process-wide chaining. Claude picks the right place automatically.</p>
+            <p class="how-desc">Refinements can live in three places, depending on scope: <strong>the skill file</strong> for team-wide rules, <strong>the Numeric task description</strong> for period-specific notes (<em>"exclude vendor AG Grid — bundled with the parent agreement"</em>), or <strong>the close checklist</strong> for process-wide chaining. Your assistant picks the right place automatically.</p>
           </div>
         </div>
 
@@ -431,7 +461,7 @@ select:focus { outline: none; border-color: var(--ink); }
           <div class="how-step-body">
             <div class="how-row1"><span class="how-chip">evolve</span></div>
             <h3 class="how-headline">Refine again, any time.</h3>
-            <p class="how-desc">New entity, new approver, new materiality threshold, new reviewer DM channel — your process changes constantly. Tell Claude. The skill keeps up. That's the difference between a skill and a static script: skills compound. Each round makes them more yours.</p>
+            <p class="how-desc">New entity, new approver, new materiality threshold, new reviewer DM channel — your process changes constantly. Tell your assistant. The skill keeps up. That's the difference between a skill and a static script: skills compound. Each round makes them more yours.</p>
             <div class="how-meta-row">
               <span class="how-tag accent">Skills are folders, not scripts</span>
               <span class="how-tag green">Preferences persist across periods</span>
@@ -444,12 +474,42 @@ select:focus { outline: none; border-color: var(--ink); }
 
       <div class="how-foot">
         <div class="how-foot-text">
-          <strong>Contributing.</strong> These skills are built by the Numeric community. Built something useful? Ask Claude to <em>"bundle this into a skill"</em>, then send the file to <a href="mailto:support@numeric.io">support@numeric.io</a> and we'll add it to the toolkit.
+          <strong>Contributing.</strong> These skills are built by the Numeric community. Built something useful? Ask your assistant to <em>"bundle this into a skill"</em>, then send the file to <a href="mailto:support@numeric.io">support@numeric.io</a> and we'll add it to the toolkit.
         </div>
       </div>
     </div>
     <div class="modal-actions">
       <button onclick="closeAbout()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="provider-overlay" onclick="if(event.target===this) closeProvider()">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow" style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:8px">Install</span>
+        <h2 class="modal-title">Works with any AI assistant</h2>
+      </div>
+      <button class="modal-close" onclick="closeProvider()">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:none">
+      <p class="prov-sub" id="prov-sub">These skills use the open <a href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills" target="_blank" rel="noopener" style="color:var(--accent-deep);font-weight:500">Agent Skills</a> standard. The same download works everywhere — pick your tool for the exact steps.</p>
+      <div class="prov-layout">
+        <div class="prov-list" id="prov-list"></div>
+        <div class="prov-panel">
+          <p class="prov-panel-title" id="prov-panel-title"></p>
+          <ol class="prov-steps" id="prov-steps"></ol>
+        </div>
+      </div>
+      <div class="prov-note">
+        <span>🔌</span>
+        <span><strong>First, connect the Numeric MCP.</strong> Every skill runs on it. <a href="https://help.numeric.io/articles/7292808089-numeric-mcp-server" target="_blank" rel="noopener">Connect your workspace →</a></span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeProvider()">Close</button>
+      <button class="btn-dl" id="prov-download" onclick="confirmDownload()">⬇ Download</button>
     </div>
   </div>
 </div>
@@ -473,9 +533,9 @@ const TYPES = {
 
 const SKILLS = [
   // Setup & Migration
-  { name: "accounting-skill-builder", type: "Workflows", category: "Setup & Migration", roles: ["Controller", "Close Manager", "Implementation"], beta: true,
-    title: "Skill Builder — Build a Skill for Your Workflow",
-    desc: "Build a production-ready skill tailored to your team's exact process. It interviews you to understand the workflow, designs the automation around your data and controls, builds it, then runs it through a review panel to pressure-test it before you ship. Start from scratch or fork one of the skills here as a base. The output is a working .zip skill bundle you can install, refine, and reuse.",
+  { name: "accounting-skill-builder", type: "Workflows", category: "Setup & Migration", roles: ["Controller", "Close Manager", "Implementation"],
+    title: "Skill Builder — Build Production-Ready Skills",
+    desc: "Build a production-ready skill tailored to your team's exact process — one that survives a real close, not a demo. It interviews you to understand the workflow, designs the automation around your data and controls, builds it, then runs it through a five-reviewer panel (controller, process expert, auditor, adversarial, on-call) that must sign off before you ship. Start from scratch or fork one of the skills here as a base. The output is a working .zip skill bundle you can install, refine, and reuse.",
     asks: ["Build me a skill for our accruals process", "Help me automate my flux review", "Customize close-pulse for our team", "Design a skill to replace this spreadsheet"] },
 
   { name: "checklist-to-numeric", type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Close Manager"],
@@ -692,18 +752,102 @@ const SKILL_SLUG = {
 function skillAssetUrl(name) { return `${ZIP_BASE}/${SKILL_ASSET[name] || name + '.zip'}`; }
 function skillRawSlug(name) { return SKILL_SLUG[name] || name; }
 
+// ---- Provider picker: one file, install steps per AI assistant ----
+const TOOLKIT_URL = `https://github.com/${REPO}/releases/latest/download/${TOOLKIT_FILE}`;
+
+const PROVIDERS = [
+  {
+    id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
+    steps: ctx => ctx.kind === 'toolkit'
+      ? ['Download the <code>.zip</code> below.',
+         'Drop it into Cowork or Claude Code — or run <code>/plugin install numeric-mcp-toolkit</code>. No unzipping.',
+         'Skills activate automatically when you ask.']
+      : ['Download the <code>.zip</code> below.',
+         'Drop it into a Cowork or Claude Code chat — it installs itself, no unzipping.',
+         'It activates the next time you ask for what it does.']
+  },
+  {
+    id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
+    steps: ctx => ctx.kind === 'toolkit'
+      ? ['Download the <code>.zip</code> below.',
+         'Just ask Codex: <em>“unzip this and install the skills into .agents/skills”</em> — it handles the rest.',
+         'Codex discovers every skill automatically.']
+      : ['Download the <code>.zip</code> below.',
+         'Just ask Codex: <em>“install this skill into .agents/skills”</em> and point it at the file.',
+         'Codex discovers it automatically.']
+  },
+  {
+    id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
+    steps: ctx => ctx.kind === 'toolkit'
+      ? ['Skip the download — just ask Gemini: <em>“install the Numeric skills toolkit into ~/.agents/skills”</em>.',
+         'Or download the <code>.zip</code> and ask Gemini to unpack it there.',
+         'Gemini discovers every skill automatically.']
+      : ['Run <code>gemini skills install &lt;git-url&gt;</code> — installs straight from the repo, no download.',
+         'Or download the <code>.zip</code> and ask Gemini to drop it into <code>.agents/skills</code>.',
+         'Gemini discovers it automatically.']
+  },
+  {
+    id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
+    steps: ctx =>
+      ['Download the <code>.zip</code> below.',
+       'Ask your assistant to install it into <code>.agents/skills</code> — the shared path every standard agent reads.',
+       'It discovers the skill automatically.']
+  },
+];
+
+let dlContext = { kind: 'toolkit', name: null, url: TOOLKIT_URL, label: 'the full toolkit' };
+let provSelected = localStorage.getItem('numeric-provider') || 'claude';
+
+function openProviderModal(kind, name) {
+  if (kind === 'skill') {
+    dlContext = { kind, name, url: skillAssetUrl(name), label: `the ${name} skill` };
+  } else {
+    dlContext = { kind: 'toolkit', name: null, url: TOOLKIT_URL, label: 'the full toolkit' };
+  }
+  document.getElementById('prov-sub').innerHTML =
+    `You're getting <strong>${escapeHtml(dlContext.label)}</strong>. The same skill works with every tool below — and most can install it for you, just ask. Pick yours for the exact steps.`;
+  renderProviders();
+  document.getElementById('provider-overlay').classList.add('open');
+}
+
+function renderProviders() {
+  document.getElementById('prov-list').innerHTML = PROVIDERS.map(p => `
+    <button class="prov-opt${p.id === provSelected ? ' active' : ''}" style="--prov-color:${p.color}" onclick="selectProvider('${p.id}')">
+      <span class="prov-dot"></span>
+      <span class="prov-opt-text"><span class="prov-name">${escapeHtml(p.name)}</span><span class="prov-tag">${escapeHtml(p.tag)}</span></span>
+    </button>`).join('');
+  const p = PROVIDERS.find(x => x.id === provSelected) || PROVIDERS[0];
+  document.getElementById('prov-panel-title').textContent = `Install in ${p.name}`;
+  document.getElementById('prov-steps').innerHTML = p.steps(dlContext).map(s => `<li>${s}</li>`).join('');
+  const dl = document.getElementById('prov-download');
+  dl.style.setProperty('--dl-color', p.color);
+  dl.innerHTML = `<span class="btn-dl-dot"></span>⬇ Download for ${escapeHtml(p.btn)}`;
+}
+
+function selectProvider(id) {
+  provSelected = id;
+  localStorage.setItem('numeric-provider', id);
+  renderProviders();
+}
+
+function confirmDownload() {
+  window.open(dlContext.url, '_blank');
+}
+
+function closeProvider() { document.getElementById('provider-overlay').classList.remove('open'); }
+
 function downloadSkill(i, btn) {
-  const s = SKILLS[i];
-  window.open(skillAssetUrl(s.name), '_blank');
-  if (btn) { const t = btn.textContent; btn.textContent = 'Opened ✓'; setTimeout(() => btn.textContent = t, 1400); }
+  openProviderModal('skill', SKILLS[i].name);
+  if (btn) { const t = btn.textContent; btn.textContent = 'Choose tool…'; setTimeout(() => btn.textContent = t, 1400); }
 }
 
 function downloadActive() {
   if (active === null) return;
-  downloadSkill(active, document.getElementById('m-download'));
+  openProviderModal('skill', SKILLS[active].name);
 }
+
 function downloadToolkit() {
-  window.open(`https://github.com/${REPO}/releases/latest/download/${TOOLKIT_FILE}`, '_blank');
+  openProviderModal('toolkit');
 }
 
 function clearFilters() {
@@ -867,7 +1011,7 @@ function updateGalleryArrows() {
   typeSel.addEventListener('change', render);
   roleSel.addEventListener('change', render);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeLightbox(); closeModal(); closeAbout(); }
+    if (e.key === 'Escape') { closeLightbox(); closeModal(); closeAbout(); closeProvider(); }
     if (document.getElementById('lightbox').classList.contains('open')) {
       if (e.key === 'ArrowLeft') { e.preventDefault(); lightboxStep(-1); }
       if (e.key === 'ArrowRight') { e.preventDefault(); lightboxStep(1); }

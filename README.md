@@ -194,6 +194,33 @@ Just describe what you need. The right skill activates automatically based on wh
 
 ---
 
+## Using these skills with other agents
+
+These skills are written in the open [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) standard (`SKILL.md` + frontmatter). The same files work in **OpenAI Codex, Gemini CLI, Cursor, VS Code, and 30+ other agents** that have adopted the standard — they load the description first and the full instructions on demand, exactly like Claude does.
+
+The standard fixes the *format* but not the *install path*: each tool discovers skills in a different directory. The shared cross-tool path is **`.agents/skills/`**.
+
+| Tool | Skills directory |
+| --- | --- |
+| Claude Code | use `/plugin install` above |
+| OpenAI Codex | `.agents/skills/` (workspace) · `~/.agents/skills/` (user) |
+| Gemini CLI | `.agents/skills/` (workspace) · `~/.agents/skills/` (user) |
+| Cursor / VS Code / others | `.agents/skills/` |
+
+**Install all skills onto the standard path** with the bundled helper (no dependencies):
+
+```
+python3 tools/sync_skills.py            # this repo's workspace (./.agents/skills)
+python3 tools/sync_skills.py --user      # all your repos (~/.agents/skills)
+python3 tools/sync_skills.py close-pulse ar-ap-aging   # just a few
+```
+
+`skills/` stays the source of truth; the helper copies real files into `.agents/skills/` (copies, not symlinks — [Gemini doesn't follow symlinks yet](https://github.com/google-gemini/gemini-cli/issues/16247)). Then connect the [Numeric MCP](https://help.numeric.io/articles/7292808089-numeric-mcp-server) in your agent and it discovers every skill automatically.
+
+You can also install a single skill straight from its repo with the native installers — e.g. `gemini skills install <git-url>` or `npx skills add <author/skill>`.
+
+---
+
 ## Community & Contributing
 
 These skills are built and maintained by the Numeric community. We welcome new skills — if you've built a workflow that saves your team time, share it and let others benefit too.

@@ -14,6 +14,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Materialize .agents/skills (cross-tool discovery path)
+        run: |
+          cd $GITHUB_WORKSPACE
+          # skills/ is canonical (Claude reads it via the plugin). Codex, Gemini,
+          # Cursor, VS Code, and ~30 other standard-compliant agents read
+          # .agents/skills/ instead — and Gemini doesn't follow symlinks, so we
+          # ship real copies in the bundle. See tools/sync_skills.py.
+          python3 tools/sync_skills.py
+
       - name: Build toolkit .zip and per-skill .zip bundles
         run: |
           cd $GITHUB_WORKSPACE
