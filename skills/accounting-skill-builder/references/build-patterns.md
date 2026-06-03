@@ -66,7 +66,8 @@ Triggered when the deliverable touches Numeric, NetSuite, or another connector.
 - Filters server-side wherever the API allows (push filters into the MCP call per `references/performance-patterns.md`).
 - Caches cold-start calls per `references/numeric-mcp-principles.md`.
 - Posts task comments for audit trail.
-- Writes preferences to task description for next-cycle pickup.
+- **Preference persistence, both directions.** At the start, read the prior period's `## <skill> preferences` block from the task description and apply it — auto-handle what the user already decided (confirmed contacts, exclusions, mappings, overrides) so this run confirms only the *deltas*. At the end, write this run's confirmed decisions back (merge, don't overwrite). Reading back matters as much as writing: a write-only skill re-asks the user everything every period. The audit *comment* (what happened) is distinct from the preferences *block* (what to do next time) — wire both.
+- **Confirm the guess, not just the mutation.** Wherever the skill estimates or infers (accrual amount, counterparty match, candidate vendor/account, materiality flag, classification), surface that inference for user confirmation before acting on it — even when nothing is being written to an external system. Confirm deltas against saved preferences, not the whole list each run.
 - Submission gate: never submit without explicit user confirmation.
 
 ### Run Doc Writer
@@ -92,6 +93,8 @@ While writing the deliverable, every applicable item from `references/performanc
 - [ ] Server-side filtering on `list_tasks` etc.
 - [ ] Short-circuit on empty wired
 - [ ] Mutating operations gated by `AskUserQuestion` confirmation
+- [ ] **Estimates/inferences surfaced for confirmation** — if the skill guesses (accrual amounts, candidate selection, counterparty/account matches, materiality flags, classifications), the user confirms the *guess* before it's acted on. Separate from the mutation gate: a read-only skill that estimates still needs it.
+- [ ] **Feedback loop wired both directions** — the skill reads its prior-period preference block from the task description at the start, applies it (so the user confirms only *new* items, not the whole list each period), and writes this run's confirmed decisions back. Write-only is not enough — without read-back the skill re-asks everything every cycle.
 - [ ] Streaming progress per subagent return
 - [ ] Validate scope before parsing/pulling
 - [ ] Default windows; confirm before widening

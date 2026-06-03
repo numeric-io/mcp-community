@@ -158,7 +158,7 @@ Place the narrative as a note row directly below the group line in the output.
 ### Currency
 
 For each entity, detect the reporting currency:
-1. Check `organization_currency` on GL transaction lines via `query_transaction_lines` (sample 1 line)
+1. Check `organization_currency` on GL transaction lines via `query_transaction_lines` (sample 1 line). *(QBO/Sage/Xero don't expose transaction lines — skip to step 2. This is the only transaction-data touch, so the skill stays fully QBO-safe.)*
 2. Fall back to `currency_code` on accounts from `list_financial_accounts`
 3. Default to USD ($) if undetectable — note the assumption to the user
 

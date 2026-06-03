@@ -84,6 +84,33 @@ select:focus { outline: none; border-color: var(--ink); }
 @keyframes beta-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(107,91,211,0.35); } 50% { box-shadow: 0 0 0 4px rgba(107,91,211,0.0); } }
 .beta-tag-lg { padding: 3px 9px 3px 20px; font-size: 10px; }
 .beta-tag-lg::before { left: 8px; }
+.qbo-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.02em; border-radius: 999px; background: #E6F1EC; color: #1F7A52; border: 1px solid #BFE0CD; white-space: nowrap; vertical-align: middle; cursor: help; }
+.qbo-tag::before { content: "✓"; font-weight: 700; font-size: 9px; }
+.ess-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.02em; border-radius: 999px; background: var(--accent-soft); color: var(--accent-deep); border: 1px solid #C9C0EE; white-space: nowrap; vertical-align: middle; cursor: help; }
+.ess-tag::before { content: "★"; font-size: 9px; }
+
+/* Highlight toggles */
+.hl-filters { display: flex; align-items: center; gap: 8px; margin: -8px 0 24px; flex-wrap: wrap; }
+.hl-filters-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-right: 2px; }
+.hl-chip { display: inline-flex; align-items: center; cursor: pointer; user-select: none; }
+.hl-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.hl-chip span { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px 6px 12px; font-size: 12.5px; font-weight: 500; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink-2); transition: all .15s; }
+.hl-chip span::before { content: ""; width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--line-2); background: var(--surface); transition: all .15s; flex-shrink: 0; }
+.hl-chip:hover span { color: var(--ink); }
+.hl-chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hl-chip input:checked + span::before { content: "✓"; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+.hl-chip-qbo:hover span { border-color: #2E9B6B; }
+.hl-chip-qbo input:checked + span { background: #E6F1EC; color: #1F7A52; border-color: #9CD2B5; }
+.hl-chip-qbo input:checked + span::before { background: #2E9B6B; border-color: #2E9B6B; }
+.hl-chip-ess:hover span { border-color: var(--accent); }
+.hl-chip-ess input:checked + span { background: var(--accent-soft); color: var(--accent-deep); border-color: #C9C0EE; }
+.hl-chip-ess input:checked + span::before { background: var(--accent); border-color: var(--accent); }
+.qbo-highlight .card-qbo { border-color: #2E9B6B; box-shadow: 0 0 0 1px #2E9B6B; }
+.essential-highlight .card-essential { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.qbo-highlight .card:not(.card-qbo),
+.essential-highlight .card:not(.card-essential) { opacity: 0.5; }
+.qbo-highlight .card:not(.card-qbo):hover,
+.essential-highlight .card:not(.card-essential):hover { opacity: 1; }
 .meta-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; min-height: 22px; flex-wrap: wrap; }
 .meta-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); width: 64px; flex-shrink: 0; padding-top: 3px; }
 .pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
@@ -155,8 +182,7 @@ select:focus { outline: none; border-color: var(--ink); }
 .prov-note a { color: var(--accent-deep); font-weight: 500; }
 .hero-providers { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
 .hero-providers strong { color: var(--ink-2); font-weight: 600; }
-.btn-dl { background: var(--dl-color, var(--accent)) !important; color: #fff !important; border-color: var(--dl-color, var(--accent)) !important; transition: background .25s ease, border-color .25s ease; display: inline-flex; align-items: center; gap: 7px; }
-.btn-dl .btn-dl-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.85); }
+.btn-dl { background: var(--dl-color, var(--accent)) !important; color: #fff !important; border-color: var(--dl-color, var(--accent)) !important; transition: background .25s ease, border-color .25s ease; }
 @media (max-width: 560px) { .prov-layout { grid-template-columns: 1fr; } }
 
 
@@ -374,6 +400,18 @@ select:focus { outline: none; border-color: var(--ink); }
     <button class="clear-btn" onclick="clearFilters()">Clear</button>
   </div>
 
+  <div class="hl-filters">
+    <span class="hl-filters-label">Highlight</span>
+    <label class="hl-chip hl-chip-ess">
+      <input type="checkbox" id="filter-essential" onchange="toggleEssential()" />
+      <span>Essential skills</span>
+    </label>
+    <label class="hl-chip hl-chip-qbo">
+      <input type="checkbox" id="filter-qbo" onchange="toggleQbo()" />
+      <span>QBO/Sage/Xero optimized</span>
+    </label>
+  </div>
+
   <div id="results"></div>
 </div>
 
@@ -533,72 +571,72 @@ const TYPES = {
 
 const SKILLS = [
   // Setup & Migration
-  { name: "accounting-skill-builder", type: "Workflows", category: "Setup & Migration", roles: ["Controller", "Close Manager", "Implementation"],
+  { name: "accounting-skill-builder", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Controller", "Close Manager", "Implementation"],
     title: "Skill Builder — Build Production-Ready Skills",
-    desc: "Build a production-ready skill tailored to your team's exact process — one that survives a real close, not a demo. It interviews you to understand the workflow, designs the automation around your data and controls, builds it, then runs it through a five-reviewer panel (controller, process expert, auditor, adversarial, on-call) that must sign off before you ship. Start from scratch or fork one of the skills here as a base. The output is a working .zip skill bundle you can install, refine, and reuse.",
+    desc: "Build a production-ready Numeric skill tailored to your team's exact process — one that survives a real close, not a demo. It interviews you to understand the workflow, designs the automation around your Numeric data and controls (and the Numeric MCP toolkit), builds it, then runs it through a five-reviewer panel (controller, process expert, auditor, adversarial, on-call) that must sign off before you ship. Start from scratch or fork one of the Numeric skills here as a base. The output is a working .zip skill bundle you can install, refine, and reuse.",
     asks: ["Build me a skill for our accruals process", "Help me automate my flux review", "Customize close-pulse for our team", "Design a skill to replace this spreadsheet"] },
 
-  { name: "checklist-to-numeric", type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Close Manager"],
+  { name: "checklist-to-numeric", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Close Manager"],
     title: "Checklist Importer — Spreadsheet to Numeric",
     desc: "Converts any close checklist spreadsheet into a Numeric-ready import workbook. Auto-detects column mappings from any xlsx or csv format. Clean validated tasks land on the import tab; anything that needs review is flagged separately with the issue called out.",
     asks: ["Import my close checklist into Numeric", "Convert this spreadsheet into Numeric tasks", "Migrate my checklist to Numeric"] },
-  { name: "rec-to-numeric", type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Controller"],
+  { name: "rec-to-numeric", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Controller"],
     title: "Rec Assignment Importer — Spreadsheet to Numeric",
     desc: "Converts an existing balance sheet reconciliation assignments workbook into a Numeric-ready import file. Pulls the live chart of accounts, maps preparers and reviewers to emails, handles entity ID lookups and legacy account name aliases, and outputs a clean 3-tab Excel workbook ready to upload directly to Numeric.",
     asks: ["Build the rec import file", "Convert our BS rec assignments to Numeric", "Import balance sheet recs into Numeric"] },
 
   // Journals & Transactions
-  { name: "complete-accruals-task", type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
+  { name: "complete-accruals-task", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Accrual Identification & Journal Entry",
     desc: "Pulls accrual-related tasks from your Numeric close checklist, analyzes the underlying GL data to identify potential accruals that need to be booked, and builds the full supporting workbook as evidence — then generates the corresponding journal entries ready for NetSuite posting. The entire accrual workflow in one conversation.",
     asks: ["Run the accruals for this period", "What accruals do we need to book?", "Identify and create the month-end accrual entries"] },
-  { name: "journal-entry", type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "AP Analyst"],
-    title: "Journal Entry Posting — Support to NetSuite",
-    desc: "Pulls outstanding journal entry tasks from your Numeric close checklist, reads the supporting workbook or documentation provided, generates the balanced journal entries, marks the task complete in Numeric, and posts directly to NetSuite via the NetSuite MCP. From checklist task to posted entry — no manual steps in between.",
-    asks: ["Post the outstanding journal entries", "Process the JE tasks from the checklist", "Complete and post the JEs with this support"] },
+  { name: "journal-entry", essential: true, qbo: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "AP Analyst"],
+    title: "Journal Entry — Generate, Validate & Post",
+    desc: "Pulls outstanding journal entry tasks from your Numeric close checklist, reads the supporting workbook or documentation, generates balanced journal entries with a formula-first Excel workpaper, and emits an import file in your ERP's format — NetSuite, QuickBooks Online, Xero, or Sage Intacct. Posts directly to NetSuite via the NetSuite MCP; for the others it hands you a ready-to-import file. From checklist task to booked entry — no manual rekeying.",
+    asks: ["Post the outstanding journal entries", "Process the JE tasks from the checklist", "Generate the JE import file for QuickBooks", "Complete and post the JEs with this support"] },
   { name: "dept-anomaly-scan", type: "Insights", category: "Journals & Transactions", roles: ["Senior Accountant", "Audit Lead"],
     title: "Department Anomaly Scan — GL Miscoding Cleanup",
-    desc: "Scans your workspace for GL-to-department coding anomalies — expenses hitting the wrong cost center, vendors consistently miscoded, accounts landing in unexpected departments. Surfaces patterns and generates the NetSuite reclass journal entry CSV to fix them.",
+    desc: "Scans your Numeric workspace's GL data for department coding anomalies — expenses hitting the wrong cost center, vendors consistently miscoded, accounts landing in unexpected departments. Surfaces patterns and generates the NetSuite reclass journal entry CSV to fix them.",
     asks: ["Scan for department anomalies", "Find GL miscodings", "Anything miscoded this period?"] },
 
   // Close Management
-  { name: "close-pulse", type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
+  { name: "close-pulse", essential: true, qbo: true, type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Pulse — Live Close Dashboard",
     desc: "You shouldn't have to open Numeric to know where your close stands. Close Pulse pulls task completion rates, surfaces overdue items flagged by materiality, maps blocking dependencies, and tells you whether you're ahead or behind pace — all in a single conversation. Built for controllers and close managers who need a fast, honest read on close health.",
     asks: ["How's the close going?", "What's overdue?", "Are we on track?", "Who's behind?"] },
-  { name: "close-retro", type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
+  { name: "close-retro", qbo: true, type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Retrospective — Post-Close Analysis",
-    desc: "Every close has a story. Close Retro reads it for you. After each period, it analyzes task completion timelines, review cycle counts, late submissions, assignee workload, and pace versus prior periods — then surfaces the patterns that matter. Which tasks consistently run late? Which reviewers are bottlenecks?",
+    desc: "Every close has a story. Close Retro reads it for you — straight from your Numeric close data. After each period, it analyzes Numeric task completion timelines, review cycle counts, late submissions, assignee workload, and pace versus prior periods — then surfaces the patterns that matter. Which tasks consistently run late? Which reviewers are bottlenecks?",
     asks: ["How did the close go?", "What took longest?", "Compare this close to last quarter"] },
-  { name: "overdue-task-nudge", type: "Automation", category: "Close Management", roles: ["Close Manager"],
+  { name: "overdue-task-nudge", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager"],
     title: "Overdue Task Nudges — Automated Reminders",
-    desc: "Chasing people down during close is a full-time job. This skill handles it. Identifies tasks that are overdue or due soon and sends targeted Slack DMs to assignees with contextual messages — not generic notifications. Reads reminder preferences from each task, logs every nudge as a comment to prevent duplicates.",
+    desc: "Chasing people down during close is a full-time job. This skill handles it. Reads your Numeric checklist for tasks that are overdue or due soon and sends targeted Slack DMs to assignees with contextual messages — not generic notifications. Reads reminder preferences from each Numeric task and logs every nudge back as a task comment to prevent duplicates.",
     asks: ["Remind assignees about overdue tasks", "Send close reminders", "Nudge people on late recs"] },
-  { name: "cross-workspace-dashboard", type: "Insights", category: "Close Management", roles: ["Controller", "CFO"],
+  { name: "cross-workspace-dashboard", qbo: true, type: "Insights", category: "Close Management", roles: ["Controller", "CFO"],
     title: "Cross-Workspace Dashboard — Portfolio View",
     desc: "Managing multiple workspaces? This skill rolls up close progress across all your Numeric workspaces into a single portfolio-level view — completion rates, overdue counts, pace comparisons, and workload distribution side by side. Outputs as an HTML dashboard and companion Excel workbook.",
     asks: ["Close status across all entities", "Which workspaces are behind?", "Portfolio close view"] },
-  { name: "close-checklist-diagnostic", type: "Insights", category: "Close Management", roles: ["Controller", "Close Manager", "Implementation"],
+  { name: "close-checklist-diagnostic", qbo: true, type: "Insights", category: "Close Management", roles: ["Controller", "Close Manager", "Implementation"],
     title: "Close Checklist Diagnostic — Score & Coach Your Process",
-    desc: "Reads your full close checklist and scores it across accountability, controls, completeness, structure, hygiene, and dependencies — then coaches you through fixes one mode at a time. Output is a controller-safe HTML scorecard suitable for sharing with a CFO or audit committee, plus an interactive Q&A that names specific tasks, suggests reassignments, and drafts missing descriptions. Read-only — never modifies your workspace.",
+    desc: "Reads your full Numeric close checklist and scores it across accountability, controls, completeness, structure, hygiene, and dependencies — then coaches you through fixes one mode at a time. Output is a controller-safe HTML scorecard suitable for sharing with a CFO or audit committee, plus an interactive Q&A that names specific Numeric tasks, suggests reassignments, and drafts missing descriptions. Read-only — never modifies your Numeric workspace.",
     asks: ["Diagnose my close checklist", "Score my close process", "Where are the gaps in my close?", "Coach me through improving my close"] },
 
   // Flux & Variance
-  { name: "automatically-draft-flux-explanations", type: "Automation", category: "Flux & Variance", roles: ["Staff Accountant", "Senior Accountant"],
+  { name: "automatically-draft-flux-explanations", essential: true, type: "Automation", category: "Flux & Variance", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Auto-Draft Flux Explanations",
     desc: "Loops through every flux task assigned to the current user where an explanation has been requested, pulls six months of transaction line history per account, and posts concise first-pass drafts directly back to Numeric — ready for the preparer to review and submit. Appends below existing content rather than overwriting.",
     asks: ["Write my flux explanations", "Draft all my fluxes for this month", "Run the flux analysis for close"] },
-  { name: "consolidated-flux", type: "Workflows", category: "Flux & Variance", roles: ["Controller", "CFO"],
+  { name: "consolidated-flux", qbo: true, type: "Workflows", category: "Flux & Variance", roles: ["Controller", "CFO"],
     title: "Consolidated Flux — Variance Commentary Rollup",
-    desc: "Pulls flux commentary from across entities, reports, and periods and stitches it into a single unified narrative — rolling child account explanations up to group level, trending commentary across months. Essential for multi-entity teams who need one coherent story across the books.",
+    desc: "Pulls flux commentary from across your Numeric entities, reports, and periods and stitches it into a single unified narrative — rolling child account explanations up to group level, trending commentary across months. Essential for multi-entity teams running consolidation in Numeric who need one coherent story across the books.",
     asks: ["Consolidate flux across entities", "Roll up variance commentary", "Unified variance view"] },
 
   // Reporting & Analysis
-  { name: "executive-report", type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
+  { name: "executive-report", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
     title: "Executive Report — Board-Ready Statements",
     desc: "Takes your Numeric report and produces a polished, presentation-ready financial statement — collapsing child account detail into executive summary groups, rolling up flux commentary into one-line narratives, and applying professional formatting. Output as a styled Excel workbook or PDF. Built for CFO decks, board packages, and investor reporting.",
     asks: ["Build the board report", "CFO-ready income statement", "Collapse the P&L into summary groups"] },
-  { name: "financial-metrics", type: "Insights", category: "Reporting & Analysis", roles: ["Controller", "CFO", "FP&A Analyst"],
+  { name: "financial-metrics", qbo: true, type: "Insights", category: "Reporting & Analysis", roles: ["Controller", "CFO", "FP&A Analyst"],
     title: "Financial Metrics — Ratios & Analytics Inline",
     desc: "Standard financial ratios computed directly onto your Numeric report. Covers profitability, liquidity, solvency, and working capital metrics — placed inline on both income statements and balance sheets. Useful for covenant reporting, investor updates, and management analysis.",
     asks: ["Add financial ratios to this report", "What's our gross margin?", "Check covenant compliance"] },
@@ -606,7 +644,7 @@ const SKILLS = [
     title: "Report + Transaction Detail",
     desc: "Pulls any Numeric report alongside every underlying GL transaction line — in a single Excel workbook with two tabs. The financial statement on one side, every journal entry behind each number on the other. Built for controllers who need to explain variances or provide detail to auditors without a separate export.",
     asks: ["Report with transaction detail", "Income statement with journal entries", "Show me what makes up each line"] },
-  { name: "clean-report-export", type: "Workflows", category: "Reporting & Analysis", roles: ["FP&A Analyst", "Controller"],
+  { name: "clean-report-export", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["FP&A Analyst", "Controller"],
     title: "Clean Report Export — Analysis-Ready Data",
     desc: "Exports any Numeric financial statement as a clean CSV or TSV — no summary rows, no formatting artifacts, no manual cleanup. Drop it straight into Excel, pandas, or any BI tool. Supports multiple reports in a single run.",
     asks: ["Export the income statement", "Get me a clean CSV", "Pull the report data for analysis"] },
@@ -616,16 +654,60 @@ const SKILLS = [
     asks: ["Build me an AR aging", "AP aging as of March 31", "Who owes us money?", "What vendors are past due?"] },
 
   // Reconciliation
-  { name: "numeric-rec-workbook", type: "Workflows", category: "Reconciliation", roles: ["Staff Accountant", "Senior Accountant"],
+  { name: "numeric-rec-workbook", essential: true, qbo: true, type: "Workflows", category: "Reconciliation", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Numeric Rec Workbook — Leadsheet Builder",
     desc: "Builds a polished Numeric Leadsheet workbook for any GL account — four periods of live balance data, EOMONTH date formulas, and a rollforward tab. One row per account × entity. Also supports adding a Numeric tab to an existing workbook without touching your other sheets.",
     asks: ["Build rec support for Prepaid", "Make me the leadsheet for this account"] },
 
   // Audit & Compliance
-  { name: "audit-evidence-export", type: "Workflows", category: "Audit & Compliance", roles: ["Audit Lead", "Controller"],
+  { name: "audit-evidence-export", qbo: true, type: "Workflows", category: "Audit & Compliance", roles: ["Audit Lead", "Controller"],
     title: "Audit Evidence Export — Close Activity Workbook",
     desc: "Packages the complete activity history of any Numeric close period into a structured five-sheet Excel workbook — reconciliation submissions and approvals, checklist completions, review notes, and a full timeline of who did what and when. Hand it to your auditors and move on.",
     asks: ["Audit evidence for December close", "SOX evidence package", "Reconciliation sign-off history"] },
+
+  // Close Management (new)
+  { name: "close-heartbeat", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager", "Controller"],
+    title: "Close Heartbeat — Scheduled Daily Status to Slack",
+    desc: "Reads live close health from Numeric — task completion, overdue items, blocking dependencies, and pace versus your deadline — and posts a structured digest each weekday morning during the close, then self-cancels when Numeric marks the period complete. Numeric is the source of truth; Slack is just where the daily read-out lands (falls back to an in-chat summary if no Slack connector is present).",
+    asks: ["Set up daily close updates to Slack", "Schedule a close heartbeat", "Post close status to #accounting-close every morning"] },
+  { name: "close-day-zero-kickoff", qbo: true, type: "Workflows", category: "Close Management", roles: ["Close Manager", "Controller"],
+    title: "Close Kickoff — Open the Period in One Step",
+    desc: "Sets up your Numeric close checklist for the new period in one step: populates task due dates from a template (holiday-aware), and carries preparer/reviewer assignments forward from the prior period's Numeric tasks — without overwriting manual changes. Writes the assignments and dates straight into Numeric, then announces everyone's task list to Slack and optionally drops a kickoff event on the calendar. Full confirmation gate before anything is written.",
+    asks: ["Kick off the month-end close", "Open the new close checklist", "Set up this month's close tasks"] },
+  { name: "close-calendar-blocker", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager"],
+    title: "Close Calendar Blocker — Reserve Time for Close Work",
+    desc: "Pulls every close task's owner and due date from your Numeric checklist and turns it into focused-work calendar blocks per preparer, plus consolidated review slots for reviewers — so Numeric deadlines land on people's actual calendars. Detects OOO conflicts and writes due-date adjustments back into Numeric (with an audit comment), and skips duplicate blocks on re-runs. Numeric is the schedule of record; the calendar is just the delivery surface.",
+    asks: ["Block calendars for close", "Add close due dates to everyone's calendar", "Reserve focus time for close tasks"] },
+  { name: "review-queue-packager", qbo: true, type: "Automation", category: "Close Management", roles: ["Controller", "Close Manager"],
+    title: "Review Queue Packager — Route Reviews to Reviewers",
+    desc: "Finds every Numeric task in review state and bundles each one's supporting Numeric transaction detail and flux commentary into a personalized, risk-sorted queue per reviewer. Enforces segregation of duties from Numeric's preparer/reviewer fields, withholds transaction detail for sensitive accounts, and logs each send back to the Numeric task to prevent duplicates. Routes via Slack or email — but the queue, the context, and the controls all come from Numeric.",
+    asks: ["Route the review queue", "Notify reviewers what's ready", "Send pending approvals to reviewers"] },
+
+  // Flux & Variance (new)
+  { name: "pre-close-variance-alert", qbo: true, type: "Insights", category: "Flux & Variance", roles: ["Controller", "Close Manager"],
+    title: "Pre-Close Variance Alert — Catch Surprises Early",
+    desc: "Reads your Numeric report data to compare current-month actuals against prior period and budget before the flux step, then drills into Numeric transaction lines for the biggest movers — flagging accounts over a materiality threshold so you investigate surprises on day 3, not day 8. Learns which movements you've acknowledged (stored on the Numeric task) so it stops re-flagging known recurring items. Posts to Slack, but every number and every threshold lives in Numeric.",
+    asks: ["What's already moved this month?", "Run a pre-close variance check", "Alert me on big variances before close"] },
+
+  // Journals & Transactions (new)
+  { name: "prepaid-amortization-scheduler", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
+    title: "Prepaid Amortization — Schedule, Workpaper & JE",
+    desc: "Maintains your prepaid amortization schedule inside Numeric: computes the current period's straight-line entries with rounding true-up, reconciles the schedule against the actual prepaid balance via Numeric transaction lines before posting, and builds the workpaper plus a NetSuite-ready JE CSV. The schedule lives on the Numeric task description and carries forward every month — pull it up, confirm, post. No spreadsheet, no separate tracker.",
+    asks: ["Run the prepaid amortization", "Generate this month's prepaid entries", "Amortize prepaids and build the workpaper"] },
+  { name: "vendor-accrual-confirmation-mailer", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
+    title: "Vendor Accrual Confirmations — Cutoff Outreach",
+    desc: "Reads your Numeric accrual task and the underlying GL transaction lines to find vendors that billed last period but haven't yet this one — the likely accruals — and estimates each from Numeric spend history. After you confirm the estimates and recipients, it emails the vendors to confirm and logs every outreach back to the Numeric task. Confirmed contacts and exclusions persist on the Numeric task, so each month refines rather than restarts.",
+    asks: ["Send accrual confirmation emails", "Confirm period-end services with vendors", "Email vendors to confirm accruals"] },
+  { name: "intercompany-elimination-checker", type: "Workflows", category: "Journals & Transactions", roles: ["Controller", "Senior Accountant"],
+    title: "Intercompany Elimination — Match & Eliminate",
+    desc: "Queries Numeric transaction lines across every entity in your consolidated workspace to match intercompany payable/receivable pairs, surface mismatches, and generate the correcting and elimination JEs for consolidation. Confirmed counterparty rules persist on the Numeric task, so next close auto-matches the known and only asks about the new. Built for multi-entity teams who close a group in Numeric.",
+    asks: ["Check intercompany balances", "Find IC mismatches across entities", "Generate intercompany elimination entries"] },
+
+  // Reporting & Analysis (new)
+  { name: "stakeholder-deck-drafter", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
+    title: "Stakeholder Deck Drafter — Board & CFO Summary",
+    desc: "Pulls your headline metrics and flux commentary straight from Numeric and drafts the first cut of the board/CFO package — revenue, opex, and headcount narratives written from Numeric report data and your preparers' flux notes. Builds it as a restricted-access doc and, only after you review and approve, shares it and schedules the review. Every Numeric flux note is surfaced for approval before it reaches a board-facing document.",
+    asks: ["Draft the board package", "Build the CFO close summary", "Create the monthly reporting deck"] },
 
 ];
 
@@ -673,7 +755,7 @@ function render() {
     html += '<div class="grid">';
     byCat[c].forEach((s) => {
       const idx = SKILLS.indexOf(s);
-      html += `<div class="card" onclick="openModal(${idx})">
+      html += `<div class="card${s.qbo ? ' card-qbo' : ''}${s.essential ? ' card-essential' : ''}" onclick="openModal(${idx})">
         <h3 class="card-title">${escapeHtml(s.title)}${s.beta ? '<span class="beta-tag">Beta</span>' : ''}</h3>
         <div class="meta-row"><span class="meta-label">Type</span><span class="pill pill-type pill-type-${s.type.toLowerCase()}">${escapeHtml(s.type)}</span></div>
         <div class="meta-row"><span class="meta-label">Role</span>${s.roles.map(r=>`<span class="pill pill-role">${escapeHtml(r)}</span>`).join('')}</div>
@@ -695,7 +777,8 @@ function openModal(i) {
   document.getElementById('m-meta').innerHTML = `
     <div class="modal-meta-row"><span class="meta-label">Skill</span><span class="pill pill-role">${s.name}</span></div>
     <div class="modal-meta-row"><span class="meta-label">Type</span><span class="pill pill-type pill-type-${s.type.toLowerCase()}">${escapeHtml(s.type)}</span></div>
-    <div class="modal-meta-row"><span class="meta-label">Role</span>${s.roles.map(r=>`<span class="pill pill-role">${escapeHtml(r)}</span>`).join('')}</div>`;
+    <div class="modal-meta-row"><span class="meta-label">Role</span>${s.roles.map(r=>`<span class="pill pill-role">${escapeHtml(r)}</span>`).join('')}</div>
+    ${(s.essential || s.qbo) ? '<div class="modal-meta-row"><span class="meta-label">Tags</span>' + (s.essential ? '<span class="ess-tag" title="Core monthly-close workflow.">Essential</span>' : '') + (s.qbo ? '<span class="qbo-tag" title="Runs without transaction-level data.">QBO/Sage/Xero Optimized</span>' : '') + '</div>' : ''}`;
   document.getElementById('m-body').innerHTML = `
     <p>${escapeHtml(s.desc)}</p>
     <div class="m-tabs">
@@ -759,39 +842,39 @@ const PROVIDERS = [
   {
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['Download the <code>.zip</code> below.',
-         'Drop it into Cowork or Claude Code — or run <code>/plugin install numeric-mcp-toolkit</code>. No unzipping.',
+      ? ['<strong>Claude Code (easiest):</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download.',
+         '<strong>Claude.ai or Desktop:</strong> download the <code>.zip</code>, then add the skills you want under Settings → Capabilities → Skills.',
          'Skills activate automatically when you ask.']
       : ['Download the <code>.zip</code> below.',
-         'Drop it into a Cowork or Claude Code chat — it installs itself, no unzipping.',
+         '<strong>Claude.ai or Desktop:</strong> add it under Settings → Capabilities → Skills. <strong>Claude Code:</strong> unzip it into <code>~/.claude/skills/</code> (or just ask Claude Code to install it).',
          'It activates the next time you ask for what it does.']
   },
   {
     id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['Download the <code>.zip</code> below.',
-         'Just ask Codex: <em>“unzip this and install the skills into .agents/skills”</em> — it handles the rest.',
-         'Codex discovers every skill automatically.']
+      ? ['Download and unzip the toolkit.',
+         'Put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — run <code>python3 tools/sync_skills.py --user</code>, or just ask Codex to move them there.',
+         'Codex discovers them automatically — it scans <code>.agents/skills/</code>.']
       : ['Download the <code>.zip</code> below.',
-         'Just ask Codex: <em>“install this skill into .agents/skills”</em> and point it at the file.',
+         'Unzip the skill folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects) — or just ask Codex to install it there.',
          'Codex discovers it automatically.']
   },
   {
     id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['Skip the download — just ask Gemini: <em>“install the Numeric skills toolkit into ~/.agents/skills”</em>.',
-         'Or download the <code>.zip</code> and ask Gemini to unpack it there.',
-         'Gemini discovers every skill automatically.']
-      : ['Run <code>gemini skills install &lt;git-url&gt;</code> — installs straight from the repo, no download.',
-         'Or download the <code>.zip</code> and ask Gemini to drop it into <code>.agents/skills</code>.',
+      ? ['Download and unzip the toolkit.',
+         'Install the skills into <code>~/.agents/skills/</code> — run <code>python3 tools/sync_skills.py --user</code>, or unzip the skill folders there.',
+         'Gemini discovers them automatically.']
+      : ['Run <code>gemini skills install &lt;git-url&gt;</code> to install straight from a repo — add <code>--scope workspace</code> to limit it to this project.',
+         'Or download the <code>.zip</code> and unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).',
          'Gemini discovers it automatically.']
   },
   {
     id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
     steps: ctx =>
-      ['Download the <code>.zip</code> below.',
-       'Ask your assistant to install it into <code>.agents/skills</code> — the shared path every standard agent reads.',
-       'It discovers the skill automatically.']
+      ['Download and unzip the skill.',
+       'Place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads. Agentic tools can do it for you if you ask.',
+       'Your assistant discovers it automatically.']
   },
 ];
 
@@ -821,7 +904,7 @@ function renderProviders() {
   document.getElementById('prov-steps').innerHTML = p.steps(dlContext).map(s => `<li>${s}</li>`).join('');
   const dl = document.getElementById('prov-download');
   dl.style.setProperty('--dl-color', p.color);
-  dl.innerHTML = `<span class="btn-dl-dot"></span>⬇ Download for ${escapeHtml(p.btn)}`;
+  dl.textContent = `⬇ Download for ${p.btn}`;
 }
 
 function selectProvider(id) {
@@ -855,8 +938,23 @@ function clearFilters() {
   document.getElementById('filter-cat').value = '';
   document.getElementById('filter-type').value = '';
   document.getElementById('filter-role').value = '';
+  setHighlight(null);
   render();
 }
+
+// One highlight lens at a time: 'qbo', 'essential', or null.
+function setHighlight(mode) {
+  const r = document.getElementById('results');
+  const qbo = document.getElementById('filter-qbo');
+  const ess = document.getElementById('filter-essential');
+  qbo.checked = mode === 'qbo';
+  ess.checked = mode === 'essential';
+  r.classList.toggle('qbo-highlight', mode === 'qbo');
+  r.classList.toggle('essential-highlight', mode === 'essential');
+}
+
+function toggleQbo() { setHighlight(document.getElementById('filter-qbo').checked ? 'qbo' : null); }
+function toggleEssential() { setHighlight(document.getElementById('filter-essential').checked ? 'essential' : null); }
 
 const mdCache = {};
 function fetchMd(name) {

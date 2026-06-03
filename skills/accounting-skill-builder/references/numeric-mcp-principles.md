@@ -67,6 +67,18 @@ Automations do not call `submit_task` without explicit user confirmation. Workfl
 
 Same rule applies to `update_flux_explanation`, `edit_task` (when changing critical fields), and any mutation that lands in production.
 
+## Confirm the guess, not just the mutation
+
+Gating mutations is necessary but not sufficient. Whenever an automation **estimates or infers** something, surface that inference for user confirmation *before acting on it* — even when no external write is involved:
+
+- Accrual amount estimated from prior-month spend → confirm the amount.
+- Counterparty / account / vendor match inferred from a memo or pattern → confirm the match.
+- "Material" accounts flagged by a threshold, accrual *candidates* selected by a rule, a classification chosen → confirm the selection.
+
+The accounting truth often lives outside the GL (the invoice hasn't arrived, the contract isn't in Numeric), so these are genuine guesses, not lookups. The user confirms the *judgment*, not just the *write*.
+
+Pair this with the persistence layer: confirm **deltas** against saved preferences, not the whole list every period. Auto-apply what the user already confirmed last cycle (from the task-description preference block); surface only what's new or changed. That is what turns a skill that nags into one that learns.
+
 ## Reading flux explanations
 
 Use `get_flux_explanations` to check existing content before posting. If content exists in the current period, append with `---` divider. Never overwrite. Append-with-divider preserves prior preparer work and audit history.

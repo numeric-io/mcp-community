@@ -2,38 +2,47 @@
 name: journal-entry
 user-invocable: true
 description: >
-  Generates and posts NetSuite journal entries from source documents, platform
-  exports, GL dumps, and allocation workbooks. Pulls pending JE tasks from
-  Numeric, parses uploaded files, classifies line items, builds formula-first
-  Excel workpapers, validates DR=CR balance, outputs NetSuite CSV import files,
-  and optionally posts directly to NetSuite via ns_createRecord MCP. Trigger
+  Generates journal entries for your ERP (NetSuite, QuickBooks Online, Xero, or
+  Sage Intacct) from source documents, platform exports, GL dumps, and allocation
+  workbooks. Pulls pending JE tasks from Numeric, parses uploaded files, classifies
+  line items, builds formula-first Excel workpapers, validates DR=CR balance, and
+  emits an import file in the target ERP's format — plus a direct post to NetSuite
+  via ns_createRecord when available. Trigger
   whenever the user mentions "journal entry", "JE", "book this invoice",
   "reclass entry", "record this", "post to NetSuite", "post this JE",
   "post the journal entry", "post entries", "submit JE", "process this invoice",
   "month-end entries", "monthly entries", "create the entry", "import to
-  NetSuite", "build the JE", "prepare entries", "generate a JE", "need to book",
+  NetSuite", "import to QuickBooks", "import to Xero", "import to Sage",
+  "build the JE", "prepare entries", "generate a JE", "need to book",
   "book this to NetSuite", or any reference to creating, generating, booking,
   or posting journal entries from source documents.
 ---
 
 # Journal Entry Skill
 
-Generates NetSuite journal entries from source documents. One task at a time —
-pull from Numeric checklist, generate the JE, post, submit, repeat.
+Generates journal entries for the user's ERP from source documents. The
+generation, balancing, and workpaper are ERP-neutral; only the **output** differs
+per ERP. One task at a time — pull from the Numeric checklist, generate the JE,
+emit the import file (and post where supported), submit, repeat.
+
+**Supported ERPs:** NetSuite (file + direct post), QuickBooks Online, Xero, and
+Sage Intacct (import file / API). Pick the target ERP from the task's saved
+context, otherwise ask the user.
 
 ## Flow
 
 1. Connect to Numeric workspace (Phase 0)
-2. Pick a task from the checklist (Phase 1)
+2. Pick a task from the checklist + confirm target ERP (Phase 1)
 3. Parse file, generate JE, validate, build workpaper (Phase 2)
-4. Review with user, generate files, optionally post to NS (Phase 3)
+4. Review with user, emit the import file, post directly if supported (Phase 3)
 5. Submit task in Numeric, save learned context (Phase 4)
 
 ## Reference files
 
 Read these as needed — not upfront:
 
-- **NetSuite schema**: [references/netsuite-je-schema.md](references/netsuite-je-schema.md)
+- **ERP output formats** (all ERPs): [references/erp-output-formats.md](references/erp-output-formats.md)
+- **NetSuite schema** (NS detail): [references/netsuite-je-schema.md](references/netsuite-je-schema.md)
 - **Classification rules**: [references/classification-rules.md](references/classification-rules.md)
 - **Detection logic**: [references/detection-logic.md](references/detection-logic.md)
 - **Validation rules**: [references/validation-rules.md](references/validation-rules.md)
@@ -83,8 +92,11 @@ these as the starting context.
 
 Ask:
 - "Upload the supporting file for this task."
+- **Target ERP** — NetSuite, QuickBooks Online, Xero, or Sage Intacct. Use the
+  `Target ERP:` value from the saved `## JE Instructions` if present; only ask
+  when it isn't already known.
 - Any clarifying questions that aren't answered by the task description
-  (e.g., entity if multi-subsidiary, aggregation level)
+  (e.g., entity/subsidiary if multi-entity, aggregation level)
 
 Always require a file upload.
 
@@ -105,9 +117,13 @@ task.
 
 - Generate External ID. Default: `JE-{CUSTOMER}-{YYYYMM}-{SOURCE}-{SEQ}`
   (zero-padded to 3 digits). Use any pattern specified in the task description.
-- Populate fields per [references/netsuite-je-schema.md](references/netsuite-je-schema.md)
+- Build the **canonical JE** (date, memo, entity, balanced lines with
+  account/debit/credit/memo/name/dimensions) per
+  [references/erp-output-formats.md](references/erp-output-formats.md). The
+  output file is mapped from this canonical form in Phase 3; NetSuite field
+  detail is in [references/netsuite-je-schema.md](references/netsuite-je-schema.md).
 - Rounding: largest line absorbs penny difference, visible in Calc layer
-- Intercompany: if lines cross subsidiaries → 4-line structure with clearing
+- Intercompany: if lines cross entities → 4-line structure with clearing
   account. Pass `--ic` to workpaper builder in Step 2d.
 - Embed task ID in memo: `[Task #{task_id}] {description}`
 
@@ -226,16 +242,27 @@ Link to the workpaper.
 
 User can: approve, adjust (re-runs Phase 2), or skip this task.
 
-After approval, ask: "Post directly to NetSuite, or just generate the files?"
+After approval, the next step depends on the target ERP:
+- **NetSuite** — ask: "Post directly to NetSuite, or just generate the files?"
+- **QuickBooks Online / Xero / Sage Intacct** — no direct post through the
+  connected MCP, so generate the import file and hand it back with import steps.
 
 ### Always generate files
 
 Every run produces both:
-1. **CSV** — flat file with `Journal Entry -Line:` prefixes, ready for NS Import
-   Assistant. See [references/netsuite-je-schema.md](references/netsuite-je-schema.md).
+1. **Import file in the target ERP's format** — map the canonical JE to the ERP's
+   layout per [references/erp-output-formats.md](references/erp-output-formats.md):
+   - **NetSuite** — CSV with `Journal Entry -Line:` prefixes for the Import Assistant ([netsuite-je-schema.md](references/netsuite-je-schema.md)).
+   - **QuickBooks Online** — importer CSV (`JournalNo`, `JournalDate`, `Account`, `Debit`, `Credit`, `Description`, `Name`, `Class`, `Location`); `Name` is required on AR/AP lines.
+   - **Xero** — Manual Journal CSV (`Narration`, `Date`, `Description`, `AccountCode`, `Debit`, `Credit`); blank date+narration continues the prior journal.
+   - **Sage Intacct** — fill the company's downloaded GL template (header + `LINE_NO`, account, amounts, dimensions). Ask the user for their template when the dimension set is unknown.
 2. **Excel workpaper** — the three-layer workbook from Step 2d.
 
-### Post to NetSuite (if user opts in)
+Then deliver the file with one line of import guidance for the chosen ERP
+(where in the ERP to upload it). For QBO/Xero/Sage, never claim a direct post —
+the user runs the import.
+
+### Post to NetSuite (NetSuite target only, if user opts in)
 
 Call `ns_createRecord` with record type `journalentry`:
 
@@ -295,6 +322,7 @@ Fields to include (only those that are relevant to this task):
 
 ```
 ## JE Instructions (auto-saved)
+Target ERP: NetSuite
 Subsidiary: 10 Acme Corp US
 Use account numbers: yes
 External ID: JE-ACM-{YYYYMM}-CLOSEAP-{SEQ}

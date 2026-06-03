@@ -56,7 +56,7 @@ The raw TSV from Numeric contains summary/aggregation rows and group headers mix
 Apply these formatting rules to the cleaned data:
 
 - **Monetary values**: default to raw numbers. If user requests scaling, apply `$K` (divide by 1,000) or `$M` (divide by 1,000,000)
-- **Currency symbol**: read `organization_currency` from GL lines via `query_transaction_lines` or infer from `get_workspace_context` entity metadata. Apply correct symbol (USD $, EUR €, GBP £, etc.)
+- **Currency symbol**: read `organization_currency` from GL lines via `query_transaction_lines`, or — on QBO/Sage/Xero workspaces, which don't expose transaction lines — infer from `get_workspace_context` entity metadata. Either path works, so the skill is QBO-safe (transaction lines are never required). Apply correct symbol (USD $, EUR €, GBP £, etc.)
 - **Percentages**: format ratio/percentage rows with `%` suffix and user-specified decimal precision (default 1)
 - **Decimals**: monetary values default to 2 decimal places unless user specifies otherwise
 - **Negative values**: default to minus sign. If user requests accounting format, use parentheses

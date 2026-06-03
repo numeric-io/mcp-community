@@ -158,28 +158,29 @@ def validate_entry(entry: dict, data: dict) -> ValidationResult:
     else:
         result.failed(8, "Date consistency", f"Multiple dates found: {dates}")
 
-    # Rule 9: Subsidiary consistency
+    # Rule 9: Entity/subsidiary consistency
+    # "subsidiary" is NetSuite's term; other ERPs use "entity". Accept either.
     subsidiaries = set()
-    entry_sub = entry.get("subsidiary")
+    entry_sub = entry.get("subsidiary") or entry.get("entity")
     if entry_sub:
         subsidiaries.add(entry_sub)
     for line in lines:
-        line_sub = line.get("subsidiary") or line.get("line_subsidiary")
+        line_sub = line.get("subsidiary") or line.get("line_subsidiary") or line.get("entity")
         if line_sub:
             subsidiaries.add(line_sub)
 
-    to_sub = entry.get("to_subsidiary")
+    to_sub = entry.get("to_subsidiary") or entry.get("to_entity")
     if len(subsidiaries) <= 1 and not to_sub:
-        result.passed(9, "Subsidiary consistency")
+        result.passed(9, "Entity/subsidiary consistency")
     elif to_sub:
         if len(lines) >= 4:
-            result.passed(9, "Subsidiary consistency (intercompany)")
+            result.passed(9, "Entity/subsidiary consistency (intercompany)")
         else:
-            result.failed(9, "Subsidiary consistency",
+            result.failed(9, "Entity/subsidiary consistency",
                           f"Intercompany JE needs min 4 lines, has {len(lines)}")
     else:
-        result.warned(9, "Subsidiary consistency",
-                      f"Multiple subsidiaries without To Subsidiary: {subsidiaries}")
+        result.warned(9, "Entity/subsidiary consistency",
+                      f"Multiple entities without a clearing/To Entity: {subsidiaries}")
 
     # Rule 10: External ID format
     ext_id = entry.get("external_id")
