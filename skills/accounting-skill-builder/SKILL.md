@@ -4,9 +4,9 @@ metadata:
   user-invocable: true
 description: >
   Builds a new, production-ready Cowork skill for an accountant who wants to automate a
-  workflow — one that survives a real close, not a demo. Uses
-  compound engineering — four phases (Ideate, Plan, Build, Review), each producing a
-  document that becomes required input to the next. Plan fans out specialists (data,
+  workflow — one that survives a real close, not a demo. Four phases (Ideate, Plan,
+  Build, Review), each producing a document that becomes required input to the next.
+  Plan fans out specialists (data,
   accounting controls, Numeric integration, architecture, pressure-test). Build
   assembles the new skill with performance discipline baked in. Review fans out a
   five-reviewer panel (controller, accounting process expert, auditor, adversarial,

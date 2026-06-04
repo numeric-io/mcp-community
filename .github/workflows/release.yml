@@ -26,9 +26,15 @@ jobs:
           # Plugin contents at the archive root: .claude-plugin/plugin.json + skills/
           # (+ tools/sync_skills.py for the Codex/Gemini manual path, README, LICENSE).
           # Website files (index.html, assets/), docs/, and CI config stay out.
+          # NOTE: ship ONLY plugin.json — not marketplace.json. With both present,
+          # validators treat the directory as a MARKETPLACE (whose plugin entry
+          # points at GitHub, not bundled contents) and plugin upload fails with
+          # "validation failed". marketplace.json only functions from the GitHub
+          # repo itself via /plugin marketplace add.
           STAGE="$RUNNER_TEMP/toolkit-stage"
-          rm -rf "$STAGE" && mkdir -p "$STAGE"
-          cp -R .claude-plugin skills tools README.md LICENSE "$STAGE/"
+          rm -rf "$STAGE" && mkdir -p "$STAGE/.claude-plugin"
+          cp .claude-plugin/plugin.json "$STAGE/.claude-plugin/"
+          cp -R skills tools README.md LICENSE "$STAGE/"
           find "$STAGE" -name ".DS_Store" -delete
           find "$STAGE" -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true
           ( cd "$STAGE" && zip -rq "$GITHUB_WORKSPACE/numeric-mcp-toolkit.zip" . )
