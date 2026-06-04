@@ -23,15 +23,15 @@ jobs:
           cd $GITHUB_WORKSPACE
 
           # Build the toolkit as a Claude plugin bundle — NOT a repo dump.
-          # Structure: numeric-mcp-toolkit/.claude-plugin/plugin.json + skills/
+          # Plugin contents at the archive root: .claude-plugin/plugin.json + skills/
           # (+ tools/sync_skills.py for the Codex/Gemini manual path, README, LICENSE).
           # Website files (index.html, assets/), docs/, and CI config stay out.
           STAGE="$RUNNER_TEMP/toolkit-stage"
-          rm -rf "$STAGE" && mkdir -p "$STAGE/numeric-mcp-toolkit"
-          cp -R .claude-plugin skills tools README.md LICENSE "$STAGE/numeric-mcp-toolkit/"
+          rm -rf "$STAGE" && mkdir -p "$STAGE"
+          cp -R .claude-plugin skills tools README.md LICENSE "$STAGE/"
           find "$STAGE" -name ".DS_Store" -delete
           find "$STAGE" -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true
-          ( cd "$STAGE" && zip -rq "$GITHUB_WORKSPACE/numeric-mcp-toolkit.zip" numeric-mcp-toolkit )
+          ( cd "$STAGE" && zip -rq "$GITHUB_WORKSPACE/numeric-mcp-toolkit.zip" . )
           echo "Built: $(du -sh numeric-mcp-toolkit.zip)"
           unzip -l numeric-mcp-toolkit.zip | head -12
 
