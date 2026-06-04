@@ -852,37 +852,37 @@ const PROVIDERS = [
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
     steps: ctx => ctx.kind === 'toolkit'
       ? ['<strong>Claude Code (easiest):</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download.',
-         '<strong>Claude.ai or Desktop:</strong> download the <code>.zip</code>, then add the skills you want under Settings → Capabilities → Skills.',
+         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong> — Claude unpacks and places them for you. (Manual alternative: Settings → Capabilities → Skills.)',
          'Skills activate automatically when you ask.']
-      : ['Download the <code>.zip</code> below.',
-         '<strong>Claude.ai or Desktop:</strong> add it under Settings → Capabilities → Skills. <strong>Claude Code:</strong> unzip it into <code>~/.claude/skills/</code> (or just ask Claude Code to install it).',
+      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong> — Claude unzips it and puts it in the right place.',
+         '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.',
          'It activates the next time you ask for what it does.']
   },
   {
     id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['Download and unzip the toolkit.',
-         'Put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — run <code>python3 tools/sync_skills.py --user</code>, or just ask Codex to move them there.',
+      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install these skills"</strong> — it unpacks them into <code>.agents/skills/</code> for you.',
+         '<strong>Manual:</strong> unzip and put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — or run <code>python3 tools/sync_skills.py --user</code>.',
          'Codex discovers them automatically — it scans <code>.agents/skills/</code>.']
-      : ['Download the <code>.zip</code> below.',
-         'Unzip the skill folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects) — or just ask Codex to install it there.',
+      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong> — it unzips it into <code>.agents/skills/</code> for you.',
+         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects).',
          'Codex discovers it automatically.']
   },
   {
     id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['Download and unzip the toolkit.',
-         'Install the skills into <code>~/.agents/skills/</code> — run <code>python3 tools/sync_skills.py --user</code>, or unzip the skill folders there.',
+      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skills</strong> — it unpacks them into <code>~/.agents/skills/</code> for you.',
+         '<strong>Manual:</strong> unzip into <code>~/.agents/skills/</code>, or run <code>python3 tools/sync_skills.py --user</code>.',
          'Gemini discovers them automatically.']
-      : ['Run <code>gemini skills install &lt;git-url&gt;</code> to install straight from a repo — add <code>--scope workspace</code> to limit it to this project.',
-         'Or download the <code>.zip</code> and unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).',
+      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skill</strong>. (Or install from the repo: <code>gemini skills install &lt;git-url&gt;</code>, with <code>--scope workspace</code> to limit to this project.)',
+         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).',
          'Gemini discovers it automatically.']
   },
   {
     id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
     steps: ctx =>
-      ['Download and unzip the skill.',
-       'Place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads. Agentic tools can do it for you if you ask.',
+      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your agent\'s chat, and say "install this skill"</strong> — agentic tools unzip and place it for you.',
+       '<strong>Manual:</strong> unzip and place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads.',
        'Your assistant discovers it automatically.']
   },
 ];
@@ -897,7 +897,7 @@ function openProviderModal(kind, name) {
     dlContext = { kind: 'toolkit', name: null, url: TOOLKIT_URL, label: 'the full toolkit' };
   }
   document.getElementById('prov-sub').innerHTML =
-    `You're getting <strong>${escapeHtml(dlContext.label)}</strong>. The same skill works with every tool below — and most can install it for you, just ask. Pick yours for the exact steps.`;
+    `You're getting <strong>${escapeHtml(dlContext.label)}</strong>. Easiest install for any tool: <strong>drop the .zip into your chat and ask your assistant to install it</strong>. Pick your tool for the exact steps.`;
   renderProviders();
   document.getElementById('provider-overlay').classList.add('open');
 }
