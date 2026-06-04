@@ -1060,7 +1060,7 @@ let lightboxIndex = -1;
 function getLightboxItems() {
   const track = document.getElementById('gallery-track');
   if (!track) return [];
-  return Array.from(track.querySelectorAll('.gallery-frame')).map(a => a.getAttribute('href'));
+  return Array.from(track.querySelectorAll('.gallery-frame')).map(a => a.href);  // resolved URL, must match this.href passed by onclick
 }
 function showLightbox(idx) {
   if (idx < 0 || idx >= lightboxItems.length) return;
