@@ -851,8 +851,8 @@ const PROVIDERS = [
   {
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Claude Code:</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download needed.',
-         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong>. (Manual alternative: Settings → Capabilities → Skills.)']
+      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong>.',
+         '<strong>Manual:</strong> add the skills you want under Settings → Capabilities → Skills.']
       : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong>.',
          '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.']
   },
