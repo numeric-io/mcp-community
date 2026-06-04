@@ -15,11 +15,6 @@ description: >
   journal entries.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Proration edge case undefined when start_date is mid-month AND last month is partial — document formula explicitly — small effort / improves accuracy
-- [ ] GL account name fuzzy match can return two results for similarly named accounts — add disambiguation prompt — small effort / reduces errors
-- [ ] Completed items removed from schedule by default, losing amortization history for the final period — keep for 1 period before removing — small effort / improves audit trail
-
 # Prepaid Amortization Scheduler
 
 Processes monthly prepaid amortization end-to-end: builds the schedule, computes

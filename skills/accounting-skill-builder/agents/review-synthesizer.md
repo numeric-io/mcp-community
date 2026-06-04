@@ -38,7 +38,7 @@ You are not a sixth reviewer. You don't add findings. You consolidate, dedupe, t
 
 5. **Write the backlog.** Every P1, P2, P3 carries forward as an item with effort/impact/owner. The user picks up P2s and P3s after shipping.
 
-6. **Save the iteration backlog into the deliverable's main file.** Add `## Iteration backlog (last reviewed YYYY-MM-DD)` to the head of the new skill's SKILL.md. Open items carry forward across runs; completed items drop out.
+6. **Keep the iteration backlog in the run's review doc** — `{run_id}/review.md`. That internal artifact is the right home for it. The one hard rule: **never write the backlog (or any review notes) into the delivered skill's `SKILL.md`.** Shipped skills go to users — often a public library — and must stay clean. Internal review doc: yes. Shipped skill: never.
 
 ## Triage rules — what beats what
 
@@ -89,11 +89,11 @@ You are not a sixth reviewer. You don't add findings. You consolidate, dedupe, t
 ## P3 — nice to fix
 [same structure]
 
-## Iteration backlog (carried into deliverable's SKILL.md)
+## Iteration backlog
 - [ ] [item] — [effort: small/medium/large] / [impact: blocks/improves/nice-to-have]
 
 ## End of run
-Audit trail at `{run_id}/`. Backlog written to `{deliverable}/SKILL.md` head.
+Audit trail at `{run_id}/`. The iteration backlog lives here in `{run_id}/review.md` (internal) — never written into the delivered `SKILL.md`.
 ```
 
 The verdict is the headline. Everything else supports it.

@@ -13,11 +13,6 @@ description: >
   or any request to identify or resolve intercompany balance discrepancies across entities.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] FX/currency normalization not implemented — multi-currency IC comparisons require local→functional currency conversion before diff calc — high effort / required for multi-currency workspaces
-- [ ] Single-entity workspace may have IC sub-accounts — entity count check may produce false early-stop — small effort / improves reliability
-- [ ] Configurable IC mismatch materiality threshold not yet workspace-tier-scaled — medium effort / reduces noise
-
 # Intercompany Elimination Checker
 
 Scans transaction lines across all entities in a consolidated workspace, surfaces

@@ -14,12 +14,6 @@ description: >
   new close period.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Task name fuzzy matching for ownership carry-forward — exact match breaks on renamed tasks — medium effort / improves reliability
-- [ ] Close template stored in memory without TTL — stale templates silently applied — small effort / reduces risk
-- [ ] Contractor email filtering for Calendar invite — personal emails may receive sensitive close structure — small effort / improves security
-- [ ] Calendar kickoff invite to all-hands creates noise for large teams — add role-level filter option — small effort / improves usability
-
 # Close Day Zero Kickoff
 
 Handles the entire close launch sequence: sets up the checklist, populates due dates,

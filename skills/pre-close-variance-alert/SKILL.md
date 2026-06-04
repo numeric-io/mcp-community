@@ -13,11 +13,6 @@ description: >
   warning, or any request to proactively identify material variances before close review.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Account rename between periods causes false-positive alerts (account_id key mismatch) — medium effort / improves accuracy
-- [ ] Budget call fired even when not configured — add availability check before calling — small effort / reduces noise
-- [ ] Nightly schedule has no auto-stop anchored to period close — medium effort / reduces noise after close
-
 # Pre-Close Variance Alert
 
 Scans current-month actuals against prior period (and optionally budget), flags accounts

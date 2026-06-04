@@ -13,12 +13,6 @@ description: >
   package, or any request to create a post-close summary document for leadership.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] get_flux_explanations call needs account scope filter to avoid loading all accounts — medium effort / reduces context load
-- [ ] Close health metrics use current task state, not state-as-of-close — point-in-time snapshot needed — medium effort / improves accuracy
-- [ ] get_report_row_trend data volume not capped — 24 months × 10 accounts loads unnecessary context — small effort / reduces token cost
-- [ ] Drive folder permission check before document creation — prevents late failure — small effort / improves reliability
-
 # Stakeholder Deck Drafter
 
 Assembles a first-draft post-close summary in Google Drive with **restricted access**,

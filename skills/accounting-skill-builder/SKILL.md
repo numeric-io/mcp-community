@@ -105,7 +105,7 @@ Each writes to `{run_id}/review/{reviewer}.json`.
 
 **Step 3 — Synthesize.** `agents/review-synthesizer.md` reads the user's test-run output, all five panel JSONs, and the brief (for the human-time baseline). Dedupes overlapping findings, triages everything P1 (must fix) / P2 (should fix) / P3 (nice to fix), and renders one verdict — Cleared / Cleared with conditions / Blocked.
 
-The synthesizer writes the iteration backlog as a `## Iteration backlog (last reviewed YYYY-MM-DD)` section at the head of the delivered skill's `SKILL.md` (the one the user copied into their workspace folder). The user sees the backlog every time they re-open the skill.
+The synthesizer records the iteration backlog in the run's review doc (`{run_id}/review.md`) — internal to the build, and the right place for it. It is **never** written into the delivered skill's `SKILL.md`, which ships clean (often to a public library).
 
 Output: `{run_id}/review.md` using `templates/review.md`. End.
 
@@ -120,7 +120,7 @@ Things that commonly go sideways. The orchestrator should watch for these.
 - **Greenfielding when an existing toolkit skill fits.** The Numeric Integration agent's check is supposed to catch this. If Build is producing a SKILL.md that looks a lot like an existing one, stop and re-check.
 - **Phase 4 test run against an in-flight period.** Default to a recently-closed period for the first test run. In-flight periods change underneath the run and produce noisy panel-review results.
 - **User wants to ship despite a Blocked verdict from the synthesizer.** Don't override. Surface the P1 findings, ask if they want to revise the plan, fix in-place, or mark specific findings as accepted risk (with a written justification that goes into the deliverable's audit trail).
-- **Iteration backlog overwritten silently.** When the synthesizer rewrites the deliverable's `## Iteration backlog` section, items the user hasn't crossed off must carry forward. Older items don't disappear; only completed ones do.
+- **Iteration backlog overwritten silently.** When the synthesizer rewrites the `## Iteration backlog` in `{run_id}/review.md`, items the user hasn't crossed off must carry forward. Older items don't disappear; only completed ones do. (The backlog lives in the review doc, never in the shipped `SKILL.md`.)
 - **Panel reviewers disagree.** Common — controller says ship, adversarial constructs a break, auditor finds an evidence gap. The synthesizer's job is judgment, not majority vote. Don't auto-resolve disagreements before synthesis runs.
 - **Workspace cache stale.** Automations cache `list_financial_accounts` and `get_workspace_context` for 24h. If the user changed their chart of accounts or added entities, the cache will lie. Build should expose a `--refresh` flag that clears the cache.
 - **Connector drops mid-run.** Build agents should wire idempotency so re-running on the same period doesn't double-post. Phase 4 surfaces this if it's missing.

@@ -13,11 +13,6 @@ description: >
   routing, or any request to notify reviewers about tasks that are ready for their attention.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] 8-hour cooldown is wall-clock, not business-hours aware — re-route within same business day can be blocked — small effort / improves reliability
-- [ ] Per-period deduplication not implemented — same task can be re-sent across calendar days — small effort / reduces noise
-- [ ] Slack message size not capped — large queues may truncate — small effort / improves reliability
-
 # Review Queue Packager
 
 Routes each reviewer their personalized queue of tasks awaiting their sign-off. Bundles

@@ -51,11 +51,11 @@
 
 ## Iteration backlog
 
-[From the synthesizer, carried into the deliverable's SKILL.md head.]
+[From the synthesizer. Lives here in this review doc — internal. Never written into the delivered skill's SKILL.md.]
 
 - [ ] [item] — [effort] / [impact]
 - [ ] ...
 
 ## End of run
 
-Audit trail at `{run_id}/`. Backlog written to the delivered skill's SKILL.md head — visible next time the user opens it.
+Audit trail at `{run_id}/`. The iteration backlog stays in this review doc (`{run_id}/review.md`) — internal, never shipped in the skill.

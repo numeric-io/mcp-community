@@ -16,11 +16,6 @@ description: >
   or any request to reach out to vendors to confirm period-end accruals via email.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Gmail invoice check misses invoices in NetSuite/Coupa/EDI — add note to user that non-Gmail AP systems need manual check — small effort / improves accuracy
-- [ ] Reply tracking not automated — add Gmail MCP search step in follow-up run to check for replies — medium effort / closes the loop
-- [ ] One-time vendors included as confirmation candidates — now mitigated by persisted `excluded_vendors`; could add auto-detection of first-occurrence-only vendors — small effort / reduces noise
-
 # Vendor Accrual Confirmation Mailer
 
 Sends period-end confirmation emails to vendors where no invoice has been received in

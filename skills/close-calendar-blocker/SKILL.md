@@ -13,11 +13,6 @@ description: >
   task due dates as calendar events for the team.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Timezone resolution per user not implemented — all blocks created in workspace timezone — medium effort / improves accuracy for distributed teams
-- [ ] Calendar event titles truncated in month view for long task names — cap title at 50 chars — small effort / improves readability
-- [ ] Created event IDs not persisted — future re-runs cannot delete stale blocks — medium effort / enables update-in-place
-
 # Close Calendar Blocker
 
 Reads every close task's owner and due date from Numeric, then creates Google Calendar

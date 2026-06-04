@@ -1,0 +1,62 @@
+name: Sync dist zips
+
+# Keeps the committed per-skill .zip bundles in /dist in sync with skills/.
+# The library page (GitHub Pages) serves these committed zips directly, so a
+# skill edit without a rebuilt zip = stale download, and a new skill without
+# a zip = 404. This workflow rebuilds the zips for whatever changed and
+# commits them back. (Releases are separate: release.yml builds fresh bundles
+# on v* tags and attaches them to the GitHub Release.)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+
+permissions:
+  contents: write
+
+jobs:
+  zips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild zips for changed skills
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE" 2>/dev/null; then
+            # Force-push or first push: rebuild everything to be safe.
+            changed=$(ls skills)
+          else
+            changed=$(git diff --name-only "$BEFORE" "${{ github.sha }}" -- skills/ | awk -F/ 'NF>1 {print $2}' | sort -u)
+          fi
+
+          mkdir -p dist
+          for skill in $changed; do
+            [ -f "skills/$skill/SKILL.md" ] || continue   # deleted or not a skill dir
+            rm -f "dist/${skill}.zip"
+            # Same structure as release.yml: archive top-level is "<skill>/SKILL.md"
+            ( cd skills && zip -rq "../dist/${skill}.zip" "$skill" -x "*.DS_Store" -x "*__pycache__*" -x "*.pyc" )
+            echo "rebuilt dist/${skill}.zip"
+          done
+
+          # Remove orphan zips whose skill directory no longer exists
+          for z in dist/*.zip; do
+            name=$(basename "$z" .zip)
+            [ -d "skills/$name" ] || { echo "removing orphan $z"; rm -f "$z"; }
+          done
+
+      - name: Commit updated zips
+        run: |
+          git add dist/
+          if git diff --cached --quiet; then
+            echo "dist/ unchanged — nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: rebuild dist zips for changed skills"
+          git push

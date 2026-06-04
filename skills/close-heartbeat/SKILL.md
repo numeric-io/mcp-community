@@ -12,10 +12,6 @@ description: >
   status to channel, or any request to set up automatic recurring close status updates.
 ---
 
-## Iteration backlog (last reviewed 2026-06-03)
-- [ ] Sub-ledger close signals not checked — task completion ≠ sub-ledger posted — small/medium effort / improves accuracy
-- [ ] Blocker detection limited to structured text patterns only — free-text blockers invisible — small effort / improves signal
-
 # Close Heartbeat
 
 Posts a structured daily close status digest to Slack. Pulls live close data from Numeric, formats a channel-ready summary, and optionally wires up a recurring schedule so it runs automatically every weekday during close. Self-cancels the schedule when the close period is complete.
