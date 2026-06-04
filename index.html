@@ -291,6 +291,10 @@ select:focus { outline: none; border-color: var(--ink); }
 .gallery-frame { flex: 0 0 320px; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; padding: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; transition: all 0.18s ease; cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
 .gallery-frame:hover { border-color: var(--ink-2); transform: translateY(-1px); box-shadow: var(--shadow); }
 .gallery-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.gallery-frame-video { position: relative; cursor: pointer; }
+.gallery-frame-video img { object-fit: cover; border-radius: 7px; }
+.gallery-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: rgba(20,19,15,0.78); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; padding-left: 4px; pointer-events: none; box-shadow: 0 4px 14px rgba(0,0,0,0.3); transition: transform 0.15s ease; }
+.gallery-frame-video:hover .gallery-play { transform: translate(-50%, -50%) scale(1.08); }
 .gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line-2); cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--ink-2); font-family: inherit; box-shadow: 0 2px 8px rgba(20,19,15,0.08); transition: all 0.15s ease; }
 .gallery-arrow:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 .gallery-arrow:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
@@ -301,6 +305,7 @@ select:focus { outline: none; border-color: var(--ink); }
 .lightbox { position: fixed; inset: 0; background: rgba(20,19,15,0.85); display: none; align-items: center; justify-content: center; padding: 40px; z-index: 200; cursor: zoom-out; }
 .lightbox.open { display: flex; }
 .lightbox img { max-width: calc(100% - 120px); max-height: 100%; width: auto; height: auto; border-radius: 6px; box-shadow: 0 24px 64px rgba(0,0,0,0.4); background: var(--bg); padding: 24px; }
+.lightbox iframe { width: min(1100px, calc(100% - 120px)); aspect-ratio: 16 / 9; max-height: 100%; border: 0; border-radius: 8px; box-shadow: 0 24px 64px rgba(0,0,0,0.4); background: #000; }
 .lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: rgba(255,255,255,0.8); font-size: 28px; cursor: pointer; line-height: 1; padding: 4px 10px; z-index: 2; }
 .lightbox-close:hover { color: #fff; }
 .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); font-size: 30px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: all 0.15s ease; z-index: 2; backdrop-filter: blur(8px); }
@@ -364,6 +369,14 @@ select:focus { outline: none; border-color: var(--ink); }
     <div class="gallery-wrap">
       <button class="gallery-arrow gallery-arrow-prev" type="button" onclick="galleryScroll(-1)" aria-label="Previous">‹</button>
       <div class="gallery-track" id="gallery-track">
+        <a class="gallery-frame gallery-frame-video" href="https://www.loom.com/embed/cff9383995204a2690745ec05ddbf5bf" onclick="openLightbox(this.href, '');return false" title="End to End Accruals Processing using the Numeric MCP">
+          <img src="https://cdn.loom.com/sessions/thumbnails/cff9383995204a2690745ec05ddbf5bf-4721fb30789479ab.gif" alt="End to End Accruals Processing using the Numeric MCP" loading="lazy" />
+          <span class="gallery-play" aria-hidden="true">▶</span>
+        </a>
+        <a class="gallery-frame gallery-frame-video" href="https://www.loom.com/embed/fde92f5fa7e34c1eae249a78b181bfd3" onclick="openLightbox(this.href, '');return false" title="Creating Journal Entries via the Numeric MCP">
+          <img src="https://cdn.loom.com/sessions/thumbnails/fde92f5fa7e34c1eae249a78b181bfd3-8a39b1319ed43e7d.gif" alt="Creating Journal Entries via the Numeric MCP" loading="lazy" />
+          <span class="gallery-play" aria-hidden="true">▶</span>
+        </a>
         <a class="gallery-frame" href="assets/mcp-overview.png" onclick="openLightbox(this.href, '');return false">
           <img src="assets/mcp-overview.png" alt="" loading="lazy" />
         </a>
@@ -435,6 +448,7 @@ select:focus { outline: none; border-color: var(--ink); }
   <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
   <button class="lightbox-nav lightbox-prev" id="lightbox-prev" type="button" onclick="event.stopPropagation();lightboxStep(-1)" aria-label="Previous">‹</button>
   <img id="lightbox-img" src="" alt="" />
+  <iframe id="lightbox-frame" src="" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="Video"></iframe>
   <button class="lightbox-nav lightbox-next" id="lightbox-next" type="button" onclick="event.stopPropagation();lightboxStep(1)" aria-label="Next">›</button>
 </div>
 
@@ -1051,7 +1065,16 @@ function getLightboxItems() {
 function showLightbox(idx) {
   if (idx < 0 || idx >= lightboxItems.length) return;
   lightboxIndex = idx;
-  document.getElementById('lightbox-img').src = lightboxItems[idx];
+  const src = lightboxItems[idx];
+  const img = document.getElementById('lightbox-img');
+  const frame = document.getElementById('lightbox-frame');
+  if (src.includes('loom.com/embed')) {
+    img.style.display = 'none'; img.src = '';
+    frame.src = src; frame.style.display = 'block';
+  } else {
+    frame.style.display = 'none'; frame.src = '';   // unload video so audio stops
+    img.src = src; img.style.display = 'block';
+  }
   updateLightboxNav();
 }
 function updateLightboxNav() {
@@ -1070,7 +1093,11 @@ function openLightbox(src, alt) {
 function lightboxStep(dir) {
   showLightbox(lightboxIndex + dir);
 }
-function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  const frame = document.getElementById('lightbox-frame');
+  if (frame) frame.src = '';   // stop playback on close
+}
 
 function galleryScroll(dir) {
   const track = document.getElementById('gallery-track');
