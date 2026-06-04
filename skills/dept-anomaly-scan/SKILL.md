@@ -140,8 +140,14 @@ account names or codes that don't fit the patterns above, use judgment.
 
 ## Step 4: Drill into transaction lines
 
-For each flagged row, use `query_transaction_lines` to pull the underlying entries.
-This is where you confirm root causes. Look for:
+Drill **only** into rows that were flagged anomalous at the aggregate level in Step 3
+(and that cleared the materiality gate). The anomaly was already detected from the
+Department × Account pivot — the drill gathers **evidence for the reclass JE, not
+computation**. Never run `query_transaction_lines` to "scan" for anomalies across
+unflagged rows; that defeats the funnel and burns context.
+
+For each flagged row, use `query_transaction_lines` to pull a small sample of the
+underlying entries. This is where you confirm root causes. Look for:
 
 - **Transaction type**: `Journal` entries (manual reclasses) vs. `VendBill` (vendor
   bills) vs. `CardChrg` (credit card charges from Ramp/Brex/etc.)
@@ -155,8 +161,11 @@ This is where you confirm root causes. Look for:
 - **Stale transactions**: credit card charges with transaction dates months before
   the posting date indicate late-syncing expenses
 
-Prioritize drilling into the largest-dollar anomalies first. Use `limit` on the
-query to keep responses manageable (start with 50 lines).
+Prioritize drilling into the largest-dollar anomalies first. Always pass `limit` on
+the query and keep it small — 5–10 lines is enough to confirm the root cause and cite
+evidence in the JE memo. You're sampling for proof, not enumerating the population.
+If 5–10 lines don't explain the flagged amount, the anomaly likely spans many small
+transactions (a default-department problem) — note that rather than pulling more lines.
 
 ## Step 5: Generate the NetSuite CSV reclass
 

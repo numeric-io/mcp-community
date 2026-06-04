@@ -85,7 +85,7 @@ Group eligible tasks by reviewer. Within each reviewer's list, sort by **risk-fi
 For each reviewer's task list, pull context in **batches of max 3** simultaneous calls (not all at once):
 
 For each task:
-- `query_transaction_lines` — top 5 transactions by amount for the associated account/entity. **QBO/Sage/Xero workspaces don't expose transaction lines — skip this and route with task + flux context only.** Transaction detail is enrichment, not core, which keeps the skill QBO-safe.
+- `query_transaction_lines` with **`limit: 5`** — top 5 transactions by amount for the associated account/entity. Evidence for the reviewer, not computation — never pull more than 5 lines per task. **QBO/Sage/Xero workspaces don't expose transaction lines — skip this and route with task + flux context only.** Transaction detail is enrichment, not core, which keeps the skill QBO-safe.
 - `get_flux_explanations` — flux commentary for this account in the current period if available
 
 **Access control gate for transaction detail**: before including transaction lines in the message, check whether the account name suggests sensitive data. Sensitive patterns include: payroll, compensation, salary, bonus, legal, litigation, exec, officer, board, M&A, acquisition, equity.

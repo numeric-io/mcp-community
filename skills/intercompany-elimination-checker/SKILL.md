@@ -27,7 +27,7 @@ before any JE is generated.
 **0a. Load tool schemas upfront** (Claude Code: batch them in one `ToolSearch` call. Other agents — Gemini CLI, Codex — expose tools directly, so skip to 0b.)
 
 Load tools:
-`list_workspaces, set_workspace, get_workspace_context, list_financial_accounts, query_transaction_lines, list_tasks, get_task_comments, add_task_comment, edit_task, create_task`
+`list_workspaces, set_workspace, get_workspace_context, list_financial_accounts, list_reports, get_report_data, query_transaction_lines, list_tasks, get_task_comments, add_task_comment, edit_task, create_task`
 
 **0b. Workspace setup**
 
@@ -80,14 +80,20 @@ Present the list — **saved accounts pre-checked, newly-detected ones flagged �
 
 ---
 
-## Step 2: Pull IC transaction lines — batched max 3 per account
+## Step 2: Balances first, lines only for mismatches (the query funnel)
 
-For each confirmed IC account, query across entities. Process **at most 3 entities in parallel at one time**. For a workspace with N entities, this means `ceil(N/3)` batches per account.
+**2a. Aggregate pass — no transactions yet.** Pull the IC account **balances per entity** from report data (a balance sheet report keyed by org × account, or a counterparty-pivoted report if one exists). One aggregate call replaces N×M transaction pulls.
 
-Build the unified IC transaction ledger:
+**2b. Pair the balances.** Entity A's "due from B" balance vs Entity B's "due to A" balance, at the aggregate level:
+- **Pair ties at aggregate** → balanced. Generate the elimination JE from the balances — **no transaction drill needed at all.**
+- **Pair doesn't tie** → mismatch. Only these descend to line level.
+
+**2c. Drill mismatched pairs only.** For each mismatched pair, call `query_transaction_lines` on the relevant IC account rows (batched **max 3 in parallel**, narrowest window) to diagnose the difference. Build the ledger only for these:
 ```
 entity | account_type | amount | memo | transaction_date | reference_number | transaction_id
 ```
+
+In a typical close most pairs tie — meaning most periods never touch transaction lines at all.
 
 **Note on currency**: if the workspace has entities in multiple currencies, flag: "⚠️ Multi-currency workspace detected. Transaction amounts are shown in local currency. IC comparisons require functional currency conversion — this skill does not perform FX translation. Review amounts carefully or normalize to functional currency before using this output."
 

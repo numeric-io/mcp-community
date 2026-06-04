@@ -89,6 +89,8 @@ For every drillable row from Step 3:
 
 **Empty results:** Some accounts may have zero transactions in the window. That's normal — just skip them (no placeholder rows needed).
 
+**Containment.** Every GL line behind the report IS the product here, so this pull is intentionally complete — do not sample or truncate it. Contain it instead: when a `query_transaction_lines` response is large the harness saves it to a tool-result file on disk; parse that file with a script (or in a subagent) and append the tagged rows to the flat collection — do not read or echo the raw TSV into the conversation context, only the parsed counts and progress. Keep each query as narrow as the requirement allows: query one account at a time with the Step 4 date window (default single-month), never wider than the report period actually in scope.
+
 ### Step 6: Build the Excel Workbook
 
 Read the xlsx skill for Excel best practices (formatting, recalc).

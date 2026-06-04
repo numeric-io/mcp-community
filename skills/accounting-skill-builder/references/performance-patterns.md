@@ -51,6 +51,24 @@ Subagents return small structured JSON, never tool-result content. Specifically:
 
 TSV/JSON parsing, pivot reasoning, classification, aggregation — push to `scripts/`. Inline parsing of large MCP responses burns context per task. The skill prompt orchestrates; scripts compute.
 
+## The query funnel: aggregate → narrow → drill
+
+Never start at transaction level. Every question starts at the most aggregated view that can answer or eliminate, and only survivors descend:
+
+```
+statement totals  →  pivoted report rows  →  one row's transaction lines
+   (~1K tokens)        (~10K)                  (drill ONLY survivors)
+```
+
+The rules of the funnel:
+
+1. **Aggregates bound their detail.** If an account's total variance is below threshold, no transaction inside it can matter — skip the entire branch without looking. Apply materiality at the aggregate level, before any drill.
+2. **Pivot to the dimension of the question.** A vendor question wants a counterparty-pivoted report (one row per vendor, monthly columns) — not transactions grouped client-side. The pivot IS the group-by, done server-side. Same for departments, entities, classes.
+3. **Ask comparisons, not extractions.** `build_report` supports month-over-month natively. "What changed?" is one comparison call with a variance column, never two full pulls diffed in context.
+4. **Drill for evidence, not computation.** By the time you reach transaction lines, every number is already computed at the aggregate level. The drill grabs 3–5 example lines (`limit: 5`, narrowest window, top-N rows only) so a human sees *why* — 5 examples explain a variance as well as 500.
+5. **Reuse prior conclusions.** Flux explanations, task comments, and persisted preference blocks contain last cycle's answers. A 1KB prior narrative beats a 100KB re-derivation.
+6. **Name the irreducible cases.** FIFO aging and audit evidence genuinely need full populations. For those, contain instead: parse via scripts/subagents so the bulk never enters model context, and keep the window as narrow as the requirement allows.
+
 ## Apply a materiality gate before drilling
 
 Filter the candidate list before fan-out. Surface in-scope vs. out-of-scope counts and let the user override. Tier-based defaults:

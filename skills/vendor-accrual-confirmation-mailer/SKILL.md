@@ -29,7 +29,7 @@ Numeric task for an auditable record. Prevents duplicate sends using task commen
 **0a. Load tool schemas upfront** (Claude Code: batch them in one `ToolSearch` call. Other agents — Gemini CLI, Codex — expose tools directly, so skip to 0b.)
 
 Load tools:
-`list_workspaces, set_workspace, get_workspace_context, list_tasks, get_task_comments, add_task_comment, edit_task, query_transaction_lines`
+`list_workspaces, set_workspace, get_workspace_context, list_reports, get_report_data, list_tasks, get_task_comments, add_task_comment, edit_task, query_transaction_lines`
 
 **Email connector (agent-agnostic):** check for a Gmail/email tool (names like `gmail`, `send_email`, `draft_email`, `search`, or similar). Email is core to this skill — but if no email tool is available, the skill still drafts every confirmation email and saves them to a file (`vendor_confirmations_[period].md`) for the user to send manually. It never sends silently or fails without an artifact.
 
@@ -88,13 +88,20 @@ For each task, call `get_task_comments`. If a comment containing `📧 Vendor co
 
 ---
 
-## Step 3: Extract vendor candidates from transaction history
+## Step 3: Extract vendor candidates — report-first, not transaction-first
 
-For each confirmed task, call `query_transaction_lines` for the current open period. Identify vendors with:
-- $0 activity in the current period AND
-- Transactions in the most recently completed period
+**Do not pull raw transactions to enumerate vendors.** Use the query funnel:
 
-For each candidate vendor, the **estimated amount** is the most recent completed month's spend.
+**3a. Find a vendor-pivoted expense report.** From `list_reports`, find an income-statement report pivoted by counterparty/vendor (common names: "Expenses by Vendor", "Monthly Expense Report by Vendor"). If none exists, ask the user to point to one or create one in Numeric — vendor-level data is not available any other way (`query_transaction_lines` drills a single report row; it cannot enumerate vendors).
+
+**3b. Read per-vendor monthly spend from the report.** Call `get_report_data` for the current period. The counterparty grouping rows give each vendor's monthly columns directly:
+```
+DocuSign   … prior: 11,955   current: 19,128
+Ashby      … prior:  9,213   current:      0   ← candidate
+```
+Candidates = vendors with **prior-month spend > 0 AND current month = 0**. The **estimated amount** is the prior-month column value. All of this comes from one report call — no transaction pull.
+
+**3c. Drill only flagged candidates, only for evidence.** For each confirmed candidate (after the user approves in the review below), optionally call `query_transaction_lines` on that vendor's row key with `limit: 5` to grab memo/date detail for the email and workpaper. Evidence, not computation — the amounts were already computed in 3b.
 
 **Apply saved preferences from Step 1.5 before showing anything to the user:**
 - **Drop `excluded_vendors`** from the candidate list entirely — don't re-surface vendors the user already ruled out. List them under "Auto-excluded (your prior decision)" in the review so the user can un-exclude if needed.

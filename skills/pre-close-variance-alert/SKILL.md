@@ -126,7 +126,7 @@ An acknowledged entry whose scope was a *prior* period has expired — treat tha
 
 **QBO/Sage/Xero workspaces:** these don't expose transaction-level data in Numeric — skip this step entirely. The variance flagging from report data (Step 4) is the deliverable; the alert simply omits the per-transaction context. (This is why the skill is QBO-safe: transaction detail is enrichment, not core.)
 
-**NetSuite (transaction-level) workspaces:** for the **top 5 flagged accounts** (not 10 — to respect max-3 cap), call `query_transaction_lines` in **two batches of max 3** (first 3, then next 2) to stay within the connector rate limit. For each account, return the top 5 transactions by amount.
+**NetSuite (transaction-level) workspaces:** for the **top 5 flagged accounts** (not 10 — to respect max-3 cap), call `query_transaction_lines` with **`limit: 5`** in **two batches of max 3** (first 3, then next 2). This drill is for *evidence, not computation* — the variances were already computed from report data in Step 4; these 5 lines exist so the reader sees what's behind the number.
 
 If a batch call fails, note "Transaction detail unavailable" for that account rather than halting the scan.
 

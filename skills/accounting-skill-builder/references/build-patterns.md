@@ -86,6 +86,7 @@ Triggered always — every deliverable has a one-page how-to.
 While writing the deliverable, every applicable item from `references/performance-patterns.md` is wired in:
 
 - [ ] Cold-start cache scaffolding (if Numeric-touching)
+- [ ] **Query funnel respected** — no transaction-level pull before an aggregate has bounded it (aggregate → pivoted rows → drill survivors only, with `limit`). Pivot to the question's dimension server-side; drill for evidence, not computation.
 - [ ] Materiality gate parameterized
 - [ ] Subagent contract followed if fan-out is used
 - [ ] Confirm-scope `AskUserQuestion` before expensive pulls

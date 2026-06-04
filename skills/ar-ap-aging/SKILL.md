@@ -78,6 +78,8 @@ First call: 12-month window ending at the as-of date.
 
 Save merged, deduped rows to a TSV in the working directory. **Include the `normal_amount` column** (see Sign convention below).
 
+**Containment.** This pull is intentionally complete — FIFO matching needs the full transaction population for the account, so do not sample or truncate it. Contain it instead: when an MCP response is large the harness saves it to a tool-result file on disk; parse that file with a script (or in a subagent) and pass only the deduped TSV path forward to `build.py` — do not read or echo the raw TSV rows into the conversation context. Keep the window as narrow as the requirement allows (the in-scope account, the 12-month lookback) and use the chunked month-end queries above so each response stays bounded.
+
 ### Sign convention
 
 The script reads `normal_amount`, not `net_amount`. `normal_amount` is oriented to the account's natural direction — positive means balance increases, negative means balance decreases:

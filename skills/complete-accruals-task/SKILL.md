@@ -27,7 +27,7 @@ The task name or description is: $ARGUMENTS
 
 **0a. ToolSearch — batch upfront**
 Before any API calls, load all tool schemas needed in a single ToolSearch call:
-`list_workspaces, set_workspace, get_workspace_context, list_tasks, list_financial_accounts, query_transaction_lines, submit_task, add_task_comment, edit_task`
+`list_workspaces, set_workspace, get_workspace_context, list_tasks, list_financial_accounts, list_reports, get_report_data, query_transaction_lines, submit_task, add_task_comment, edit_task`
 
 **0b. Workspace check**
 Check memory for `workspace_id`. If found, call `set_workspace` directly; do NOT call `list_workspaces`.
@@ -74,7 +74,7 @@ Present to the user in a single message:
 - The matched task name and description (confirm it's the right one)
 - If the workspace has more than one entity and the task description doesn't specify one: ask which entity to scope to
 
-Wait for the user to confirm the task and entity before proceeding. Do NOT fire `query_transaction_lines` yet — wait until the task and entity are confirmed to avoid wasted API calls on a mismatch.
+Wait for the user to confirm the task and entity before proceeding. Do NOT pull any spend data yet (neither `get_report_data` nor `query_transaction_lines`) — wait until the task and entity are confirmed to avoid wasted API calls on a mismatch.
 
 ---
 
@@ -137,9 +137,25 @@ Also identify the **Accrued Expenses** liability account (typically code 2300 or
 
 ---
 
-## Step 4: Pull transaction lines and build spend matrix
+## Step 4: Build the vendor spend matrix (report-first — the query funnel)
 
-Now that the task, entity, and account are confirmed, issue a **single** `query_transaction_lines` call covering the full 7-month window — the 6 completed months plus the open period:
+Follow the **query funnel**: never start at transaction level. Per-vendor monthly totals — exactly the trigger inputs ($0 open period + spend in prior months) and the rolling-average estimation basis — are available far cheaper from a counterparty-pivoted expense report (one row per vendor, monthly columns) than from a multi-month transaction pull. Pivot to the dimension of the question server-side. Transaction lines stay reserved for evidence on confirmed candidates (step 5.7), not for computing the matrix.
+
+Now that the task, entity, and account are confirmed, build the spend matrix.
+
+**4a. PREFERRED — pull a vendor-pivoted expense report**
+
+Call `list_reports` and look for a counterparty/vendor-pivoted expense report (names like "Expenses by Vendor", "Monthly Expense Report by Vendor", "Vendor Spend by Month"). These return **one row per vendor with a column per month** (e.g. "DocuSign … Feb: 11,955 Mar: 19,128") — covering the full 7-month window (6 completed months + the open period) in a **single** call.
+
+If a suitable report exists, call `get_report_data` for it, scoped to the confirmed entity and the 7-month window (the 6 completed months before the open period through the open period). One call replaces months of transaction pulls. Map each vendor row's monthly columns directly into the `vendor_spend_matrix.json` structure below — the trigger logic and the rolling-average estimation methods read straight off these columns. No transaction-level data is needed at this stage.
+
+If multiple candidate reports exist, pick the one whose columns are monthly and whose rows are the vendor/counterparty for the target expense account; if ambiguous, ask the user which report to use.
+
+**4b. FALLBACK — transaction lines (the expensive path)**
+
+Only if `list_reports` surfaces no vendor-pivoted expense report, fall back to pulling transaction lines. Note to the user that this is the expensive path, and suggest they create a vendor-pivoted expense report in Numeric (rows = vendor/counterparty, columns = month, scoped to this expense account) so future runs can use the cheap single-call path in 4a.
+
+Issue a **single** `query_transaction_lines` call covering the full 7-month window — the 6 completed months plus the open period:
 - `key`: `{"id": "<account_external_id>", "type": "path"}`
 - `window_start`: first day of the oldest completed month (6 months before the open period)
 - `window_end`: last day of the open period
@@ -154,7 +170,9 @@ python3 <skill_path>/scripts/parse_txn_lines.py <tool_results_file> <working_dir
 
 The script handles the JSON-wrapped TSV format, filters by entity, groups by counterparty × posting month, and outputs a clean JSON matrix. The script can also be used when the result fits in context — it is faster than inline parsing and avoids re-deriving the column names and date parsing logic.
 
-The output `vendor_spend_matrix.json` has this structure:
+**4c. Matrix structure**
+
+Whichever path produced it, `vendor_spend_matrix.json` has this structure:
 ```json
 {
   "vendors": { "Vendor Name": { "YYYY-MM": amount, ... }, ... },
@@ -196,6 +214,21 @@ The script applies the default triggers from step 0.5, identifies candidates and
 **If no candidates**: Tell the user "No accrual candidates identified for this period." Ask whether to submit with a $0 accrual note or investigate further.
 
 Wait for the user's response. Only proceed with the vendors the user explicitly confirms. Apply any method or amount overrides they request — these will be saved to the task description in step 9.
+
+---
+
+## Step 5.7: Drill transaction lines for confirmed candidates (evidence only)
+
+This is the **only** place transaction lines are pulled when the matrix came from a report (step 4a). The amounts were already computed at the aggregate level — this drill is for **workpaper evidence**, not computation.
+
+For the handful of vendors the user confirmed (and only those), pull a small sample of transaction lines to capture memo/date detail for the workpaper:
+- `key`: `{"id": "<account_external_id>", "type": "path"}`, scoped to the confirmed entity
+- Filter to the confirmed vendor/counterparty and the most recent non-zero month
+- Set `limit` small (e.g. `5`) — these are illustrative supporting lines, not a full population
+
+Use the returned memo/date detail to enrich the JE memo and the workpaper detail sheet. Do NOT re-derive any vendor's accrual amount from this sample — the proposed amounts already come from the matrix.
+
+If the matrix came from the fallback transaction pull (step 4b), you already have line-level detail in hand and can skip this extra drill.
 
 ---
 

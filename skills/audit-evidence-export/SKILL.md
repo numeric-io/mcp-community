@@ -73,6 +73,8 @@ happens, read the saved file path from the API response and parse the full file 
 (e.g., `csv.reader` with tab delimiter). Always verify the parsed row count matches the
 expected total from the API response metadata.
 
+**Containment.** Completeness is the deliverable for audit evidence, so this pull is intentionally complete — do not sample or truncate it. But contain the volume: parse the result file with the script (or in a subagent) and carry forward only the structured rows the pipeline needs — do not read or echo the raw TSV content into the conversation context. Keep the window as narrow as the requirement allows by scoping every `list_tasks` call to the single in-scope `period_id`. The same discipline applies to the event and comment pulls downstream — parse from disk, return computed/structured results, never the raw payloads.
+
 Also extract the user ID → name mapping from the workspace context (`users` array) so
 event user IDs can be resolved to human-readable names. Save this as a JSON dict
 (`{user_id: display_name}`) for use throughout the pipeline.
