@@ -87,6 +87,7 @@ Present the list — **saved accounts pre-checked, newly-detected ones flagged �
 **2b. Pair the balances.** Entity A's "due from B" balance vs Entity B's "due to A" balance, at the aggregate level:
 - **Pair ties at aggregate** → balanced. Generate the elimination JE from the balances — **no transaction drill needed at all.**
 - **Pair doesn't tie** → mismatch. Only these descend to line level.
+- **Account can't be paired at aggregate** (one generic IC account serving multiple counterparties, and no counterparty-pivoted report available) → treat it like a mismatch: drill its lines and let Step 3's counterparty inference attribute them.
 
 **2c. Drill mismatched pairs only.** For each mismatched pair, call `query_transaction_lines` on the relevant IC account rows (batched **max 3 in parallel**, narrowest window) to diagnose the difference. Build the ledger only for these:
 ```
