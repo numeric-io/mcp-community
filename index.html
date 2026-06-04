@@ -852,22 +852,22 @@ const PROVIDERS = [
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
     steps: ctx => ctx.kind === 'toolkit'
       ? ['<strong>Claude Code:</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download needed.',
-         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong> — Claude unpacks and places them for you. (Manual alternative: Settings → Capabilities → Skills.)']
-      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong> — Claude unzips it and puts it in the right place.',
+         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong>. (Manual alternative: Settings → Capabilities → Skills.)']
+      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong>.',
          '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.']
   },
   {
     id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install these skills"</strong> — it unpacks them into <code>.agents/skills/</code> for you.',
+      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install these skills"</strong>.',
          '<strong>Manual:</strong> unzip and put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — or run <code>python3 tools/sync_skills.py --user</code>.']
-      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong> — it unzips it into <code>.agents/skills/</code> for you.',
+      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong>.',
          '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects).']
   },
   {
     id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skills</strong> — it unpacks them into <code>~/.agents/skills/</code> for you.',
+      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skills</strong>.',
          '<strong>Manual:</strong> unzip into <code>~/.agents/skills/</code>, or run <code>python3 tools/sync_skills.py --user</code>.']
       : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skill</strong>. (Or install from the repo: <code>gemini skills install &lt;git-url&gt;</code>, with <code>--scope workspace</code> to limit to this project.)',
          '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).']
@@ -875,7 +875,7 @@ const PROVIDERS = [
   {
     id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
     steps: ctx =>
-      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your agent\'s chat, and say "install this skill"</strong> — agentic tools unzip and place it for you.',
+      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your agent\'s chat, and say "install this skill"</strong>.',
        '<strong>Manual:</strong> unzip and place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads.']
   },
 ];
