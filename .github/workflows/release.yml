@@ -18,30 +18,22 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Materialize .agents/skills (cross-tool discovery path)
-        run: |
-          cd $GITHUB_WORKSPACE
-          # skills/ is canonical (Claude reads it via the plugin). Codex, Gemini,
-          # Cursor, VS Code, and ~30 other standard-compliant agents read
-          # .agents/skills/ instead — and Gemini doesn't follow symlinks, so we
-          # ship real copies in the bundle. See tools/sync_skills.py.
-          python3 tools/sync_skills.py
-
       - name: Build toolkit .zip and per-skill .zip bundles
         run: |
           cd $GITHUB_WORKSPACE
 
-          # Build the full toolkit bundle (whole repo) as a .zip.
-          # Exclude *.zip so it never recurses into itself or the dist bundles.
-          zip -r numeric-mcp-toolkit.zip . \
-            -x "*.git*" \
-            -x "*.DS_Store" \
-            -x ".github/*" \
-            -x "dist/*" \
-            -x "*.zip" \
-            -x "*.plugin" \
-            -x "*.skill"
+          # Build the toolkit as a Claude plugin bundle — NOT a repo dump.
+          # Structure: numeric-mcp-toolkit/.claude-plugin/plugin.json + skills/
+          # (+ tools/sync_skills.py for the Codex/Gemini manual path, README, LICENSE).
+          # Website files (index.html, assets/), docs/, and CI config stay out.
+          STAGE="$RUNNER_TEMP/toolkit-stage"
+          rm -rf "$STAGE" && mkdir -p "$STAGE/numeric-mcp-toolkit"
+          cp -R .claude-plugin skills tools README.md LICENSE "$STAGE/numeric-mcp-toolkit/"
+          find "$STAGE" -name ".DS_Store" -delete
+          find "$STAGE" -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+          ( cd "$STAGE" && zip -rq "$GITHUB_WORKSPACE/numeric-mcp-toolkit.zip" numeric-mcp-toolkit )
           echo "Built: $(du -sh numeric-mcp-toolkit.zip)"
+          unzip -l numeric-mcp-toolkit.zip | head -12
 
           # Build one .zip per skill directory.
           # IMPORTANT: cd into skills/ and zip by the bare folder name so the
