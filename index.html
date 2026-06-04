@@ -171,10 +171,10 @@ select:focus { outline: none; border-color: var(--ink); }
 .prov-tag { font-size: 10.5px; color: var(--ink-3); }
 .prov-panel { border: 1px solid var(--line); border-radius: 10px; background: #FBF9F4; padding: 16px 18px; }
 .prov-panel-title { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 12px; }
-.prov-steps { margin: 0; padding: 0; list-style: none; counter-reset: prov; }
-.prov-steps li { position: relative; padding: 0 0 14px 30px; font-size: 13px; line-height: 1.5; color: var(--ink-2); counter-increment: prov; }
-.prov-steps li:last-child { padding-bottom: 0; }
-.prov-steps li::before { content: counter(prov); position: absolute; left: 0; top: -1px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.prov-steps { margin: 0; padding: 0; }
+.prov-alt { font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.prov-or { display: flex; align-items: center; gap: 10px; margin: 12px 0; color: var(--ink-3); font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.prov-or::before, .prov-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .prov-steps code { font-family: "SF Mono", Menlo, monospace; font-size: 11.5px; background: rgba(20,19,15,0.06); color: var(--ink); padding: 1px 5px; border-radius: 3px; }
 .prov-steps a { color: var(--accent-deep); font-weight: 500; }
 .prov-note { display: flex; gap: 8px; align-items: baseline; margin-top: 16px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 12px; color: var(--ink-2); line-height: 1.45; }
@@ -537,7 +537,7 @@ select:focus { outline: none; border-color: var(--ink); }
         <div class="prov-list" id="prov-list"></div>
         <div class="prov-panel">
           <p class="prov-panel-title" id="prov-panel-title"></p>
-          <ol class="prov-steps" id="prov-steps"></ol>
+          <div class="prov-steps" id="prov-steps"></div>
         </div>
       </div>
       <div class="prov-note">
@@ -851,39 +851,32 @@ const PROVIDERS = [
   {
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
     steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Claude Code (easiest):</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download.',
-         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong> — Claude unpacks and places them for you. (Manual alternative: Settings → Capabilities → Skills.)',
-         'Skills activate automatically when you ask.']
+      ? ['<strong>Claude Code:</strong> run <code>/plugin marketplace add numeric-io/mcp-community</code>, then <code>/plugin install numeric-mcp-toolkit</code> — no download needed.',
+         '<strong>Cowork / Desktop / Claude.ai:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong> — Claude unpacks and places them for you. (Manual alternative: Settings → Capabilities → Skills.)']
       : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong> — Claude unzips it and puts it in the right place.',
-         '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.',
-         'It activates the next time you ask for what it does.']
+         '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.']
   },
   {
     id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
     steps: ctx => ctx.kind === 'toolkit'
       ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install these skills"</strong> — it unpacks them into <code>.agents/skills/</code> for you.',
-         '<strong>Manual:</strong> unzip and put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — or run <code>python3 tools/sync_skills.py --user</code>.',
-         'Codex discovers them automatically — it scans <code>.agents/skills/</code>.']
+         '<strong>Manual:</strong> unzip and put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — or run <code>python3 tools/sync_skills.py --user</code>.']
       : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong> — it unzips it into <code>.agents/skills/</code> for you.',
-         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects).',
-         'Codex discovers it automatically.']
+         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects).']
   },
   {
     id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
     steps: ctx => ctx.kind === 'toolkit'
       ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skills</strong> — it unpacks them into <code>~/.agents/skills/</code> for you.',
-         '<strong>Manual:</strong> unzip into <code>~/.agents/skills/</code>, or run <code>python3 tools/sync_skills.py --user</code>.',
-         'Gemini discovers them automatically.']
+         '<strong>Manual:</strong> unzip into <code>~/.agents/skills/</code>, or run <code>python3 tools/sync_skills.py --user</code>.']
       : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skill</strong>. (Or install from the repo: <code>gemini skills install &lt;git-url&gt;</code>, with <code>--scope workspace</code> to limit to this project.)',
-         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).',
-         'Gemini discovers it automatically.']
+         '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).']
   },
   {
     id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
     steps: ctx =>
       ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your agent\'s chat, and say "install this skill"</strong> — agentic tools unzip and place it for you.',
-       '<strong>Manual:</strong> unzip and place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads.',
-       'Your assistant discovers it automatically.']
+       '<strong>Manual:</strong> unzip and place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads.']
   },
 ];
 
@@ -910,7 +903,7 @@ function renderProviders() {
     </button>`).join('');
   const p = PROVIDERS.find(x => x.id === provSelected) || PROVIDERS[0];
   document.getElementById('prov-panel-title').textContent = `Install in ${p.name}`;
-  document.getElementById('prov-steps').innerHTML = p.steps(dlContext).map(s => `<li>${s}</li>`).join('');
+  document.getElementById('prov-steps').innerHTML = p.steps(dlContext).map(s => `<div class="prov-alt">${s}</div>`).join('<div class="prov-or">or</div>');
   const dl = document.getElementById('prov-download');
   dl.style.setProperty('--dl-color', p.color);
   dl.textContent = `⬇ Download for ${p.btn}`;
