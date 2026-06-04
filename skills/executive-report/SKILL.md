@@ -10,7 +10,10 @@ description: >
   statement", "collapse the report", "summarize the financials for the board", "roll up the P&L",
   "high-level income statement", "presentation-ready financials", "investor report",
   "management report", or any request for a polished, condensed financial output rather than
-  a detailed close management view.
+  a detailed close management view. This skill produces the formatted STATEMENT — the numbers
+  artifact. If the user wants the written narrative memo drafted and distributed (Drive doc,
+  controller approval, calendar invite to leadership), that is stakeholder-deck-drafter;
+  this skill's output is what gets attached to that package.
 ---
 
 # Executive Report

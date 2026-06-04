@@ -634,8 +634,8 @@ const SKILLS = [
   // Reporting & Analysis
   { name: "executive-report", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
     title: "Executive Report — Board-Ready Statements",
-    desc: "Takes your Numeric report and produces a polished, presentation-ready financial statement — collapsing child account detail into executive summary groups, rolling up flux commentary into one-line narratives, and applying professional formatting. Output as a styled Excel workbook or PDF. Built for CFO decks, board packages, and investor reporting.",
-    asks: ["Build the board report", "CFO-ready income statement", "Collapse the P&L into summary groups"] },
+    desc: "Takes your Numeric report and produces the statements themselves — a polished, presentation-ready financial statement with child accounts collapsed into executive summary groups, flux commentary rolled into one-line annotations, and professional formatting. Output: a styled Excel workbook or PDF. This is the numbers artifact for CFO decks, board packages, and investor reporting — for the written narrative memo and the send (doc, approvals, review meeting), pair it with Stakeholder Deck Drafter.",
+    asks: ["Format the financials for the board", "CFO-ready income statement", "Collapse the P&L into summary groups"] },
   { name: "financial-metrics", qbo: true, type: "Insights", category: "Reporting & Analysis", roles: ["Controller", "CFO", "FP&A Analyst"],
     title: "Financial Metrics — Ratios & Analytics Inline",
     desc: "Standard financial ratios computed directly onto your Numeric report. Covers profitability, liquidity, solvency, and working capital metrics — placed inline on both income statements and balance sheets. Useful for covenant reporting, investor updates, and management analysis.",
@@ -705,9 +705,9 @@ const SKILLS = [
 
   // Reporting & Analysis (new)
   { name: "stakeholder-deck-drafter", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
-    title: "Stakeholder Deck Drafter — Board & CFO Summary",
-    desc: "Pulls your headline metrics and flux commentary straight from Numeric and drafts the first cut of the board/CFO package — revenue, opex, and headcount narratives written from Numeric report data and your preparers' flux notes. Builds it as a restricted-access doc and, only after you review and approve, shares it and schedules the review. Every Numeric flux note is surfaced for approval before it reaches a board-facing document.",
-    asks: ["Draft the board package", "Build the CFO close summary", "Create the monthly reporting deck"] },
+    title: "Stakeholder Deck Drafter — Board Narrative & Distribution",
+    desc: "Writes the story around the numbers and runs the send. Pulls headline metrics and flux commentary from Numeric and drafts the prose sections of the board/CFO package — revenue, opex, and headcount narratives from your preparers' flux notes — then builds a restricted-access doc, waits for your review and approval, shares it, and schedules the review meeting. This is the narrative memo and distribution workflow; for the formatted statements themselves, run Executive Report and attach its output.",
+    asks: ["Draft the board narrative", "Write the close summary and schedule the review", "Turn our flux notes into the board memo"] },
 
 ];
 

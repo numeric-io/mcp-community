@@ -11,6 +11,9 @@ description: >
   monthly report for CFO, management reporting package, investor update draft, close
   summary for leadership, executive close report, board reporting, monthly reporting
   package, or any request to create a post-close summary document for leadership.
+  This skill writes the NARRATIVE and runs review + distribution. If the user wants the
+  formatted financial statement itself (collapsed summary groups, styled Excel/PDF),
+  that is executive-report — whose output belongs inside the package this skill builds.
 ---
 
 # Stakeholder Deck Drafter
@@ -129,6 +132,8 @@ Note in the document: "Close health data reflects task state as of document crea
 ---
 
 ## Step 6: Create Google Drive document — with restricted access
+
+**Statements attachment:** before assembling, offer: "Want the formatted financial statements attached? I can run `executive-report` to generate the board-ready statement (styled Excel/PDF) and link it in the doc as the financials section." This skill writes the narrative; `executive-report` produces the statements — together they make the full package.
 
 Assemble the document content. Create via Google Drive MCP with:
 - **Sharing: restricted** — controller-only access at creation
