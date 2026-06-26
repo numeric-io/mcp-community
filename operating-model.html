@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The shift to AI-enabled work — an explainer</title>
+<style>
+:root{
+  --bg:#F7F4EE; --surface:#FFFFFF; --ink:#14130F; --ink2:#46443E; --ink3:#8A857A;
+  --line:#E6E1D6; --line2:#D8D2C3;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --accent:#6B5BD3; --accent-deep:#4F3FB8;
+  --blue:#4B6E8E; --teal:#2C5F5D; --amber:#C99449; --purple:#6B5BD3; --coral:#BC5B4D; --green:#6B8E5A; --gray:#8A857A;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,system-ui,"Inter","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.6;}
+em{font-style:italic}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.col{max-width:660px;margin:0 auto}
+
+.kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0}
+
+/* hero */
+.hero{padding:17vh 0 11vh;position:relative}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 30% 0%,rgba(107,91,211,.07),transparent 70%);pointer-events:none}
+.hero .kicker{margin-bottom:26px}
+.headline{font-family:var(--serif);font-weight:600;font-size:clamp(40px,6vw,78px);line-height:1.0;letter-spacing:-.02em;margin:0 0 30px;max-width:18ch}
+.deck{font-size:clamp(19px,2.1vw,25px);line-height:1.5;color:var(--ink2);max-width:50ch;margin:0 0 36px;font-weight:400}
+.byline{font-size:13px;letter-spacing:.03em;color:var(--ink3);border-top:1px solid var(--line);padding-top:16px;max-width:46ch}
+.byline b{color:var(--ink2);font-weight:600}
+.scrollcue{margin-top:46px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);display:flex;align-items:center;gap:12px}
+.scrollcue .ln{width:1px;height:36px;background:linear-gradient(var(--ink3),transparent)}
+
+/* narrative prose */
+.prose p{font-size:19.5px;line-height:1.78;color:var(--ink);margin:0 0 1.25em}
+.lede{padding:24px 0 40px}
+.lede p:first-of-type::first-letter{font-family:var(--serif);float:left;font-size:5.1em;line-height:.74;padding:.02em .12em 0 0;color:var(--ink);font-weight:600}
+
+/* chapters */
+.chapter-head{padding:128px 0 14px}
+.chapter-kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 22px;display:flex;align-items:center;gap:16px}
+.chapter-kicker::after{content:"";flex:1;height:1px;background:var(--line)}
+.chapter-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.02em;margin:0 0 24px;color:var(--ink)}
+.chapter-intro{font-size:20px;line-height:1.72;color:var(--ink2);margin:0}
+
+/* pull quote */
+.pullwrap{padding:54px 0}
+.pull{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,38px);line-height:1.22;letter-spacing:-.01em;color:var(--ink);margin:0;border-left:3px solid var(--accent);padding:6px 0 6px 30px}
+.pull cite{display:block;font-style:normal;font-family:-apple-system,system-ui,sans-serif;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-top:20px;font-weight:600}
+
+/* scrollytelling */
+.scrolly{position:relative;display:grid;grid-template-columns:minmax(280px,340px) 1fr;gap:64px;align-items:start}
+/* the graphic is held back, then fades + slides in once you scroll into the section */
+.graphic{position:sticky;top:4vh;align-self:start;opacity:1;transform:none;transition:opacity .7s ease,transform .7s ease}
+.scrolly:not(.engaged) .graphic{opacity:0;transform:translateX(24px);pointer-events:none}
+.graphic svg{width:100%;height:auto;max-height:92vh;display:block}
+.steps{padding:6vh 0 18vh}
+.step{min-height:74vh;display:flex;flex-direction:column;justify-content:center;opacity:.32;transition:opacity .4s ease}
+.step:last-child{min-height:58vh}
+.step.active{opacity:1}
+.step .accent{display:inline-block;width:30px;height:3px;border-radius:3px;margin-bottom:20px}
+.step .num{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 14px}
+.step h3{font-family:var(--serif);font-size:clamp(24px,2.8vw,33px);font-weight:600;letter-spacing:-.015em;line-height:1.12;margin:0 0 14px;color:var(--ink)}
+.step p{font-size:17.5px;line-height:1.72;color:var(--ink2);margin:0;max-width:42ch}
+
+/* svg primitives */
+svg text{font-family:-apple-system,system-ui,Inter,Arial,sans-serif;fill:var(--ink3)}
+.th,.t{font-size:14px;font-weight:500;fill:var(--ink)}
+.ts{font-size:12px;font-weight:400;fill:var(--ink3)}
+rect.box{fill:#FFFFFF;stroke:#E6E1D6}
+.arr{fill:none;stroke:#A8A294;stroke-width:1.5}
+g.c-blue rect{fill:rgba(75,110,142,.10);stroke:rgba(75,110,142,.55)} g.c-blue .th,g.c-blue .t{fill:#2f4a63} g.c-blue .ts{fill:#4B6E8E}
+g.c-teal rect{fill:rgba(44,95,93,.16);stroke:#2C5F5D} g.c-teal .th,g.c-teal .t{fill:#2C5F5D} g.c-teal .ts{fill:#4a7d79}
+g.c-amber rect,g.c-amber polygon{fill:rgba(201,148,73,.16);stroke:rgba(201,148,73,.7)} g.c-amber .th,g.c-amber .t{fill:#7a5825} g.c-amber .ts{fill:#9c6f2e}
+g.c-purple rect{fill:rgba(107,91,211,.10);stroke:rgba(107,91,211,.5)} g.c-purple .th,g.c-purple .t{fill:#4F3FB8} g.c-purple .ts{fill:#6B5BD3}
+g.c-coral rect{fill:rgba(188,91,77,.12);stroke:rgba(188,91,77,.55)} g.c-coral .th,g.c-coral .t{fill:#8a3d31} g.c-coral .ts{fill:#BC5B4D}
+g.c-green rect{fill:rgba(107,142,90,.13);stroke:rgba(107,142,90,.55)} g.c-green .th,g.c-green .t{fill:#45603a} g.c-green .ts{fill:#5a7a49}
+g.c-gray rect{fill:#FFFFFF;stroke:var(--line2)} g.c-gray .th,g.c-gray .t{fill:var(--ink)} g.c-gray .ts{fill:var(--ink3)}
+.layer{opacity:0;transform:translateY(12px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.layer.show{opacity:1;transform:none}
+
+
+/* coda */
+.coda{padding:130px 0 30px}
+.coda .kicker{margin-bottom:22px}
+.coda h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,3.6vw,42px);line-height:1.08;letter-spacing:-.02em;margin:0 0 24px}
+.coda .prose p:last-child::after{content:" \25AA";color:var(--accent)}
+.divider{height:1px;background:var(--line)}
+footer{padding:40px 0 80px;color:var(--ink3);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* SHARED SITE NAV */
+.site-nav{position:sticky;top:0;z-index:50;background:rgba(247,244,238,.88);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+.site-nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:56px;display:flex;align-items:center;gap:28px}
+.site-nav-brand{display:flex;align-items:center;color:var(--ink);text-decoration:none}
+.site-nav-brand svg{height:18px;width:auto;display:block}
+.site-nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.site-nav-links a{font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 13px;border-radius:7px;transition:all .12s;white-space:nowrap}
+.site-nav-links a:hover{color:var(--ink);background:rgba(20,19,15,.05)}
+.site-nav-links a.active{color:var(--accent-deep);background:rgba(107,91,211,.12)}
+@media (max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px}}
+
+@media (max-width:860px){
+  .scrolly{grid-template-columns:1fr;gap:0}
+  .graphic{order:-1;top:8px;background:var(--bg);padding:8px 0}
+  .graphic svg{max-height:46vh}
+  .steps{padding:4vh 0 16vh}
+  .step{min-height:58vh}
+  .chapter-head{padding:84px 0 10px}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="index.html" aria-label="Numeric">
+      <svg viewBox="0 0 695 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M661.75 34C667.77 34 673.113 35.0267 677.78 37.08C682.447 39.1333 686.18 42.0033 688.98 45.69C691.827 49.3767 693.623 53.6467 694.37 58.5L677.01 62.21C676.077 57.87 674.327 54.5333 671.76 52.2C669.24 49.82 665.903 48.63 661.75 48.63C658.11 48.63 654.937 49.6333 652.23 51.64C649.57 53.6 647.517 56.47 646.07 60.25C644.623 63.9833 643.9 68.4867 643.9 73.76C643.9 78.8467 644.623 83.28 646.07 87.06C647.563 90.84 649.663 93.7567 652.37 95.81C655.077 97.8633 658.227 98.89 661.82 98.89C665.833 98.89 669.147 97.8167 671.76 95.67C674.373 93.4767 676.077 90.28 676.87 86.08H694.79C693.763 94.76 690.427 101.503 684.78 106.31C679.133 111.117 671.48 113.52 661.82 113.52C654.4 113.52 647.913 111.887 642.36 108.62C636.807 105.353 632.513 100.733 629.48 94.76C626.493 88.74 625 81.74 625 73.76C625 65.78 626.493 58.8033 629.48 52.83C632.513 46.81 636.807 42.1667 642.36 38.9C647.913 35.6333 654.377 34 661.75 34Z"/>
+        <path d="M595.64 35.4H613.63V112.12H595.64V35.4ZM614.33 6V23.29H594.66V6H614.33Z"/>
+        <path d="M543 35.4001H560.01V51.1501H560.78C562.367 44.8967 564.607 40.5801 567.5 38.2001C570.393 35.7734 574.057 34.5601 578.49 34.5601H585.56V51.8501H576.53C571.163 51.8501 567.22 53.7401 564.7 57.5201C562.227 61.2534 560.99 67.1101 560.99 75.0901V112.12H543V35.4001Z"/>
+        <path d="M498.75 113.52C491.423 113.52 484.983 111.91 479.43 108.69C473.877 105.423 469.583 100.803 466.55 94.83C463.517 88.8567 462 81.88 462 73.9C462 66.0133 463.517 59.06 466.55 53.04C469.63 47.02 473.947 42.3533 479.5 39.04C485.053 35.68 491.447 34 498.68 34C505.213 34 511.023 35.3767 516.11 38.13C521.197 40.8833 525.21 45.1533 528.15 50.94C531.137 56.68 532.63 63.8667 532.63 72.5C532.63 74.2733 532.56 76.07 532.42 77.89H480.9C481.227 82.3233 482.183 86.1733 483.77 89.44C485.403 92.66 487.503 95.1333 490.07 96.86C492.637 98.54 495.53 99.38 498.75 99.38C502.857 99.38 506.217 98.4233 508.83 96.51C511.49 94.55 513.333 91.75 514.36 88.11H532.63C531.977 92.5433 530.18 96.72 527.24 100.64C524.3 104.513 520.38 107.64 515.48 110.02C510.58 112.353 505.003 113.52 498.75 113.52ZM514.36 65.57C514.127 59.9233 512.633 55.5133 509.88 52.34C507.173 49.12 503.463 47.51 498.75 47.51C494.177 47.51 490.373 48.9567 487.34 51.85C484.307 54.7433 482.3 59.3167 481.32 65.57H514.36Z"/>
+        <path d="M427.581 34C432.201 34 436.284 35.1433 439.831 37.43C443.424 39.67 446.224 42.9367 448.231 47.23C450.237 51.4767 451.241 56.4933 451.241 62.28V112.12H433.321V65.78C433.321 60.6467 432.294 56.6567 430.241 53.81C428.234 50.9633 425.387 49.54 421.701 49.54C416.661 49.54 412.741 51.5467 409.941 55.56C407.141 59.5267 405.741 65.0567 405.741 72.15V112.12H387.751V65.78C387.751 60.6933 386.677 56.7267 384.531 53.88C382.431 50.9867 379.561 49.54 375.921 49.54C370.974 49.54 367.147 51.57 364.441 55.63C361.734 59.6433 360.381 65.1733 360.381 72.22V112.12H342.391V35.4H360.381V49.75H361.151C363.017 45.0367 365.724 41.2333 369.271 38.34C372.864 35.4467 377.391 34 382.851 34C386.351 34 389.501 34.6767 392.301 36.03C395.101 37.3833 397.387 39.25 399.161 41.63C400.981 43.9633 402.217 46.67 402.871 49.75H403.501C405.694 45.0367 408.891 41.2333 413.091 38.34C417.337 35.4467 422.167 34 427.581 34Z"/>
+        <path d="M281.99 84.7911C281.99 94.5304 287.657 99.7911 296.389 99.7911C305.121 99.7911 310.788 94.5304 310.788 84.7911L311.178 35.3999H329.168L328.778 81.7091C328.778 101.838 317.942 113.5 296.389 113.5C274.837 113.5 264 100.958 264 82.8291L264.39 35.3999H282.38L281.99 84.7911Z"/>
+        <path d="M165.1 9.71021H188.41L230.97 83.2102H231.74V9.71021H250.99V112.47H227.82L185.19 39.0402H184.35V112.47H165.1V9.71021Z"/>
+        <path d="M20.4216 15.0541C31.3069 24.7897 45.3987 30.1722 60.0028 30.1722C74.6069 30.1722 88.6987 24.7897 99.584 15.0541C88.6801 5.3568 74.5953 0 60.0028 0C45.4102 0 31.3255 5.35679 20.4216 15.0541Z"/>
+        <path d="M30.1737 60.0004C30.1737 74.6038 24.7909 88.6949 15.0548 99.5796C5.35707 88.6762 0 74.5922 0 60.0004C0 45.4086 5.35707 31.3246 15.0548 20.4212C24.7909 31.3059 30.1737 45.397 30.1737 60.0004Z"/>
+        <path d="M120 60.0004C120 74.6038 114.617 88.6949 104.881 99.5796C95.1834 88.6762 89.8263 74.5922 89.8263 60.0004C89.8263 45.4086 95.1834 31.3246 104.881 20.4212C114.617 31.3059 120 45.397 120 60.0004Z"/>
+        <path d="M60.0028 120C45.3987 120 31.3069 114.618 20.4216 104.882C31.3255 95.1846 45.4102 89.8278 60.0028 89.8278C74.5953 89.8278 88.6801 95.1846 99.584 104.882C88.6987 114.618 74.6069 120 60.0028 120Z"/>
+      </svg>
+    </a>
+    <div class="site-nav-links">
+      <a href="index.html">Library</a>
+      <a href="operating-model.html" class="active">The new way of working</a>
+      <a href="cost-calculator.html">What it costs</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="hero">
+    <h1 class="headline">The shift to AI-enabled work</h1>
+    <p class="deck">For generations the monthly close has been done by hand, late into the night. Artificial intelligence is starting to change that. It isn&rsquo;t taking the job; it&rsquo;s taking the keystrokes.</p>
+    <div class="scrollcue"><span class="ln"></span> Scroll to begin</div>
+  </header>
+
+  <div class="col prose lede">
+    <p>Every month, in accounting teams around the world, the same ritual repeats. Accounts are pulled and tied out. Variances are explained. Journals are booked, reconciliations cleared, sign-offs chased down the hall and across time zones. For most of accounting&rsquo;s history there was only one way to do it: by hand, by people, often well past midnight.</p>
+    <p>That arrangement is changing, and the shift is subtler than the headlines suggest: a redistribution of <em>which part</em> of the work belongs to whom. The repetitive work shifts to the machine, freeing accountants to spend their day on the work only they can do: the analysis, the calls, the decisions.</p>
+  </div>
+</div>
+
+<!-- CHAPTER ONE -->
+<div class="wrap">
+  <div class="col chapter-head">
+    <p class="chapter-kicker">Chapter one</p>
+    <h2 class="chapter-title">The anatomy of a task</h2>
+    <p class="chapter-intro">Look closely at a single close task and you can watch the change unfolding. Traditionally, one person owns it from the first keystroke to the final sign-off. Now the work is beginning to split between person and machine. Following one task through, step by step, shows what each side takes on &mdash; and where the accountant&rsquo;s role gets harder to replace, not easier.</p>
+  </div>
+
+  <section class="scrolly" id="sec-flow">
+    <div class="steps">
+      <div class="step" data-step="1">
+        <span class="accent" style="background:var(--blue)"></span>
+        <p class="num">01 — Memory</p>
+        <h3>It no longer starts from scratch</h3>
+        <p>Done by hand, a close begins cold — the method living in someone’s head, or a folder of last month’s files. Numeric moves the starting line: it holds the tasks and requirements, but also a memory of how each was handled before, so the work can compound instead of resetting every month.</p>
+      </div>
+      <div class="step" data-step="2">
+        <span class="accent" style="background:var(--purple)"></span>
+        <p class="num">02 — The trigger</p>
+        <h3>The work can start itself</h3>
+        <p>Here the work breaks from tradition. A task doesn’t have to wait for a person to begin it: someone can kick one off by running a skill, or an agent can start it on a schedule, before anyone is at their desk.</p>
+      </div>
+      <div class="step" data-step="3">
+        <span class="accent" style="background:var(--amber)"></span>
+        <p class="num">03 — Human in the loop</p>
+        <h3>It keeps a human in the loop</h3>
+        <p>Routine work runs straight through — the AI prepares it and no one waits. But the moments that call for judgment are handed back to a person on purpose: the material variance, the one-off accrual, the final sign-off. The human stays in the loop exactly where their experience matters most — and stays out of the busywork everywhere else.</p>
+      </div>
+      <div class="step" data-step="4">
+        <span class="accent" style="background:var(--blue)"></span>
+        <p class="num">04 — Accountability</p>
+        <h3>The accountability stays with the team</h3>
+        <p>The labor is moving to the machine; the responsibility isn&rsquo;t. A named person still owns each result and answers for it to the auditor, the CFO, the board. AI changes who does the work, not who signs their name to it.</p>
+      </div>
+      <div class="step" data-step="5">
+        <span class="accent" style="background:var(--green)"></span>
+        <p class="num">05 — The output</p>
+        <h3>The output shows its work</h3>
+        <p>What comes out isn&rsquo;t just a final number — it carries the whole trail. Every step is laid out: the supporting documents it pulled, the calculation under each figure. A reviewer isn&rsquo;t handed a black box to take on faith; they can follow exactly how the work was built, line by line.</p>
+      </div>
+    </div>
+
+    <div class="graphic"><svg viewBox="0 0 680 768" role="img" aria-label="Task flow from trigger through review, anchored on Numeric">
+        <defs>
+          <marker id="arA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- step 1: numeric rail -->
+        <g class="layer" data-step="1">
+          <g class="c-blue">
+            <rect x="520" y="40" width="120" height="680" rx="6" stroke-width="0.5"/>
+            <text class="th" x="580" y="74" text-anchor="middle" dominant-baseline="central">Numeric</text>
+            <text class="ts" x="580" y="92" text-anchor="middle" dominant-baseline="central">Source of truth</text>
+          </g>
+        </g>
+
+        <!-- step 2: triggers + task opens + read -->
+        <g class="layer" data-step="2">
+          <g class="c-purple">
+            <rect x="85" y="70" width="150" height="48" rx="5" stroke-width="0.5"/>
+            <text class="th" x="160" y="87" text-anchor="middle" dominant-baseline="central">Manual trigger</text>
+            <text class="ts" x="160" y="105" text-anchor="middle" dominant-baseline="central">You run a skill</text>
+          </g>
+          <g class="c-teal">
+            <rect x="275" y="70" width="150" height="48" rx="5" stroke-width="0.5"/>
+            <text class="th" x="350" y="87" text-anchor="middle" dominant-baseline="central">Agent trigger</text>
+            <text class="ts" x="350" y="105" text-anchor="middle" dominant-baseline="central">An agent fires</text>
+          </g>
+          <path class="arr" d="M160 118 L160 132 L225 132 L225 149" marker-end="url(#arA)"/>
+          <path class="arr" d="M350 118 L350 132 L285 132 L285 149" marker-end="url(#arA)"/>
+          <rect class="box" x="185" y="150" width="140" height="48" rx="5"/>
+          <text class="th" x="255" y="168" text-anchor="middle" dominant-baseline="central">Task opens</text>
+          <text class="ts" x="255" y="186" text-anchor="middle" dominant-baseline="central">In Numeric</text>
+          <path fill="none" stroke="#4B6E8E" stroke-width="1.5" marker-end="url(#arA)" d="M520 176 L327 176"/>
+          <g class="c-blue"><text class="ts" x="423" y="166" text-anchor="middle" dominant-baseline="central">Requirements</text></g>
+          <g class="c-blue">
+            <text class="ts" x="580" y="118" text-anchor="middle" dominant-baseline="central">Tasks</text>
+            <text class="ts" x="580" y="176" text-anchor="middle" dominant-baseline="central">Requirements</text>
+          </g>
+        </g>
+
+        <!-- step 3: the two tracks -->
+        <g class="layer" data-step="3">
+          <path class="arr" d="M225 198 L160 231" marker-end="url(#arA)"/>
+          <path class="arr" d="M285 198 L350 231" marker-end="url(#arA)"/>
+          <text class="ts" x="135" y="214" text-anchor="middle">Async</text>
+          <text class="ts" x="375" y="214" text-anchor="middle">Checkpoint</text>
+          <rect class="box" x="55" y="232" width="160" height="48" rx="5"/>
+          <text class="th" x="135" y="250" text-anchor="middle" dominant-baseline="central">Claude prepares</text>
+          <text class="ts" x="135" y="268" text-anchor="middle" dominant-baseline="central">Runs the skill</text>
+          <rect class="box" x="295" y="232" width="160" height="48" rx="5"/>
+          <text class="th" x="375" y="250" text-anchor="middle" dominant-baseline="central">Claude starts</text>
+          <text class="ts" x="375" y="268" text-anchor="middle" dominant-baseline="central">Initial prep run</text>
+          <line class="arr" x1="375" y1="280" x2="375" y2="294" marker-end="url(#arA)"/>
+          <g class="c-amber">
+            <rect x="345" y="308" width="60" height="60" rx="4" transform="rotate(45 375 338)" stroke-width="0.5"/>
+            <text class="th" x="375" y="331" text-anchor="middle" dominant-baseline="central">Preparer</text>
+            <text class="th" x="375" y="345" text-anchor="middle" dominant-baseline="central">input</text>
+          </g>
+          <g class="c-amber">
+            <text class="ts" x="325" y="331" text-anchor="end" dominant-baseline="central">Claude waits</text>
+            <text class="ts" x="325" y="347" text-anchor="end" dominant-baseline="central">For preparer</text>
+          </g>
+          <line class="arr" x1="375" y1="382" x2="375" y2="396" marker-end="url(#arA)"/>
+          <rect class="box" x="293" y="398" width="164" height="48" rx="5"/>
+          <text class="th" x="375" y="416" text-anchor="middle" dominant-baseline="central">Claude continues</text>
+          <text class="ts" x="375" y="434" text-anchor="middle" dominant-baseline="central">Resumes work</text>
+        </g>
+
+        <!-- step 4: preparer review + writeback -->
+        <g class="layer" data-step="4">
+          <path class="arr" d="M135 280 L135 464 L210 464 L210 479" marker-end="url(#arA)"/>
+          <path class="arr" d="M375 446 L375 464 L300 464 L300 479" marker-end="url(#arA)"/>
+          <rect class="box" x="160" y="480" width="190" height="50" rx="5"/>
+          <text class="th" x="255" y="498" text-anchor="middle" dominant-baseline="central">Preparer reviews</text>
+          <text class="ts" x="255" y="516" text-anchor="middle" dominant-baseline="central">Submits + records</text>
+          <path fill="none" stroke="#4B6E8E" stroke-width="1.5" marker-end="url(#arA)" d="M350 489 L518 489"/>
+          <g class="c-blue"><text class="ts" x="436" y="479" text-anchor="middle" dominant-baseline="central">Workpapers + memory</text></g>
+          <g class="c-blue">
+            <text class="ts" x="580" y="470" text-anchor="middle" dominant-baseline="central">Workpapers</text>
+            <text class="th" x="580" y="500" text-anchor="middle" dominant-baseline="central">memory</text>
+            <text class="ts" x="580" y="518" text-anchor="middle" dominant-baseline="central">· Treatments</text>
+            <text class="ts" x="580" y="536" text-anchor="middle" dominant-baseline="central">· Preferences</text>
+            <text class="ts" x="580" y="554" text-anchor="middle" dominant-baseline="central">· Changes</text>
+            <text class="ts" x="580" y="572" text-anchor="middle" dominant-baseline="central">· History</text>
+          </g>
+        </g>
+
+        <!-- step 5: reviewer + outcomes + legend -->
+        <g class="layer" data-step="5">
+          <line class="arr" x1="255" y1="530" x2="255" y2="566" marker-end="url(#arA)"/>
+          <rect class="box" x="165" y="566" width="180" height="54" rx="5"/>
+          <text class="th" x="255" y="586" text-anchor="middle" dominant-baseline="central">Reviewer reviews</text>
+          <text class="ts" x="255" y="604" text-anchor="middle" dominant-baseline="central">AI work + edit trail</text>
+          <path fill="none" stroke="#4B6E8E" stroke-width="1.5" marker-end="url(#arA)" d="M345 606 L518 606"/>
+          <g class="c-blue"><text class="ts" x="432" y="596" text-anchor="middle" dominant-baseline="central">Sign-offs</text></g>
+          <g class="c-blue"><text class="ts" x="580" y="606" text-anchor="middle" dominant-baseline="central">Sign-offs</text></g>
+          <path class="arr" d="M255 620 L255 636 L195 636 L195 652" marker-end="url(#arA)"/>
+          <path class="arr" d="M255 620 L255 636 L375 636 L375 652" marker-end="url(#arA)"/>
+          <g class="c-green">
+            <rect x="120" y="652" width="150" height="50" rx="5" stroke-width="0.5"/>
+            <text class="th" x="195" y="671" text-anchor="middle" dominant-baseline="central">Approved</text>
+            <text class="ts" x="195" y="688" text-anchor="middle" dominant-baseline="central">Sign-off logged</text>
+          </g>
+          <g class="c-coral">
+            <rect x="300" y="652" width="150" height="50" rx="5" stroke-width="0.5"/>
+            <text class="th" x="375" y="671" text-anchor="middle" dominant-baseline="central">Returned</text>
+            <text class="ts" x="375" y="688" text-anchor="middle" dominant-baseline="central">Notes attached</text>
+          </g>
+          <g class="c-coral"><text class="ts" x="285" y="722" text-anchor="middle">↺ Back to the preparer · feeds AI refinement</text></g>
+        </g>
+      </svg></div>
+  </section>
+
+  <div class="col pullwrap">
+    <blockquote class="pull">The keystrokes leave. The judgment stays.</blockquote>
+  </div>
+</div>
+
+<!-- CHAPTER TWO -->
+<div class="wrap">
+  <div class="col chapter-head">
+    <p class="chapter-kicker">Chapter two</p>
+    <h2 class="chapter-title">The infrastructure underneath</h2>
+    <p class="chapter-intro">Putting AI to work means thinking about a few new pieces of infrastructure &mdash; the scaffolding that skills and agents stand on. None of it has to be perfect on day one. Teams start simple, then tune and extend the setup close after close.</p>
+  </div>
+
+  <section class="scrolly" id="sec-arch">
+    <div class="steps">
+      <div class="step" data-step="1">
+        <span class="accent" style="background:var(--gray)"></span>
+        <p class="num">01 — The foundation</p>
+        <h3>New pieces to put in place</h3>
+        <p>A real close runs on infrastructure — scheduling, configuration, monitoring, and the connectors (MCPs) that reach your tools and data. These are new pieces most teams haven&rsquo;t had to think about before. They don&rsquo;t all arrive at once: you lay the foundation first, then build on it as you go.</p>
+      </div>
+      <div class="step" data-step="2">
+        <span class="accent" style="background:var(--purple)"></span>
+        <p class="num">02 — The automation</p>
+        <h3>On demand, or in the background</h3>
+        <p>The same workflow can run two ways, depending on the risk it carries. Lower-risk, routine work can run as an agent in the background — preparing the month-end overnight, staged and ready for you the moment you sit down. Higher-stakes work you run yourself as a skill, in the moment, with a closer hand on the wheel.</p>
+      </div>
+      <div class="step" data-step="3">
+        <span class="accent" style="background:var(--coral)"></span>
+        <p class="num">03 — Operating it</p>
+        <h3>Managed as shared infrastructure</h3>
+        <p>As automation spreads across the team, new questions follow: how to centralize the skills everyone depends on, how to version-control changes so improvements are tracked and shared, how to run the work in a distributed way across people and entities. The focus moves toward operating the automation as shared infrastructure — not a scatter of one-off scripts.</p>
+      </div>
+      <div class="step" data-step="4">
+        <span class="accent" style="background:var(--amber)"></span>
+        <p class="num">04 — The loop</p>
+        <h3>It improves every close</h3>
+        <p>The setup you start with isn&rsquo;t the setup you keep. Every edit a person makes and every error the monitor catches flows back as signal, and the skills sharpen with each close.</p>
+      </div>
+    </div>
+
+    <div class="graphic"><svg viewBox="0 0 680 600" role="img" aria-label="Skills and agents operating model on shared infrastructure">
+<defs>
+<marker id="arB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<g class="layer" data-step="1">
+<g class="c-gray">
+<rect x="40" y="28" width="600" height="112" rx="6" stroke-width="0.5"/>
+<text class="th" x="60" y="52" dominant-baseline="central">Shared infrastructure</text>
+<text class="ts" x="60" y="70" dominant-baseline="central">The shared layer every skill and agent runs on</text>
+</g>
+<rect class="box" x="52" y="84" width="106" height="44" rx="5"/>
+<text class="th" x="105" y="106" text-anchor="middle" dominant-baseline="central">Scheduler</text>
+<rect class="box" x="169" y="84" width="106" height="44" rx="5"/>
+<text class="th" x="222" y="106" text-anchor="middle" dominant-baseline="central">Monitoring</text>
+<rect class="box" x="286" y="84" width="106" height="44" rx="5"/>
+<text class="th" x="339" y="106" text-anchor="middle" dominant-baseline="central" font-size="12.5">Centralization</text>
+<rect class="box" x="403" y="84" width="106" height="44" rx="5"/>
+<text class="th" x="456" y="106" text-anchor="middle" dominant-baseline="central">Context</text>
+<rect class="box" x="520" y="84" width="106" height="44" rx="5"/>
+<text class="th" x="573" y="106" text-anchor="middle" dominant-baseline="central">File access</text>
+</g>
+
+<g class="layer" data-step="2">
+<g class="c-purple">
+<rect x="40" y="290" width="290" height="196" rx="6" stroke-width="0.5"/>
+<text class="th" x="60" y="314" dominant-baseline="central">Skills</text>
+<text class="ts" x="60" y="332" dominant-baseline="central">You run them on demand</text>
+</g>
+<rect class="box" x="60" y="352" width="250" height="52" rx="5"/>
+<text class="th" x="185" y="372" text-anchor="middle" dominant-baseline="central">Build a skill</text>
+<text class="ts" x="185" y="390" text-anchor="middle" dominant-baseline="central">Write, test, ship</text>
+<line class="arr" x1="185" y1="406" x2="185" y2="420" marker-end="url(#arB)"/>
+<rect class="box" x="60" y="422" width="250" height="52" rx="5"/>
+<text class="th" x="185" y="442" text-anchor="middle" dominant-baseline="central">Skill library</text>
+<text class="ts" x="185" y="460" text-anchor="middle" dominant-baseline="central">Saved and versioned</text>
+<g class="c-teal">
+<rect x="350" y="290" width="290" height="196" rx="6" stroke-width="0.5"/>
+<text class="th" x="370" y="314" dominant-baseline="central">Agents</text>
+<text class="ts" x="370" y="332" dominant-baseline="central">They run in the background</text>
+</g>
+<rect class="box" x="370" y="352" width="250" height="52" rx="5"/>
+<text class="th" x="495" y="372" text-anchor="middle" dominant-baseline="central">Set up an agent</text>
+<text class="ts" x="495" y="390" text-anchor="middle" dominant-baseline="central">Define and schedule</text>
+<line class="arr" x1="495" y1="406" x2="495" y2="420" marker-end="url(#arB)"/>
+<rect class="box" x="370" y="422" width="250" height="52" rx="5"/>
+<text class="th" x="495" y="442" text-anchor="middle" dominant-baseline="central">Agent registry</text>
+<text class="ts" x="495" y="460" text-anchor="middle" dominant-baseline="central">Always running</text>
+</g>
+
+<g class="layer" data-step="3">
+<g class="c-coral">
+<rect x="40" y="190" width="600" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="60" y="210" dominant-baseline="central">Skill designer</text>
+<text class="ts" x="60" y="228" dominant-baseline="central">Designs, tests + maintains the skills and agents — the build role</text>
+</g>
+<line class="arr" x1="185" y1="242" x2="185" y2="288" marker-end="url(#arB)"/>
+<line class="arr" x1="495" y1="242" x2="495" y2="288" marker-end="url(#arB)"/>
+<line class="arr" x1="185" y1="486" x2="185" y2="530" marker-end="url(#arB)"/>
+<line class="arr" x1="495" y1="486" x2="495" y2="530" marker-end="url(#arB)"/>
+<g class="c-coral">
+<rect x="40" y="534" width="600" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="60" y="554" dominant-baseline="central">Executor</text>
+<text class="ts" x="60" y="572" dominant-baseline="central">Runs skills on tasks · oversees agents · owns the output — the run role</text>
+</g>
+</g>
+
+<g class="layer" data-step="4">
+<rect x="34" y="284" width="612" height="206" rx="9" fill="none" stroke="#C99449" stroke-width="1.6" stroke-dasharray="5 4"/>
+<rect x="248" y="272" width="184" height="25" rx="6" fill="#F6ECD6" stroke="#C99449" stroke-width="1"/>
+<text x="340" y="285" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#7a5825">&#8635; Improves every close</text>
+</g>
+</svg></div>
+  </section>
+
+  <div class="col pullwrap">
+    <blockquote class="pull">Start simple. Sharpen it every close.</blockquote>
+  </div>
+</div>
+
+<!-- INTERLUDE: the catch -->
+<div class="wrap">
+  <div class="col chapter-head">
+    <p class="chapter-kicker">The catch</p>
+    <h2 class="chapter-title">Why it has to be earned</h2>
+  </div>
+  <div class="col prose">
+    <p>There&rsquo;s a reason none of this moves quickly. In most fields, AI that&rsquo;s right almost all the time is good enough. Accounting isn&rsquo;t most fields. A number that&rsquo;s only <em>almost</em> right isn&rsquo;t a small problem &mdash; it flows into the next reconciliation, the next statement, the audit. A cut-off booked a week early, a related-party entry coded to the wrong account, an impairment resting on a stale assumption: each can surface months later as a restatement. Quiet errors compound.</p>
+    <p>So the person&rsquo;s job was never to rubber-stamp the machine. It&rsquo;s to catch what the machine can&rsquo;t be trusted to see &mdash; the transaction that doesn&rsquo;t fit the pattern, the assumption that no longer holds, the call that turns on context the model never had. That is the work that earns the trust to let more run on its own.</p>
+  </div>
+</div>
+
+<!-- CHAPTER THREE -->
+<div class="wrap">
+  <div class="col chapter-head">
+    <p class="chapter-kicker">Chapter three</p>
+    <h2 class="chapter-title">How trust is earned</h2>
+    <p class="chapter-intro">Trust here isn&rsquo;t granted; it&rsquo;s earned &mdash; one workflow at a time, on evidence. The same loop runs every close, and it&rsquo;s what decides how much can safely run on its own.</p>
+  </div>
+
+  <section class="scrolly" id="sec-line">
+    <div class="steps">
+      <div class="step" data-step="1">
+        <span class="accent" style="background:var(--purple)"></span>
+        <p class="num">01 — Propose</p>
+        <h3>The machine proposes; it doesn’t decide</h3>
+        <p>AI does the work and puts forward a result, with the full trail attached — every figure, every source. Until a person signs off, it’s a proposal, not a posting. Nothing reaches the books on the model’s say-so.</p>
+      </div>
+      <div class="step" data-step="2">
+        <span class="accent" style="background:var(--amber)"></span>
+        <p class="num">02 — Correct</p>
+        <h3>People catch what the machine misses — and every fix is logged</h3>
+        <p>A reviewer corrects what’s off: the cut-off booked a week early, the related-party entry coded to the wrong account. Each correction is recorded against the workflow. Over time that record is two things at once — an audit trail, and a signal of where the machine is reliable and where it isn’t.</p>
+      </div>
+      <div class="step" data-step="3">
+        <span class="accent" style="background:var(--green)"></span>
+        <p class="num">03 — Earn</p>
+        <h3>The record decides what runs alone</h3>
+        <p>A workflow that runs clean across many closes earns more autonomy; one that keeps needing fixes keeps a person in the path. Trust isn’t a feeling or a launch date — it’s a track record. That’s why it widens slowly, and only where the evidence backs it.</p>
+      </div>
+    </div>
+
+    <div class="graphic"><svg viewBox="0 0 680 330" role="img" aria-label="The loop that earns trust: AI proposes, a person reviews and corrects with every fix logged, and the track record decides how much runs on its own">
+        <defs>
+          <marker id="arD" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- step 1: propose -->
+        <g class="layer" data-step="1">
+          <g class="c-purple">
+            <rect x="48" y="150" width="176" height="74" rx="6" stroke-width="0.5"/>
+            <text class="th" x="136" y="180" text-anchor="middle" dominant-baseline="central">AI proposes</text>
+            <text class="ts" x="136" y="200" text-anchor="middle" dominant-baseline="central">Result + full trail</text>
+          </g>
+        </g>
+
+        <!-- step 2: review + correct -->
+        <g class="layer" data-step="2">
+          <path class="arr" d="M226 187 L250 187" marker-end="url(#arD)"/>
+          <g class="c-amber">
+            <rect x="252" y="150" width="176" height="74" rx="6" stroke-width="0.5"/>
+            <text class="th" x="340" y="180" text-anchor="middle" dominant-baseline="central">Reviews &amp; corrects</text>
+            <text class="ts" x="340" y="200" text-anchor="middle" dominant-baseline="central">Every fix logged</text>
+          </g>
+        </g>
+
+        <!-- step 3: track record + feedback -->
+        <g class="layer" data-step="3">
+          <path class="arr" d="M430 187 L454 187" marker-end="url(#arD)"/>
+          <g class="c-teal">
+            <rect x="456" y="150" width="176" height="74" rx="6" stroke-width="0.5"/>
+            <text class="th" x="544" y="180" text-anchor="middle" dominant-baseline="central">Track record</text>
+            <text class="ts" x="544" y="200" text-anchor="middle" dominant-baseline="central">Error rate per workflow</text>
+          </g>
+          <path fill="none" stroke="#6B8E5A" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arD)" d="M544 224 L544 300 L136 300 L136 226"/>
+          <g class="c-green"><text class="ts" x="340" y="288" text-anchor="middle" dominant-baseline="central">A clean record earns more autonomy</text></g>
+        </g>
+      </svg></div>
+  </section>
+
+  <div class="col pullwrap">
+    <blockquote class="pull">Autonomy isn&rsquo;t a switch you flip. It&rsquo;s earned &mdash; one task at a time, only as fast as trust allows.</blockquote>
+  </div>
+</div>
+
+<!-- CODA -->
+<div class="wrap">
+  <div class="col"><div class="divider"></div></div>
+  <div class="col coda">
+    <p class="kicker">Coda</p>
+    <h2>What stays human</h2>
+    <div class="prose">
+      <p>The change is quieter than the headlines, and it&rsquo;s the routine work that goes. The work that can be specified, repeated, and checked moves to the machine. The work that can&rsquo;t &mdash; whether a number is right, whether a story holds, whether a balance can be trusted &mdash; is exactly the work that makes someone an accountant.</p>
+      <p>So the role doesn&rsquo;t shrink; it concentrates. Less time spent producing the numbers, more spent deciding what they mean and what to do about them &mdash; the judgment, the context, the call.</p>
+      <p>More moves to the machine as trust grows, and the interesting work is always whatever sits just beyond its reach &mdash; the judgment it hasn&rsquo;t earned yet. Which is to say: the judgment was always the job. The keystrokes were just in the way.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function wire(id){
+    var sec=document.getElementById(id); if(!sec) return;
+    var steps=[].slice.call(sec.querySelectorAll('.step'));
+    var layers=[].slice.call(sec.querySelectorAll('.layer'));
+    var maxN=0, engaged=false;
+    function set(n){
+      steps.forEach(function(s){s.classList.toggle('active',+s.dataset.step===n)});
+      maxN=Math.max(maxN,n);                                 // once revealed, stay revealed
+      layers.forEach(function(l){l.classList.toggle('show',+l.dataset.step<=maxN)});
+      sec.setAttribute('data-active', maxN);
+    }
+    set(1);   // baseline ready; graphic stays hidden until the section engages
+    var obs=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting) set(+e.target.dataset.step); });
+    },{rootMargin:'-30% 0px -60% 0px',threshold:0});
+    steps.forEach(function(s){obs.observe(s)});
+    // engage (slide the graphic in, text to the side) only once step 1 has scrolled near the top
+    var engObs=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting && !engaged){ engaged=true; sec.classList.add('engaged'); } });
+    },{rootMargin:'0px 0px -82% 0px',threshold:0});
+    if(steps[0]) engObs.observe(steps[0]);
+  }
+  ['sec-flow','sec-arch','sec-line'].forEach(wire);
+})();
+</script>
+</body>
+</html>

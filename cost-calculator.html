@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Calculator — Numeric Community Skills Library</title>
+<style>
+  :root{
+    color-scheme: light;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --bg:#F7F4EE; --surface:#FFFFFF; --ink:#14130F; --ink-2:#4B4944; --ink-3:#8A857A;
+    --line:#E6E1D6; --line-2:#D8D2C3;
+    --accent:#6B5BD3; --accent-deep:#4F3FB8; --accent-soft:#E4DEF7;
+    /* plan = accent purple, usage = report blue — both from the index brand palette */
+    --plan:#6B5BD3; --plan-soft:#E4DEF7; --plan-line:#D4CDF1;
+    --usage:#4B6E8E; --usage-soft:#E7EEF4; --usage-line:#CADCEA;
+    --total:#14130F;
+    --shadow:0 1px 2px rgba(20,19,15,0.04), 0 8px 24px rgba(20,19,15,0.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Arial,sans-serif;
+    font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:32px 32px 80px}
+
+  /* HERO — matches index hero treatment */
+  header.top{padding:8px 0 24px;border-bottom:1px solid var(--line);margin-bottom:28px}
+  .top-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:14px}
+  h1{font-family:var(--serif);font-size:44px;font-weight:600;letter-spacing:-0.02em;line-height:1.0;color:var(--ink);margin:0 0 14px}
+  h1 em{font-style:italic;font-weight:600;color:var(--accent)}
+  .sub{color:var(--ink-2);font-size:15px;max-width:none;line-height:1.5;margin:0}
+  .sub strong{color:var(--ink);font-weight:600}
+  .pill{display:inline-block;background:var(--surface);border:1px solid var(--line-2);border-radius:999px;
+    padding:5px 13px;font-size:12px;color:var(--ink-2);margin-top:16px}
+
+  .grid{display:grid;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .card .hd{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .card .hd h2{font-size:11px;margin:0;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3)}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .dot.plan{background:var(--plan)} .dot.usage{background:var(--usage)}
+  .card .bd{padding:20px}
+
+  .settings{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  .field label{display:block;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+  .field .hint{font-size:11px;color:var(--ink-3);font-weight:400;margin-top:6px;line-height:1.45}
+  input[type=number],input[type=text],select{width:100%;padding:10px 12px;border:1px solid var(--line-2);
+    border-radius:8px;font-size:14px;background:var(--surface);color:var(--ink);font-family:inherit;}
+  select{appearance:none;padding-right:34px;
+    background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A857A' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") right 12px center / 12px no-repeat;cursor:pointer}
+  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(107,91,211,.14)}
+  .switch{display:flex;align-items:center;gap:8px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);cursor:pointer;user-select:none}
+  .switch input{width:16px;height:16px;accent-color:var(--accent);margin:0}
+
+  .tablewrap{overflow:visible}
+  .cdrop{position:relative;width:100%}
+  .cdrop-btn{width:100%;height:38px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);color:var(--ink);font-size:13px;font-family:inherit;cursor:pointer;text-align:left}
+  .cdrop-btn span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cdrop-btn:hover{border-color:var(--ink-3)}
+  .cdrop.open .cdrop-btn{border-color:var(--accent);box-shadow:0 0 0 3px rgba(107,91,211,.14)}
+  .cdrop-arrow{color:var(--ink-3);font-size:9px;flex:none;transition:transform .15s}
+  .cdrop.open .cdrop-arrow{transform:rotate(180deg)}
+  .cdrop-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;box-shadow:var(--shadow);padding:4px;z-index:60;display:none}
+  .cdrop.open .cdrop-menu{display:block}
+  .cdrop-opt{display:block;width:100%;text-align:left;padding:8px 10px;border:none;background:none;border-radius:6px;font-size:13px;color:var(--ink);font-family:inherit;cursor:pointer;white-space:nowrap}
+  .cdrop-opt:hover{background:var(--accent-soft)}
+  .cdrop-opt.sel{color:var(--accent-deep);font-weight:600}
+  table{width:100%;border-collapse:collapse;min-width:0}
+  th{font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-3);text-align:left;
+    padding:0 12px 11px;font-weight:700;white-space:nowrap}
+  th:first-child{padding-left:0} th:last-child{padding-right:0}
+  th.num,td.num{text-align:right}
+  td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:middle}
+  td:first-child{padding-left:0} td:last-child{padding-right:0}
+  td input,td select{padding:8px 9px;font-size:13px}
+  td.num .calc{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+  .wf-name input{min-width:0;width:100%}
+  .tok input{width:100%;text-align:right;font-variant-numeric:tabular-nums}
+  .runs input{width:66px;text-align:right;margin-left:auto}
+  .mdl select{width:100%}
+  .delbtn{border:none;background:transparent;color:var(--ink-3);cursor:pointer;font-size:17px;line-height:1;padding:4px 7px;border-radius:6px}
+  .delbtn:hover{background:#F6E9E6;color:#BC5B4D}
+  .addbtn{margin-top:2px;display:inline-flex;align-items:center;border:1px dashed var(--line-2);background:var(--surface);color:var(--accent-deep);
+    padding:9px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+  .subtotal{display:flex;justify-content:flex-end;align-items:baseline;gap:18px;margin-top:20px;padding-top:14px;border-top:2px solid var(--line-2);font-weight:700;font-size:14px;color:var(--ink)}
+  .subtotal .calc{font-variant-numeric:tabular-nums}
+  .table-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:0;padding-top:14px;border-top:2px solid var(--line-2)}
+  .table-foot .addbtn{margin:0}
+  .foot-total{display:flex;align-items:baseline;gap:16px;font-weight:700;font-size:14px;color:var(--ink)}
+  .foot-total .calc{font-variant-numeric:tabular-nums}
+  .addbtn:hover{background:#FBF9F4;border-color:var(--accent)}
+  tfoot td{border-top:2px solid var(--line-2);font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+  .totrow{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:14px}
+  .tot{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#FBF9F4}
+  .tot .lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-3);font-weight:700;display:flex;align-items:center;gap:7px}
+  .tot .big{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-top:8px;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .tot .small{font-size:12px;color:var(--ink-3);margin-top:3px;font-variant-numeric:tabular-nums}
+  .tot.plan{background:var(--plan-soft);border-color:var(--plan-line)}
+  .tot.usage{background:var(--usage-soft);border-color:var(--usage-line)}
+  .tot.grand{background:var(--total);border-color:var(--total)}
+  .tot.grand .lbl{color:#9A968C} .tot.grand .big{color:#fff} .tot.grand .small{color:#8A857A}
+  .bar{height:32px;border-radius:8px;overflow:hidden;display:flex;background:var(--line);margin-top:18px}
+  .bar .seg{height:100%;display:flex;align-items:center;padding:0 12px;font-size:11px;font-weight:600;letter-spacing:.01em;color:#fff;white-space:nowrap;overflow:hidden;transition:width .2s ease}
+  .bar .seg.plan{background:var(--plan)} .bar .seg.usage{background:var(--usage);justify-content:flex-end}
+  .legend{display:flex;gap:18px;margin-top:10px;font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .note{font-size:12px;color:var(--ink-2);line-height:1.6}
+  .note b{color:var(--ink)}
+  footer{margin-top:28px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-3);line-height:1.65}
+  footer a{color:var(--accent-deep);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  .card-instr{font-size:13px;color:var(--ink-2);line-height:1.55;margin:0 0 18px}
+  .field label.switch-row{display:flex;align-items:center;gap:9px;width:100%;height:42px;padding:0 12px;border:1px solid var(--line-2);border-radius:8px;font-size:13px;color:var(--ink);cursor:pointer;font-weight:400;letter-spacing:0;text-transform:none;background:var(--surface);margin:0}
+  .instr-row{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:18px}
+  .instr-row .card-instr{margin:0}
+  .field label.switch-row input{width:16px;height:16px;accent-color:var(--accent);margin:0;flex:none}
+  .cmplx select{width:100%;min-width:120px}
+  .delbtn{display:inline-flex;align-items:center;justify-content:center;font-size:0}
+  .delbtn svg{display:block;width:15px;height:15px}
+  .parts{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+  .parts li{position:relative;padding-left:30px;font-size:14px;color:var(--ink-2);line-height:1.5}
+  .parts li .n{position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+  .parts li.p1 .n{background:var(--plan)} .parts li.p2 .n{background:var(--usage)}
+  .parts li strong{color:var(--ink);font-weight:600}
+  .settings input,.settings select{height:42px}
+  td input,td select{height:38px}
+  .adv-toggle{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer;margin:0 0 14px;user-select:none}
+  .adv-toggle input{accent-color:var(--accent);width:15px;height:15px;margin:0;flex:none}
+  @media(max-width:880px){.settings{grid-template-columns:1fr 1fr}.totrow{grid-template-columns:1fr 1fr}.wrap{padding:24px 16px 60px}h1{font-size:32px}}
+
+  /* SHARED SITE NAV — index palette */
+  .site-nav{position:sticky;top:0;z-index:50;background:rgba(247,244,238,.88);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .site-nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:56px;display:flex;align-items:center;gap:28px}
+  .site-nav-brand{display:flex;align-items:center;color:var(--ink);text-decoration:none}
+  .site-nav-brand svg{height:18px;width:auto;display:block}
+  .site-nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+  .site-nav-links a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 13px;border-radius:7px;transition:all .12s;white-space:nowrap}
+  .site-nav-links a:hover{color:var(--ink);background:rgba(20,19,15,.05)}
+  .site-nav-links a.active{color:var(--accent-deep);background:var(--accent-soft)}
+  @media(max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="index.html" aria-label="Numeric">
+      <svg viewBox="0 0 695 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M661.75 34C667.77 34 673.113 35.0267 677.78 37.08C682.447 39.1333 686.18 42.0033 688.98 45.69C691.827 49.3767 693.623 53.6467 694.37 58.5L677.01 62.21C676.077 57.87 674.327 54.5333 671.76 52.2C669.24 49.82 665.903 48.63 661.75 48.63C658.11 48.63 654.937 49.6333 652.23 51.64C649.57 53.6 647.517 56.47 646.07 60.25C644.623 63.9833 643.9 68.4867 643.9 73.76C643.9 78.8467 644.623 83.28 646.07 87.06C647.563 90.84 649.663 93.7567 652.37 95.81C655.077 97.8633 658.227 98.89 661.82 98.89C665.833 98.89 669.147 97.8167 671.76 95.67C674.373 93.4767 676.077 90.28 676.87 86.08H694.79C693.763 94.76 690.427 101.503 684.78 106.31C679.133 111.117 671.48 113.52 661.82 113.52C654.4 113.52 647.913 111.887 642.36 108.62C636.807 105.353 632.513 100.733 629.48 94.76C626.493 88.74 625 81.74 625 73.76C625 65.78 626.493 58.8033 629.48 52.83C632.513 46.81 636.807 42.1667 642.36 38.9C647.913 35.6333 654.377 34 661.75 34Z"/>
+        <path d="M595.64 35.4H613.63V112.12H595.64V35.4ZM614.33 6V23.29H594.66V6H614.33Z"/>
+        <path d="M543 35.4001H560.01V51.1501H560.78C562.367 44.8967 564.607 40.5801 567.5 38.2001C570.393 35.7734 574.057 34.5601 578.49 34.5601H585.56V51.8501H576.53C571.163 51.8501 567.22 53.7401 564.7 57.5201C562.227 61.2534 560.99 67.1101 560.99 75.0901V112.12H543V35.4001Z"/>
+        <path d="M498.75 113.52C491.423 113.52 484.983 111.91 479.43 108.69C473.877 105.423 469.583 100.803 466.55 94.83C463.517 88.8567 462 81.88 462 73.9C462 66.0133 463.517 59.06 466.55 53.04C469.63 47.02 473.947 42.3533 479.5 39.04C485.053 35.68 491.447 34 498.68 34C505.213 34 511.023 35.3767 516.11 38.13C521.197 40.8833 525.21 45.1533 528.15 50.94C531.137 56.68 532.63 63.8667 532.63 72.5C532.63 74.2733 532.56 76.07 532.42 77.89H480.9C481.227 82.3233 482.183 86.1733 483.77 89.44C485.403 92.66 487.503 95.1333 490.07 96.86C492.637 98.54 495.53 99.38 498.75 99.38C502.857 99.38 506.217 98.4233 508.83 96.51C511.49 94.55 513.333 91.75 514.36 88.11H532.63C531.977 92.5433 530.18 96.72 527.24 100.64C524.3 104.513 520.38 107.64 515.48 110.02C510.58 112.353 505.003 113.52 498.75 113.52ZM514.36 65.57C514.127 59.9233 512.633 55.5133 509.88 52.34C507.173 49.12 503.463 47.51 498.75 47.51C494.177 47.51 490.373 48.9567 487.34 51.85C484.307 54.7433 482.3 59.3167 481.32 65.57H514.36Z"/>
+        <path d="M427.581 34C432.201 34 436.284 35.1433 439.831 37.43C443.424 39.67 446.224 42.9367 448.231 47.23C450.237 51.4767 451.241 56.4933 451.241 62.28V112.12H433.321V65.78C433.321 60.6467 432.294 56.6567 430.241 53.81C428.234 50.9633 425.387 49.54 421.701 49.54C416.661 49.54 412.741 51.5467 409.941 55.56C407.141 59.5267 405.741 65.0567 405.741 72.15V112.12H387.751V65.78C387.751 60.6933 386.677 56.7267 384.531 53.88C382.431 50.9867 379.561 49.54 375.921 49.54C370.974 49.54 367.147 51.57 364.441 55.63C361.734 59.6433 360.381 65.1733 360.381 72.22V112.12H342.391V35.4H360.381V49.75H361.151C363.017 45.0367 365.724 41.2333 369.271 38.34C372.864 35.4467 377.391 34 382.851 34C386.351 34 389.501 34.6767 392.301 36.03C395.101 37.3833 397.387 39.25 399.161 41.63C400.981 43.9633 402.217 46.67 402.871 49.75H403.501C405.694 45.0367 408.891 41.2333 413.091 38.34C417.337 35.4467 422.167 34 427.581 34Z"/>
+        <path d="M281.99 84.7911C281.99 94.5304 287.657 99.7911 296.389 99.7911C305.121 99.7911 310.788 94.5304 310.788 84.7911L311.178 35.3999H329.168L328.778 81.7091C328.778 101.838 317.942 113.5 296.389 113.5C274.837 113.5 264 100.958 264 82.8291L264.39 35.3999H282.38L281.99 84.7911Z"/>
+        <path d="M165.1 9.71021H188.41L230.97 83.2102H231.74V9.71021H250.99V112.47H227.82L185.19 39.0402H184.35V112.47H165.1V9.71021Z"/>
+        <path d="M20.4216 15.0541C31.3069 24.7897 45.3987 30.1722 60.0028 30.1722C74.6069 30.1722 88.6987 24.7897 99.584 15.0541C88.6801 5.3568 74.5953 0 60.0028 0C45.4102 0 31.3255 5.35679 20.4216 15.0541Z"/>
+        <path d="M30.1737 60.0004C30.1737 74.6038 24.7909 88.6949 15.0548 99.5796C5.35707 88.6762 0 74.5922 0 60.0004C0 45.4086 5.35707 31.3246 15.0548 20.4212C24.7909 31.3059 30.1737 45.397 30.1737 60.0004Z"/>
+        <path d="M120 60.0004C120 74.6038 114.617 88.6949 104.881 99.5796C95.1834 88.6762 89.8263 74.5922 89.8263 60.0004C89.8263 45.4086 95.1834 31.3246 104.881 20.4212C114.617 31.3059 120 45.397 120 60.0004Z"/>
+        <path d="M60.0028 120C45.3987 120 31.3069 114.618 20.4216 104.882C31.3255 95.1846 45.4102 89.8278 60.0028 89.8278C74.5953 89.8278 88.6801 95.1846 99.584 104.882C88.6987 114.618 74.6069 120 60.0028 120Z"/>
+      </svg>
+    </a>
+    <div class="site-nav-links">
+      <a href="index.html">Library</a>
+      <a href="operating-model.html">The new way of working</a>
+      <a href="cost-calculator.html" class="active">What it costs</a>
+    </div>
+  </div>
+</nav>
+<div class="wrap">
+  <header class="top">
+    <h1>What it might cost to run your <em>month-end close</em></h1>
+    <div class="sub">Estimate what it costs to run your accounting workflows on Claude. Use it to understand the cost drivers and get a rough ballpark &mdash; not to produce a precise budget. The total has two parts:</div>
+    <ul class="parts">
+      <li class="p1"><span class="n">1</span><strong>A fixed plan cost</strong> &mdash; a per-seat Enterprise fee.</li>
+      <li class="p2"><span class="n">2</span><strong>Variable token usage</strong> &mdash; what each workflow run costs, times how often you run it.</li>
+    </ul>
+  </header>
+
+  <div class="grid">
+
+    <!-- SETTINGS -->
+    <section class="card">
+      <div class="hd"><span class="dot plan"></span><h2>Part 1 · Plan — fixed</h2></div>
+      <div class="bd">
+        <p class="card-instr">Your per-seat plan. Set the size of the team that will use Claude and the price per seat.</p>
+        <div class="settings">
+          <div class="field">
+            <label>Seats (users)</label>
+            <input type="number" id="seats" min="1" step="1" value="10">
+            <div class="hint">Accounting / finance team size</div>
+          </div>
+          <div class="field">
+            <label>Price per seat / month ($)</label>
+            <input type="number" id="seatPrice" min="0" step="1" value="20">
+            <div class="hint">Enterprise base, billed annually; usage billed separately</div>
+          </div>
+          <div class="field">
+            <label>Data residency</label>
+            <label class="switch-row"><input type="checkbox" id="usOnly"> US-only inference (+10%)</label>
+            <div class="hint">Adds 10% to all token usage</div>
+          </div>
+        </div>
+        <div class="subtotal"><span>Plan cost / month</span><span id="planSubtotal" class="calc">$0</span></div>
+      </div>
+    </section>
+
+    <!-- WORKFLOWS -->
+    <section class="card">
+      <div class="hd"><span class="dot usage"></span><h2>Part 2 · Token usage — variable</h2><label class="adv-toggle" style="margin:0 0 0 auto"><input type="checkbox" id="advToggle"> Edit tokens manually</label></div>
+      <div class="bd">
+        <p class="card-instr">List the workflows you&rsquo;ll run, pick how complex each one is, and how often you&rsquo;ll run it &mdash; scale the frequency to your number of accounts and entities. Each run&rsquo;s cost comes from the model and the complexity you choose (we estimate the tokens for you); switch the model to reprice.</p>
+        <div class="tablewrap">
+        <table id="wfTable">
+          <thead id="wfHead"></thead>
+          <tbody id="wfBody"></tbody>
+        </table>
+        </div>
+        <div class="table-foot">
+          <button class="addbtn" id="addRow">+ Add workflow</button>
+          <div class="foot-total"><span>Total token usage / month</span><span id="usageMonthlyFoot" class="calc">$0.00</span></div>
+        </div>
+        <p class="note" style="margin:16px 0 0">Token estimates are based on a typical Numeric user; swap in your own figures with Edit tokens manually. A note on pricing: sending data <em>in</em> is cheap, but getting answers <em>out</em> costs more &mdash; output tokens are billed at roughly 5× the input rate. So a workflow that writes a lot (long flux narratives, detailed memos) costs more per run than one that mostly reads and returns a short answer.</p>
+      </div>
+    </section>
+
+    <!-- TOTALS -->
+    <section class="card">
+      <div class="hd"><span class="dot" style="background:var(--total)"></span><h2>Total Cost</h2></div>
+      <div class="bd">
+        <div class="totrow">
+          <div class="tot plan">
+            <div class="lbl"><span class="sw" style="background:var(--plan)"></span>Plan / seats</div>
+            <div class="big" id="planMonthly">$0</div>
+            <div class="small" id="planAnnual">$0 / year</div>
+          </div>
+          <div class="tot usage">
+            <div class="lbl"><span class="sw" style="background:var(--usage)"></span>Token usage</div>
+            <div class="big" id="usageMonthly">$0</div>
+            <div class="small" id="usageAnnual">$0 / year</div>
+          </div>
+          <div class="tot grand">
+            <div class="lbl">Total / month</div>
+            <div class="big" id="grandMonthly">$0</div>
+            <div class="small" id="grandAnnual">$0 / year</div>
+          </div>
+          <div class="tot">
+            <div class="lbl">Effective / seat / mo</div>
+            <div class="big" id="perSeat">$0</div>
+            <div class="small" id="usageShare">Usage = 0% of total</div>
+          </div>
+        </div>
+        <div class="bar" id="splitBar">
+          <div class="seg plan" id="segPlan" style="width:50%">Plan / seats (fixed)</div>
+          <div class="seg usage" id="segUsage" style="width:50%">Token usage (variable)</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <b>Reference rates (per million tokens):</b> Sonnet 4.6 — $3 input / $15 output · Opus 4.8 — $5 input / $25 output. Output is 5× input on both models, so output volume drives cost.
+    <b>Complexity presets (tokens in / out per run):</b> Simple ≈ 120k / 5k · Medium ≈ 250k / 10k · Complex ≈ 450k / 20k · Very complex ≈ 780k / 36k.
+    Enterprise = per-seat fee (billed annually) covering Claude web/desktop/mobile, Claude Code, and Cowork; usage billed separately at standard API rates.
+    Source: <a href="https://platform.claude.com/docs/en/about-claude/pricing">platform.claude.com pricing</a>.
+    <span style="display:block;margin-top:12px">Estimates for planning, not a quote. Published API rates, June 2026 · Models: Sonnet 4.6 &amp; Opus 4.8.</span>
+  </footer>
+</div>
+
+<script>
+const PRICING = {
+  'opus-4.8':   { in:5, out:25 },
+  'sonnet-4.6': { in:3, out:15 }
+};
+
+// Complexity presets — approximate tokens per run, so users don't have to estimate tokens.
+const TOKENS = {
+  simple:  { in:120000, out:5000,  label:'Simple' },
+  medium:  { in:250000, out:10000, label:'Medium' },
+  complex: { in:450000, out:20000, label:'Complex' },
+  heavy:   { in:780000, out:36000, label:'Very complex' }
+};
+const CX_ORDER = ['simple','medium','complex','heavy'];
+
+let workflows = [
+  { name:'Flux / variance explanations',  model:'sonnet-4.6', cx:'medium',  runs:150 },
+  { name:'Journal entry prep from docs',   model:'sonnet-4.6', cx:'medium',  runs:80  },
+  { name:'Balance sheet reconciliations',  model:'sonnet-4.6', cx:'complex', runs:80  },
+  { name:'Accrual / prepaid analysis',     model:'opus-4.8',   cx:'complex', runs:25  },
+  { name:'Dept / GL coding anomaly scan',  model:'opus-4.8',   cx:'heavy',   runs:10  },
+  { name:'Month-end close review & retro', model:'opus-4.8',   cx:'heavy',   runs:6   }
+];
+
+let advanced = false;  // false = pick a complexity; true = type exact token counts
+
+const $ = id => document.getElementById(id);
+const fmt  = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0 = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmt3 = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:3});
+
+function settings(){
+  return {
+    seats: Math.max(0, parseFloat($('seats').value)||0),
+    seatPrice: Math.max(0, parseFloat($('seatPrice').value)||0),
+    usOnly: $('usOnly').checked
+  };
+}
+
+function tokensFor(wf){
+  const t = TOKENS[wf.cx] || TOKENS.medium;
+  let inT = t.in, outT = t.out;
+  if(advanced){ if(wf.inTok!=null) inT = wf.inTok; if(wf.outTok!=null) outT = wf.outTok; }
+  return { in:inT, out:outT };
+}
+function costPerRun(wf, s){
+  const p = PRICING[wf.model];
+  const t = tokensFor(wf);
+  const us = s.usOnly ? 1.1 : 1.0;
+  return (t.in*p.in + t.out*p.out) / 1e6 * us;
+}
+
+function cdrop(i, f, value, opts){
+  const sel = opts.find(o=>o.v===value) || opts[0];
+  const items = opts.map(o=>`<button type="button" class="cdrop-opt${o.v===value?' sel':''}" data-val="${o.v}">${o.label}</button>`).join('');
+  return `<div class="cdrop" data-i="${i}" data-f="${f}"><button type="button" class="cdrop-btn"><span>${sel.label}</span><span class="cdrop-arrow">▾</span></button><div class="cdrop-menu">${items}</div></div>`;
+}
+
+const TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>`;
+
+function renderTable(){
+  $('wfHead').innerHTML = advanced
+    ? `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="num">Input tok / run</th><th class="num">Output tok / run</th><th class="num">Cost / run</th><th class="num">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`
+    : `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="cmplx">Complexity</th><th class="num">Cost / run</th><th class="num">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`;
+
+  const body=$('wfBody'); body.innerHTML='';
+  workflows.forEach((wf,i)=>{
+    const tr=document.createElement('tr');
+    const modelSel = `<td class="mdl">${cdrop(i,'model',wf.model,[{v:'opus-4.8',label:'Opus 4.8'},{v:'sonnet-4.6',label:'Sonnet 4.6'}])}</td>`;
+    const tk = tokensFor(wf);
+    const mid = advanced
+      ? `<td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="inTok" value="${tk.in.toLocaleString('en-US')}"></td><td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="outTok" value="${tk.out.toLocaleString('en-US')}"></td>`
+      : `<td class="cmplx">${cdrop(i,'cx',wf.cx,CX_ORDER.map(k=>({v:k,label:TOKENS[k].label})))}</td>`;
+    tr.innerHTML = `<td class="wf-name"><input type="text" data-i="${i}" data-f="name" value="${wf.name.replace(/"/g,'&quot;')}"></td>${modelSel}${mid}<td class="num"><span class="calc" id="cpr-${i}">$0</span></td><td class="num runs"><input type="number" min="0" step="1" data-i="${i}" data-f="runs" value="${wf.runs}"></td><td class="num"><span class="calc" id="cm-${i}">$0</span></td><td><button class="delbtn" data-del="${i}" title="Remove" aria-label="Remove workflow">${TRASH}</button></td>`;
+    body.appendChild(tr);
+  });
+
+  refresh();
+}
+
+function refresh(){
+  const s=settings();
+  let usage=0;
+  workflows.forEach((wf,i)=>{
+    const cpr=costPerRun(wf,s);
+    const cm=cpr*wf.runs;
+    usage+=cm;
+    const a=$('cpr-'+i), b=$('cm-'+i);
+    if(a) a.textContent=fmt3(cpr);
+    if(b) b.textContent=fmt(cm);
+  });
+  const planMonthly=s.seats*s.seatPrice;
+  const grand=planMonthly+usage;
+
+  $('usageMonthlyFoot').textContent=fmt(usage);
+  const psub=$('planSubtotal'); if(psub) psub.textContent = fmt0(planMonthly);
+  $('planMonthly').textContent  = fmt0(planMonthly);
+  $('planAnnual').textContent   = fmt0(planMonthly*12)+' / year';
+  $('usageMonthly').textContent = fmt0(usage);
+  $('usageAnnual').textContent  = fmt0(usage*12)+' / year';
+  $('grandMonthly').textContent = fmt0(grand);
+  $('grandAnnual').textContent  = fmt0(grand*12)+' / year';
+  $('perSeat').textContent      = s.seats>0 ? fmt0(grand/s.seats) : '—';
+
+  const usagePct = grand>0 ? usage/grand*100 : 0;
+  $('usageShare').textContent='Usage = '+usagePct.toFixed(0)+'% of total';
+  $('segPlan').style.width=(100-usagePct)+'%';
+  $('segUsage').style.width=usagePct+'%';
+}
+
+function onEdit(e){
+  const t=e.target, i=t.dataset.i, f=t.dataset.f;
+  if(i===undefined||!f) return;
+  if(f==='name'||f==='model'){ workflows[i][f]=t.value; }
+  else if(f==='cx'){ workflows[i].cx=t.value; workflows[i].inTok=undefined; workflows[i].outTok=undefined; }
+  else { workflows[i][f]=Math.max(0, parseFloat(String(t.value).replace(/[^0-9.]/g,''))||0); }
+  refresh();
+  if(e.type==='change' && (f==='inTok'||f==='outTok')) t.value = workflows[i][f].toLocaleString('en-US');
+}
+$('wfBody').addEventListener('input', onEdit);
+$('wfBody').addEventListener('change', onEdit);
+$('advToggle').addEventListener('change', e=>{ advanced=e.target.checked; renderTable(); });
+
+// Custom dropdowns
+document.addEventListener('click', e=>{
+  const opt = e.target.closest('.cdrop-opt');
+  if(opt){
+    const d=opt.closest('.cdrop'), i=+d.dataset.i, f=d.dataset.f, v=opt.dataset.val;
+    if(f==='cx'){ workflows[i].cx=v; workflows[i].inTok=undefined; workflows[i].outTok=undefined; }
+    else { workflows[i][f]=v; }
+    renderTable();
+    return;
+  }
+  const btn = e.target.closest('.cdrop-btn');
+  const open = document.querySelectorAll('.cdrop.open');
+  if(btn){
+    const d=btn.closest('.cdrop'), wasOpen=d.classList.contains('open');
+    open.forEach(x=>x.classList.remove('open'));
+    if(!wasOpen) d.classList.add('open');
+    return;
+  }
+  open.forEach(x=>x.classList.remove('open'));  // click outside closes
+});
+$('wfBody').addEventListener('click', e=>{
+  const btn=e.target.closest('.delbtn');
+  if(btn){ workflows.splice(+btn.dataset.del,1); renderTable(); }
+});
+$('addRow').addEventListener('click', ()=>{
+  workflows.push({name:'New workflow', model:'sonnet-4.6', cx:'medium', runs:10});
+  renderTable();
+});
+['seats','seatPrice','usOnly'].forEach(id=>{
+  $(id).addEventListener('input', refresh);
+  $(id).addEventListener('change', refresh);
+});
+
+renderTable();
+</script>
+</body>
+</html>
