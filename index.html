@@ -708,7 +708,7 @@ const SKILLS = [
     title: "Accrual Identification & Journal Entry",
     desc: "Pulls accrual-related tasks from your Numeric close checklist, analyzes the underlying GL data to identify potential accruals that need to be booked, and builds the full supporting workbook as evidence — then generates the corresponding journal entries ready for NetSuite posting. The entire accrual workflow in one conversation.",
     asks: ["Run the accruals for this period", "What accruals do we need to book?", "Identify and create the month-end accrual entries"] },
-  { name: "journal-entry", essential: true, qbo: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "AP Analyst"],
+  { name: "journal-entry", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "AP Analyst"],
     title: "Journal Entry — Generate, Validate & Post",
     desc: "Pulls outstanding journal entry tasks from your Numeric close checklist, reads the supporting workbook or documentation, generates balanced journal entries with a formula-first Excel workpaper, and emits an import file in your ERP's format — NetSuite, QuickBooks Online, Xero, or Sage Intacct. Posts directly to NetSuite via the NetSuite MCP; for the others it hands you a ready-to-import file. From checklist task to booked entry — no manual rekeying.",
     asks: ["Post the outstanding journal entries", "Process the JE tasks from the checklist", "Generate the JE import file for QuickBooks", "Complete and post the JEs with this support"] },
