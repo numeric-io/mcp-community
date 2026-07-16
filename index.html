@@ -328,7 +328,7 @@ select:focus { outline: none; border-color: var(--ink); }
 
 /* CROSS-LINK BANDS (Why + Cost) */
 .band { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
-.band-shift { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0; margin: 6px 0 30px; }
+.band-shift { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0; }
 .band-shift-text { padding: 28px 30px; display: flex; flex-direction: column; justify-content: center; }
 .band-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
 .band-quote { font-family: ui-serif, Georgia, "Times New Roman", serif; font-size: 26px; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 14px; }
@@ -342,7 +342,18 @@ select:focus { outline: none; border-color: var(--ink); }
 .band-shift-art .fig-cap { font-size: 11.5px; color: var(--ink-2); line-height: 1.45; margin: 14px 2px 0; text-align: center; }
 .band-shift-art .fig-cap strong { color: var(--ink); font-weight: 600; }
 
-.band-cost { margin: 30px 0 8px; padding: 28px 30px; }
+.band-cost { padding: 28px 30px; }
+
+/* FLIP CARD (op model / cost) */
+.band-flip { margin: 6px 0 30px; }
+.flip-tabs { display: flex; align-items: center; gap: 2px; padding: 6px 20px 0; border-bottom: 1px solid var(--line); }
+.flip-tab { background: none; border: none; padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--ink-3); cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .12s, border-color .12s; }
+.flip-tab:hover { color: var(--ink); }
+.flip-tab.active { color: var(--accent-deep); border-bottom-color: var(--accent); font-weight: 600; }
+.flip-shell { position: relative; }
+.flip-card { position: relative; width: 100%; }
+.flip-face { opacity: 1; transition: opacity .45s ease; }
+.flip-face.hidden { display: none; }
 .band-cost-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
 .band-cost-title { font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -0.015em; color: var(--ink); margin: 0; }
 .band-cost-title em { font-style: italic; color: var(--accent); }
@@ -412,40 +423,69 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
     <div class="stat-meta">All skills connect to Numeric via the Numeric MCP. <a href="https://help.numeric.io/articles/7292808089-numeric-mcp-server" target="_blank" rel="noopener" style="color:var(--accent-deep)">Connect your workspace →</a></div>
   </div>
 
-  <section class="band band-shift">
-    <div class="band-shift-text">
-      <p class="band-eyebrow">The new way of working</p>
-      <p class="band-quote">The keystrokes leave. <em>The judgment stays.</em></p>
-      <p class="band-desc">These skills hand the rote work — pulling data, drafting, formatting — to your AI assistant, so your team spends its hours on the judgment only people bring: the review, the call, the relationships. See what AI-enabled close work looks like, and how the machine earns more of the routine over time.</p>
-      <a class="band-cta" href="operating-model.html" onclick="window.posthog&&posthog.capture('cta_read_explainer')">Read the explainer →</a>
+  <section class="band band-flip">
+    <div class="flip-tabs">
+      <button class="flip-tab active" type="button" id="flip-tab-0" onclick="setFlip(0)">The new way of working</button>
+      <button class="flip-tab" type="button" id="flip-tab-1" onclick="setFlip(1)">What it costs</button>
     </div>
-    <div class="band-shift-art">
-      <figure class="figure" aria-label="Chart: how the close workday shifts from rote work toward judgment with AI">
-        <svg viewBox="0 0 300 196" xmlns="http://www.w3.org/2000/svg" role="img">
-          <text x="6" y="13" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#8A857A">HOW THE CLOSE DAY IS SPENT</text>
+    <div class="flip-shell" id="flip-shell">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-face-front" id="flip-face-front">
+          <div class="band-shift">
+            <div class="band-shift-text">
+              <p class="band-eyebrow">The new way of working</p>
+              <p class="band-quote">The keystrokes leave. <em>The judgment stays.</em></p>
+              <p class="band-desc">These skills hand the rote work — pulling data, drafting, formatting — to your AI assistant, so your team spends its hours on the judgment only people bring: the review, the call, the relationships. See what AI-enabled close work looks like, and how the machine earns more of the routine over time.</p>
+              <a class="band-cta" href="operating-model.html" onclick="window.posthog&&posthog.capture('cta_read_explainer')">Read the explainer →</a>
+            </div>
+            <div class="band-shift-art">
+              <figure class="figure" aria-label="Chart: how the close workday shifts from rote work toward judgment with AI">
+                <svg viewBox="0 0 300 196" xmlns="http://www.w3.org/2000/svg" role="img">
+                  <text x="6" y="13" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#8A857A">HOW THE CLOSE DAY IS SPENT</text>
 
-          <!-- Row 1: by hand -->
-          <text x="6" y="40" font-size="12" font-weight="600" fill="#14130F">By hand</text>
-          <rect x="6"   y="48" width="214" height="26" rx="6" fill="#CFC8B8"/>
-          <rect x="224" y="48" width="70"  height="26" rx="6" fill="#6B5BD3"/>
-          <text x="113" y="65" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">Rote · 75%</text>
-          <text x="259" y="65" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">25%</text>
+                  <!-- Row 1: by hand -->
+                  <text x="6" y="40" font-size="12" font-weight="600" fill="#14130F">By hand</text>
+                  <rect x="6"   y="48" width="214" height="26" rx="6" fill="#CFC8B8"/>
+                  <rect x="224" y="48" width="70"  height="26" rx="6" fill="#6B5BD3"/>
+                  <text x="113" y="65" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">Rote · 75%</text>
+                  <text x="259" y="65" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">25%</text>
 
-          <!-- Row 2: with AI -->
-          <text x="6" y="104" font-size="12" font-weight="600" fill="#14130F">With AI skills</text>
-          <rect x="6"   y="112" width="74"  height="26" rx="6" fill="#CFC8B8"/>
-          <rect x="84"  y="112" width="210" height="26" rx="6" fill="#6B5BD3"/>
-          <text x="43"  y="129" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">25%</text>
-          <text x="189" y="129" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Judgment · 75%</text>
+                  <!-- Row 2: with AI -->
+                  <text x="6" y="104" font-size="12" font-weight="600" fill="#14130F">With AI skills</text>
+                  <rect x="6"   y="112" width="74"  height="26" rx="6" fill="#CFC8B8"/>
+                  <rect x="84"  y="112" width="210" height="26" rx="6" fill="#6B5BD3"/>
+                  <text x="43"  y="129" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">25%</text>
+                  <text x="189" y="129" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Judgment · 75%</text>
 
-          <!-- Legend -->
-          <rect x="6"   y="166" width="11" height="11" rx="3" fill="#CFC8B8"/>
-          <text x="22"  y="175" font-size="10.5" fill="#8A857A">Rote — data, drafting, formatting</text>
-          <rect x="6"   y="183" width="11" height="11" rx="3" fill="#6B5BD3"/>
-          <text x="22"  y="192" font-size="10.5" fill="#8A857A">Judgment — review, decisions, people</text>
-        </svg>
-        <figcaption class="fig-cap">Same work — <strong>fewer keystrokes, more judgment.</strong></figcaption>
-      </figure>
+                  <!-- Legend -->
+                  <rect x="6"   y="166" width="11" height="11" rx="3" fill="#CFC8B8"/>
+                  <text x="22"  y="175" font-size="10.5" fill="#8A857A">Rote — data, drafting, formatting</text>
+                  <rect x="6"   y="183" width="11" height="11" rx="3" fill="#6B5BD3"/>
+                  <text x="22"  y="192" font-size="10.5" fill="#8A857A">Judgment — review, decisions, people</text>
+                </svg>
+                <figcaption class="fig-cap">Same work — <strong>fewer keystrokes, more judgment.</strong></figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="flip-face flip-face-back hidden" id="flip-face-back">
+          <div class="band-cost">
+            <div class="band-cost-head">
+              <div>
+                <h2 class="band-cost-title">What it might cost to run your <em>month-end close</em></h2>
+                <p class="band-cost-sub">Two core components: a fixed per-seat plan covering Claude across web, desktop, Code, and Cowork — plus variable token usage that scales with how often each workflow runs. Model the mix for your own team.</p>
+              </div>
+              <a class="band-cta" href="cost-calculator.html" onclick="window.posthog&&posthog.capture('cta_open_calculator')">Open the cost calculator →</a>
+            </div>
+            <div class="band-cost-stats">
+              <div class="band-cost-stat"><div class="v">$200<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Plan — 10 seats at $20/seat, fixed</div></div>
+              <div class="band-cost-stat"><div class="v">~$360<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Token usage — default close workflow mix, variable</div></div>
+              <div class="band-cost-stat"><div class="v">~$56<span style="font-size:13px;color:var(--ink-3);font-weight:500">/seat/mo</span></div><div class="l">Effective all-in, before any time saved</div></div>
+            </div>
+            <p class="band-cost-sub" style="margin:0">Illustrative — a 10-person team on the default workflow mix at June 2026 API rates. Swap in your own seat count, run volumes, and model choices in the calculator.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -514,22 +554,6 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
   </div>
 
   <div id="results"></div>
-
-  <section class="band band-cost">
-    <div class="band-cost-head">
-      <div>
-        <h2 class="band-cost-title">What it might cost to run your <em>month-end close</em></h2>
-        <p class="band-cost-sub">Two core components: a fixed per-seat plan covering Claude across web, desktop, Code, and Cowork — plus variable token usage that scales with how often each workflow runs. Model the mix for your own team.</p>
-      </div>
-      <a class="band-cta" href="cost-calculator.html" onclick="window.posthog&&posthog.capture('cta_open_calculator')">Open the cost calculator →</a>
-    </div>
-    <div class="band-cost-stats">
-      <div class="band-cost-stat"><div class="v">$200<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Plan — 10 seats at $20/seat, fixed</div></div>
-      <div class="band-cost-stat"><div class="v">~$360<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Token usage — default close workflow mix, variable</div></div>
-      <div class="band-cost-stat"><div class="v">~$56<span style="font-size:13px;color:var(--ink-3);font-weight:500">/seat/mo</span></div><div class="l">Effective all-in, before any time saved</div></div>
-    </div>
-    <p class="band-cost-sub" style="margin:0">Illustrative — a 10-person team on the default workflow mix at June 2026 API rates. Swap in your own seat count, run volumes, and model choices in the calculator.</p>
-  </section>
 </div>
 
 <div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
@@ -1224,6 +1248,41 @@ function updateGalleryArrows() {
   next.disabled = atEnd;
 }
 
+let flipState = 0;
+let flipAutoTimer = null;
+let flipBusy = false;
+function setFlip(which) {
+  const front = document.getElementById('flip-face-front');
+  const back = document.getElementById('flip-face-back');
+  const tab0 = document.getElementById('flip-tab-0');
+  const tab1 = document.getElementById('flip-tab-1');
+  if (!front || !back || flipBusy) return;
+  const goingBack = which === 'toggle' ? flipState === 0 : which === 1;
+  if (goingBack === (flipState === 1)) { startFlipAuto(); return; }
+  flipState = goingBack ? 1 : 0;
+  tab0.classList.toggle('active', !goingBack);
+  tab1.classList.toggle('active', goingBack);
+  const outgoing = goingBack ? front : back;
+  const incoming = goingBack ? back : front;
+  flipBusy = true;
+  outgoing.style.opacity = '0';
+  setTimeout(() => {
+    outgoing.classList.add('hidden');
+    incoming.classList.remove('hidden');
+    incoming.style.opacity = '0';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { incoming.style.opacity = '1'; });
+    });
+    setTimeout(() => { flipBusy = false; }, 450);
+  }, 450);
+  if (window.posthog) posthog.capture(goingBack ? 'cta_open_calculator_flip' : 'cta_read_explainer_flip');
+  startFlipAuto();
+}
+function startFlipAuto() {
+  clearInterval(flipAutoTimer);
+  flipAutoTimer = setInterval(() => setFlip(flipState === 0 ? 1 : 0), 7000);
+}
+
 // init
 (function init() {
   const cats = Object.keys(CATS);
@@ -1255,6 +1314,7 @@ function updateGalleryArrows() {
     window.addEventListener('resize', updateGalleryArrows);
     updateGalleryArrows();
   }
+  startFlipAuto();
   render();
 })();
 </script>
