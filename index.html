@@ -393,7 +393,8 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
       </svg>
     </a>
     <div class="site-nav-links">
-      <a href="index.html" class="active">Library</a>
+      <a href="index.html" class="active">Skills</a>
+      <a href="prompt-library.html">Prompt Library</a>
       <a href="operating-model.html">The new way of working</a>
       <a href="cost-calculator.html">What it costs</a>
     </div>
@@ -806,6 +807,10 @@ const SKILLS = [
     title: "Audit Evidence Export — Close Activity Workbook",
     desc: "Packages the complete activity history of any Numeric close period into a structured five-sheet Excel workbook — reconciliation submissions and approvals, checklist completions, review notes, and a full timeline of who did what and when. Hand it to your auditors and move on.",
     asks: ["Audit evidence for December close", "SOX evidence package", "Reconciliation sign-off history"] },
+  { name: "skill-reviewer", type: "Insights", category: "Audit & Compliance", roles: ["Controller", "Audit Lead"],
+    title: "Skill Reviewer — Audit-Readiness Review & Score",
+    desc: "Reviews any Claude Skill that touches financial data and tells you, control by control, whether its work product would survive external auditor scrutiny (PwC, EY, Deloitte). The model finds facts and evidence quotes; a bundled deterministic Python engine computes every score, blocker, and verdict — same findings in, same review out, every time. Output is a written controls walkthrough plus a styled HTML dashboard and an exportable run record. Covers segregation of duties, evidence trails, IPE risk, and materiality.",
+    asks: ["Review this skill", "Is my skill audit-ready?", "SOX review my skill", "Grade this SKILL.md"] },
 
   // Close Management (new)
   { name: "close-heartbeat", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager", "Controller"],
@@ -975,7 +980,8 @@ const SKILL_ASSET = {
   "intercompany-elimination-checker": "intercompany-elimination-checker.zip",
   "vendor-accrual-confirmation-mailer": "vendor-accrual-confirmation-mailer.zip",
   "close-calendar-blocker": "close-calendar-blocker.zip",
-  "stakeholder-deck-drafter": "stakeholder-deck-drafter.zip"
+  "stakeholder-deck-drafter": "stakeholder-deck-drafter.zip",
+  "skill-reviewer": "skill-reviewer.zip"
 };
 
 // Slug → folder name in repo for raw SKILL.md fetches

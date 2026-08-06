@@ -1,0 +1,42 @@
+{
+  "classification": {
+    "category": 1,
+    "confidence": 95,
+    "rationale": "Prepaid rollforward workpaper goes straight into the audit binder — a direct audit evidence producer.",
+    "performs_review_function": false,
+    "review_function_confidence": 85
+  },
+  "ipe": { "pattern": "D", "confidence": 85, "rationale": "Amortization method and service-period judgments directly affect the financial statements." },
+  "headline": "Golden fixture: every control explicitly present in the submission text.",
+  "checklist": [
+    { "id": "E1", "status": "pass", "confidence": 95, "evidence": "select the close period and the entity before any data is pulled", "note": "Scope locked before any pull." },
+    { "id": "E2", "status": "pass", "confidence": 95, "evidence": "The pull is timestamped (UTC)", "note": "Pull timestamped." },
+    { "id": "E3", "status": "pass", "confidence": 95, "evidence": "carries its source transaction ID and journal entry number from the GL", "note": "Source IDs on every line." },
+    { "id": "A1", "status": "pass", "confidence": 95, "evidence": "their name and email are recorded in the workpaper sign-off block", "note": "Preparer of record captured." },
+    { "id": "A2", "status": "pass", "confidence": 95, "evidence": "watermarked DRAFT until the named reviewer signs the Cover tab", "note": "Reviewer gate before final state." },
+    { "id": "A3", "status": "pass", "confidence": 95, "evidence": "requires the user to type CONFIRM before the NetSuite import CSV is written", "note": "Write-back gated." },
+    { "id": "P1", "status": "pass", "confidence": 95, "evidence": "the skill reconciles the snapshot back to the source system", "note": "Pattern D evidence design present." },
+    { "id": "P2", "status": "pass", "confidence": 95, "evidence": "row count of the extract is tied to the source query count", "note": "Completeness tie-out before compute." },
+    { "id": "P3", "status": "pass", "confidence": 95, "evidence": "The user must review and explicitly approve the Judgments tab before the rollforward tabs are finalized", "note": "Judgments signed off." },
+    { "id": "R1", "status": "pass", "confidence": 95, "evidence": "run metadata footer (run ID, UTC timestamp, period, entity, snapshot hash, skill version)", "note": "Run-stamped output." },
+    { "id": "R2", "status": "pass", "confidence": 95, "evidence": "All downstream tabs compute from the locked snapshot, never from a live re-query", "note": "Snapshot locked." },
+    { "id": "R3", "status": "pass", "confidence": 95, "evidence": "listed on the Exclusions tab with the reason — nothing is silently dropped", "note": "Exclusions surfaced." },
+    { "id": "M1", "status": "pass", "confidence": 95, "evidence": "5% of performance materiality, with the basis and the memo reference stated", "note": "Documented, defensible basis." },
+    { "id": "M2", "status": "pass", "confidence": 95, "evidence": "Items above the threshold are flagged on the Review tab for human review", "note": "Above-threshold flagged." },
+    { "id": "M3", "status": "pass", "confidence": 95, "evidence": "listed on the Below-Threshold tab and aggregated by account", "note": "Below-threshold surfaced and aggregated." },
+    { "id": "O1", "status": "pass", "confidence": 95, "evidence": "formatted xlsx workpaper with Cover, Rollforward, Judgments, Checks, Review", "note": "Auditor-consumable artifact." },
+    { "id": "O2", "status": "pass", "confidence": 95, "evidence": "The Cover tab carries the sign-off block: preparer name and timestamp", "note": "Sign-off block present." },
+    { "id": "O3", "status": "pass", "confidence": 95, "evidence": "Every computed cell uses a live Excel formula (SUM, SUMIF, EOMONTH cascades)", "note": "Formulas, not hard-coded values." }
+  ],
+  "dimensions": [
+    { "name": "Evidence Trail & Sourcing", "what_works": "Scope lock, timestamped pull, source IDs.", "what_to_fix": "", "example_fix": "" },
+    { "name": "Attribution & Sign-Off", "what_works": "Preparer, reviewer gate, CONFIRM gate.", "what_to_fix": "", "example_fix": "" },
+    { "name": "IPE Risk & Evidence Sufficiency", "what_works": "Tie-outs before compute; judgments approved.", "what_to_fix": "", "example_fix": "" },
+    { "name": "Reproducibility & Snapshot Discipline", "what_works": "Locked snapshot, run stamps, exclusions tab.", "what_to_fix": "", "example_fix": "" },
+    { "name": "Materiality & Threshold Awareness", "materiality_concepts": ["scoping", "aggregation", "threshold basis"], "what_works": "Memo-referenced threshold with aggregation.", "what_to_fix": "", "example_fix": "" },
+    { "name": "Auditor-Consumable Output", "what_works": "Formatted xlsx with sign-off and formulas.", "what_to_fix": "", "example_fix": "" }
+  ],
+  "rewritten_description": "",
+  "top_three_remediations": ["None — golden fixture.", "None.", "None."],
+  "what_to_celebrate": "Every dimension explicitly engineered for audit-readiness."
+}
