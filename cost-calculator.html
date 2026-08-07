@@ -267,18 +267,19 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
   </div>
 
   <footer>
-    <b>Reference rates (per million tokens):</b> Sonnet 4.6 — $3 input / $15 output · Opus 4.8 — $5 input / $25 output. Output is 5× input on both models, so output volume drives cost.
+    <b>Reference rates (per million tokens):</b> Sonnet 5 — $3 input / $15 output (intro $2 / $10 through Aug 31, 2026) · Opus 5 — $5 input / $25 output · Fable 5 — $10 input / $50 output. Output is 5× input on all three models, so output volume drives cost.
     <b>Complexity presets (tokens in / out per run):</b> Simple ≈ 120k / 5k · Medium ≈ 250k / 10k · Complex ≈ 450k / 20k · Very complex ≈ 780k / 36k.
     Enterprise = per-seat fee (billed annually) covering Claude web/desktop/mobile, Claude Code, and Cowork; usage billed separately at standard API rates.
     Source: <a href="https://platform.claude.com/docs/en/about-claude/pricing">platform.claude.com pricing</a>.
-    <span style="display:block;margin-top:12px">Estimates for planning, not a quote. Published API rates, June 2026 · Models: Sonnet 4.6 &amp; Opus 4.8.</span>
+    <span style="display:block;margin-top:12px">Estimates for planning, not a quote. Published API rates, August 2026 · Models: Sonnet 5, Opus 5 &amp; Fable 5.</span>
   </footer>
 </div>
 
 <script>
 const PRICING = {
-  'opus-4.8':   { in:5, out:25 },
-  'sonnet-4.6': { in:3, out:15 }
+  'fable-5':  { in:10, out:50 },
+  'opus-5':   { in:5,  out:25 },
+  'sonnet-5': { in:3,  out:15 }
 };
 
 // Complexity presets — approximate tokens per run, so users don't have to estimate tokens.
@@ -291,12 +292,12 @@ const TOKENS = {
 const CX_ORDER = ['simple','medium','complex','heavy'];
 
 let workflows = [
-  { name:'Flux / variance explanations',  model:'sonnet-4.6', cx:'medium',  runs:150 },
-  { name:'Journal entry prep from docs',   model:'sonnet-4.6', cx:'medium',  runs:80  },
-  { name:'Balance sheet reconciliations',  model:'sonnet-4.6', cx:'complex', runs:80  },
-  { name:'Accrual / prepaid analysis',     model:'opus-4.8',   cx:'complex', runs:25  },
-  { name:'Dept / GL coding anomaly scan',  model:'opus-4.8',   cx:'heavy',   runs:10  },
-  { name:'Month-end close review & retro', model:'opus-4.8',   cx:'heavy',   runs:6   }
+  { name:'Flux / variance explanations',  model:'sonnet-5', cx:'medium',  runs:150 },
+  { name:'Journal entry prep from docs',   model:'sonnet-5', cx:'medium',  runs:80  },
+  { name:'Balance sheet reconciliations',  model:'sonnet-5', cx:'complex', runs:80  },
+  { name:'Accrual / prepaid analysis',     model:'opus-5',   cx:'complex', runs:25  },
+  { name:'Dept / GL coding anomaly scan',  model:'opus-5',   cx:'heavy',   runs:10  },
+  { name:'Month-end close review & retro', model:'opus-5',   cx:'heavy',   runs:6   }
 ];
 
 let advanced = false;  // false = pick a complexity; true = type exact token counts
@@ -343,7 +344,7 @@ function renderTable(){
   const body=$('wfBody'); body.innerHTML='';
   workflows.forEach((wf,i)=>{
     const tr=document.createElement('tr');
-    const modelSel = `<td class="mdl">${cdrop(i,'model',wf.model,[{v:'opus-4.8',label:'Opus 4.8'},{v:'sonnet-4.6',label:'Sonnet 4.6'}])}</td>`;
+    const modelSel = `<td class="mdl">${cdrop(i,'model',wf.model,[{v:'sonnet-5',label:'Sonnet 5'},{v:'opus-5',label:'Opus 5'},{v:'fable-5',label:'Fable 5'}])}</td>`;
     const tk = tokensFor(wf);
     const mid = advanced
       ? `<td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="inTok" value="${tk.in.toLocaleString('en-US')}"></td><td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="outTok" value="${tk.out.toLocaleString('en-US')}"></td>`
@@ -424,7 +425,7 @@ $('wfBody').addEventListener('click', e=>{
 });
 $('addRow').addEventListener('click', ()=>{
   if(window.posthog) posthog.capture('calc_add_workflow');
-  workflows.push({name:'New workflow', model:'sonnet-4.6', cx:'medium', runs:10});
+  workflows.push({name:'New workflow', model:'sonnet-5', cx:'medium', runs:10});
   renderTable();
 });
 ['seats','seatPrice','usOnly'].forEach(id=>{
