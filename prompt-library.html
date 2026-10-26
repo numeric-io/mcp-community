@@ -43,18 +43,23 @@ html, body { margin: 0; }
 .site-nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; padding: 7px 13px; border-radius: 7px; transition: all .12s; white-space: nowrap; }
 .site-nav-links a:hover { color: var(--text-primary); background: rgba(20,19,15,0.05); }
 .site-nav-links a.active { color: var(--color-accent-900); background: var(--bg-accent); }
-@media (max-width: 700px) { .site-nav-inner { gap: 10px; padding: 0 16px; } .site-nav-links a { padding: 7px 9px; font-size: 12px; } }
+@media (max-width: 700px) { .site-nav-inner { gap: 10px; padding: 0 16px; } .site-nav-links a { padding: 7px 9px; font-size: 12px; } .site-nav-links{min-width:0;overflow-x:auto;scrollbar-width:none} }
 ::selection { background: var(--color-accent-100); }
-.tile:hover { border-color: var(--text-primary) !important; box-shadow: var(--shadow-md); }
+.tile:hover { border-color: #CFC8B5 !important; }
 .btnx:hover { border-color: var(--text-primary); color: var(--text-primary); }
 .chipbtn:hover { border-color: var(--text-primary); color: var(--text-primary); }
-.cardx { background: var(--bg-default); border: 1px solid var(--border-default); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; transition: all .2s ease; cursor: pointer; }
-.cardx:hover { border-color: var(--text-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.copybtn { padding: 7px 8px; border: 1px solid var(--border-subtle); background: var(--bg-default); border-radius: 6px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: 500; transition: all .12s; flex: 1; }
-.copybtn:hover { border-color: var(--text-primary); color: var(--text-primary); }
-.copybtn.primary { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
-.copybtn.primary:hover { background: var(--color-accent-700); border-color: var(--color-accent-700); }
+.cardx { background: #FAF8F5; border: 1px solid #E9E5D9; border-radius: 6px; padding: 18px 18px 16px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; cursor: pointer; }
+.cardx:hover { border-color: #CFC8B5; background: #fff; }
+.cardx-arrow { margin-left: auto; color: var(--text-tertiary); font-size: 15px; transition: color .15s, transform .15s; }
+.cardx:hover .cardx-arrow { color: var(--text-primary); transform: translate(1px, -1px); }
+.cardx-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #7036FF; font-weight: 500; margin-bottom: 8px; }
+.cardx-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid #E9E5D9; }
+.cardx-conns { min-width: 0; line-height: 1.6; font-family: "DM Mono", ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.dia { color: #7036FF; margin: 0 6px; font-size: 8px; vertical-align: 1px; }
+.copybtn { padding: 7px 14px; border: 1px solid var(--border-subtle); background: var(--bg-default); border-radius: 6px; font-size: 11.5px; color: var(--text-primary); cursor: pointer; font-family: inherit; font-weight: 500; transition: all .12s; flex-shrink: 0; }
+.copybtn:hover { background: #0B0B0B; color: #fff; border-color: #0B0B0B; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono&display=swap" rel="stylesheet">
 </head>
 <body style="background:var(--bg); font-family:var(--font-family-body);">
 <nav class="site-nav">
@@ -65,6 +70,7 @@ html, body { margin: 0; }
       <a href="prompt-library.html" class="active">Prompt Library</a>
       <a href="operating-model.html">The new way of working</a>
       <a href="cost-calculator.html">What it costs</a>
+      <a href="resources.html">Resources</a>
     </div>
   </div>
 </nav>
@@ -154,7 +160,7 @@ function displayVariant(w) { return preview() ? w.variants[0] : bestVariant(w); 
 
 function tileHtml(m) {
   const on = !!sel[m.id];
-  return `<div class="tile" onclick="toggle('${m.id}')" title="${esc(m.name)}" style="flex:0 0 calc((100% - 32px) / 5); box-sizing:border-box; display:flex; flex-direction:column; align-items:center; gap:7px; padding:14px 8px 11px; border-radius:10px; cursor:pointer; transition:border-color .15s, background .15s, box-shadow .15s; border:1px solid ${on ? 'var(--color-accent-700)' : 'var(--border-default)'}; ${on ? 'box-shadow:0 0 0 1px var(--color-accent-700);' : ''} background:${on ? 'var(--bg-accent)' : 'var(--bg-default)'};">
+  return `<div class="tile" onclick="toggle('${m.id}')" title="${esc(m.name)}" style="flex:0 0 calc((100% - 32px) / 5); box-sizing:border-box; display:flex; flex-direction:column; align-items:center; gap:7px; padding:14px 8px 11px; border-radius:6px; cursor:pointer; transition:border-color .15s, background .15s, box-shadow .15s; border:1px solid ${on ? '#7036FF' : '#E9E5D9'}; ${on ? 'box-shadow:0 0 0 1px #7036FF;' : ''} background:${on ? '#F3EEFF' : '#FAF8F5'};">
     <div style="width:48px; height:48px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:filter .15s, opacity .15s; filter:${on ? 'none' : 'grayscale(1)'}; opacity:${on ? 1 : 0.5};"><img src="${logoSrc(m)}" onerror="fb(this,'${m.id}')" alt="${esc(m.name)}" style="width:32px; height:32px; object-fit:contain; display:block;"></div>
     <div style="font-size:11px; font-weight:500; line-height:13px; text-align:center; white-space:nowrap; color:${on ? 'var(--text-primary)' : 'var(--text-tertiary)'}; transition:color .15s;">${esc(m.name)}</div>
   </div>`;
@@ -205,19 +211,20 @@ function render() {
     return;
   }
 
-  const grid = ws => `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(326px, 1fr)); gap:16px;">` + ws.map(w => {
+  const grid = ws => `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(326px, 100%), 1fr)); gap:16px;">` + ws.map(w => {
     const v = displayVariant(w);
     return `<div class="cardx" onclick="openDetail(${w.slug})">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
         <div style="display:flex; gap:4px; flex-wrap:wrap;">${v.map(id => chipHtml(id, pv ? true : !!sel[id])).join('')}</div>
+        <span class="cardx-arrow">↗</span>
       </div>
-      <div style="font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:6px;">${esc(w.category)}</div>
-      <div style="font-size:15px; font-weight:600; color:var(--text-primary); letter-spacing:-.005em; line-height:1.3; margin-bottom:10px;">${esc(w.title)}</div>
-      <div style="background:var(--bg-alt-subtle); border:1px solid var(--border-default); border-radius:6px; padding:11px 13px; font-size:12.5px; line-height:1.55; color:var(--text-primary); font-style:italic; margin-bottom:12px;">&ldquo;${esc(w.prompt)}&rdquo;</div>
-      <div style="font-size:12.5px; line-height:1.5; color:var(--text-secondary); flex:1; margin-bottom:14px;">${esc(w.payoff)}</div>
-      <div style="display:flex; gap:6px; padding-top:12px; border-top:1px solid var(--border-default);">
-        <button class="copybtn primary" onclick="event.stopPropagation();copyPrompt(${w.slug}, this)">Copy prompt</button>
-        <button class="copybtn" onclick="event.stopPropagation();openDetail(${w.slug})">Details</button>
+      <div class="cardx-eyebrow">${esc(w.category)}</div>
+      <div style="font-size:17px; font-weight:500; color:#080707; letter-spacing:-.005em; line-height:1.3; margin-bottom:10px;">${esc(w.title)}</div>
+      <div style="background:#fff; border:1px solid #EFECE3; border-radius:4px; padding:11px 13px; font-size:12.5px; line-height:1.55; color:var(--text-primary); font-style:italic; margin-bottom:12px;">&ldquo;${esc(w.prompt)}&rdquo;</div>
+      <div style="font-size:13px; line-height:1.5; color:rgba(8,7,7,.62); flex:1; margin-bottom:16px;">${esc(w.payoff)}</div>
+      <div class="cardx-foot">
+        <span class="cardx-conns">${v.map(id => esc(byId[id].name)).join('<span class="dia">◆</span>')}</span>
+        <button class="copybtn" onclick="event.stopPropagation();copyPrompt(${w.slug}, this)">Copy prompt</button>
       </div>
     </div>`;
   }).join('') + `</div>`;
@@ -274,28 +281,29 @@ function openDetail(slug) {
 
   document.getElementById('modal').innerHTML = `
   <div onclick="closeDetail()" style="position:fixed; inset:0; background:rgba(20,19,15,.4); display:flex; align-items:center; justify-content:center; padding:24px; z-index:50; font-family:var(--font-family-body);">
-    <div onclick="event.stopPropagation()" style="width:100%; max-width:480px; max-height:88vh; overflow-y:auto; background:var(--bg-default); border:1px solid var(--border-default); border-radius:var(--radius-2xl); box-shadow:var(--shadow-2xl);">
-      <div style="position:relative; padding:30px 24px 24px; background:var(--bg-alt-subtle); border-bottom:1px solid var(--border-default);">
+    <div onclick="event.stopPropagation()" style="width:100%; max-width:520px; max-height:88vh; overflow-y:auto; background:var(--bg-default); border:1px solid #E9E5D9; border-radius:8px; box-shadow:var(--shadow-2xl);">
+      <div style="position:relative; padding:30px 24px 24px; background:#FAF8F5; border-bottom:1px solid #E9E5D9;">
         <button class="btnx" onclick="closeDetail()" aria-label="Close" style="position:absolute; top:14px; right:14px; width:26px; height:26px; border:1px solid var(--border-default); background:var(--bg-default); border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-tertiary); font-size:15px; line-height:1; padding:0;">×</button>
         <div style="display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">${logosRow}</div>
       </div>
       <div style="padding:20px 24px 24px;">
-        <h3 style="font-size:16px; font-weight:600; letter-spacing:-.01em; color:var(--text-primary); margin:0 0 8px;">${esc(w.title)}</h3>
-        <p style="font-size:13px; line-height:18px; color:var(--text-secondary); margin:0 0 18px;">${esc(w.payoff)}</p>
-        <div style="margin:0 0 20px; padding:12px 14px; background:var(--bg-alt-subtle); border:1px solid var(--border-default); border-radius:8px;">
+        <div style="font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#7036FF; font-weight:500; margin:0 0 8px;">${esc(w.category)}</div>
+        <h3 style="font-family:var(--serif); font-size:28px; font-weight:400; line-height:1.05; text-transform:uppercase; color:#080707; margin:0 0 10px;">${esc(w.title)}</h3>
+        <p style="font-size:14px; line-height:1.55; color:rgba(8,7,7,.7); margin:0 0 18px;">${esc(w.payoff)}</p>
+        <div style="margin:0 0 20px; padding:12px 14px; background:#fff; border:1px solid #EFECE3; border-radius:4px;">
           <div style="display:flex; align-items:center; gap:6px; margin-bottom:7px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--color-accent-700)"><path d="M12 2 C 12.8 6.6, 13.8 8.2, 17 9 C 20.2 9.8, 21.8 10.2, 22 12 C 21.8 13.8, 20.2 14.2, 17 15 C 13.8 15.8, 12.8 17.4, 12 22 C 11.2 17.4, 10.2 15.8, 7 15 C 3.8 14.2, 2.2 13.8, 2 12 C 2.2 10.2, 3.8 9.8, 7 9 C 10.2 8.2, 11.2 6.6, 12 2 Z"></path></svg>
-            <span style="font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-tertiary);">Sample Prompt</span>
-            <button class="btnx" onclick="copyPrompt(${w.slug}, this)" style="margin-left:auto; height:22px; padding:0 10px; border:1px solid var(--border-default); background:var(--bg-default); border-radius:5px; font-family:inherit; font-size:10px; font-weight:600; color:var(--text-secondary); cursor:pointer;">Copy</button>
+            <span style="font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(8,7,7,.5);">Sample Prompt</span>
+            <button class="btnx" onclick="copyPrompt(${w.slug}, this)" style="margin-left:auto; height:24px; padding:0 12px; border:1px solid #080707; background:#080707; border-radius:4px; font-family:inherit; font-size:11px; font-weight:500; color:#fff; cursor:pointer;">Copy</button>
           </div>
           <div style="font-size:12px; line-height:17px; color:var(--text-primary); font-style:italic;">&ldquo;${esc(w.prompt)}&rdquo;</div>
         </div>
         ${heavy}
-        <div style="font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:11px;">How It Connects</div>
+        <div style="font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(8,7,7,.5); margin-bottom:11px;">How It Connects</div>
         <div style="display:flex; flex-direction:column; gap:12px;">${conns}</div>
         <div style="margin-top:14px; font-size:11px; line-height:15px; color:var(--text-tertiary);">Or a comparable tool — any connector above can be swapped for another service&rsquo;s MCP that covers the same functions.</div>
         <div style="margin-top:20px; padding-top:18px; border-top:1px solid var(--border-default);">
-          <div style="font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:9px;">What It Does</div>
+          <div style="font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(8,7,7,.5); margin-bottom:9px;">What It Does</div>
           <p style="font-size:12px; line-height:18px; color:var(--text-secondary); margin:0;">${esc(w.summary)}</p>
         </div>
       </div>

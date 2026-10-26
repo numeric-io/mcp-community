@@ -35,7 +35,7 @@
     padding:5px 13px;font-size:12px;color:var(--ink-2);margin-top:16px}
 
   .grid{display:grid;gap:16px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .card{background:var(--surface);border:1px solid #E9E5D9;border-radius:6px}
   .card .hd{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
   .card .hd h2{font-size:11px;margin:0;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3)}
   .dot{width:8px;height:8px;border-radius:50%;flex:none}
@@ -77,7 +77,17 @@
   td.num .calc{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
   .wf-name input{min-width:0;width:100%}
   .tok input{width:100%;text-align:right;font-variant-numeric:tabular-nums}
-  .runs input{width:66px;text-align:right;margin-left:auto}
+  .runs input[type=number]{width:76px;text-align:right;flex:none;font-variant-numeric:tabular-nums}
+  .runs .slide{min-width:190px}
+  /* runs slider: drag for a quick estimate, or type an exact number in the box beside */
+  .slide{display:flex;align-items:center;gap:12px}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:4px;margin:0;padding:0;border:0;border-radius:2px;cursor:pointer;
+    background:linear-gradient(var(--accent),var(--accent)) 0/var(--p,0%) 100% no-repeat,var(--line-2)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--accent);box-shadow:0 1px 3px rgba(20,19,15,.18)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--accent);box-shadow:0 1px 3px rgba(20,19,15,.18)}
+  input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+  .mbar{height:4px;border-radius:2px;background:var(--usage-soft);margin-top:6px;overflow:hidden}
+  .mbar i{display:block;height:100%;width:0;background:var(--usage);border-radius:2px;transition:width .2s ease}
   .mdl select{width:100%}
   .delbtn{border:none;background:transparent;color:var(--ink-3);cursor:pointer;font-size:17px;line-height:1;padding:4px 7px;border-radius:6px}
   .delbtn:hover{background:#F6E9E6;color:#BC5B4D}
@@ -140,7 +150,9 @@
   .site-nav-links a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 13px;border-radius:7px;transition:all .12s;white-space:nowrap}
   .site-nav-links a:hover{color:var(--ink);background:rgba(20,19,15,.05)}
   .site-nav-links a.active{color:var(--accent-deep);background:var(--accent-soft)}
-  @media(max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px}}
+  @media(max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px} .site-nav-links{min-width:0;overflow-x:auto;scrollbar-width:none}}
+  td input[type=range]{height:4px}
+  @media(max-width:700px){.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.tablewrap table{min-width:820px}.grid>*{min-width:0}}
 </style>
 <!-- PostHog analytics: autocaptures pageviews + clicks. Replace the key below. -->
 <script>
@@ -171,6 +183,7 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
       <a href="prompt-library.html">Prompt Library</a>
       <a href="operating-model.html">The new way of working</a>
       <a href="cost-calculator.html" class="active">What it costs</a>
+      <a href="resources.html">Resources</a>
     </div>
   </div>
 </nav>
@@ -303,6 +316,8 @@ let workflows = [
 let advanced = false;  // false = pick a complexity; true = type exact token counts
 
 const $ = id => document.getElementById(id);
+// Paints the slider track up to the thumb.
+const fill = r => r.style.setProperty('--p', (r.value - r.min) / (r.max - r.min) * 100 + '%');
 const fmt  = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0 = n => '$' + Math.round(n).toLocaleString('en-US');
 const fmt3 = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:3});
@@ -338,8 +353,8 @@ const TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 function renderTable(){
   $('wfHead').innerHTML = advanced
-    ? `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="num">Input tok / run</th><th class="num">Output tok / run</th><th class="num">Cost / run</th><th class="num">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`
-    : `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="cmplx">Complexity</th><th class="num">Cost / run</th><th class="num">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`;
+    ? `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="num">Input tok / run</th><th class="num">Output tok / run</th><th class="num">Cost / run</th><th class="runs">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`
+    : `<tr><th class="wf-name">Workflow</th><th class="mdl">Model</th><th class="cmplx">Complexity</th><th class="num">Cost / run</th><th class="runs">Runs / mo</th><th class="num">Monthly</th><th></th></tr>`;
 
   const body=$('wfBody'); body.innerHTML='';
   workflows.forEach((wf,i)=>{
@@ -349,9 +364,10 @@ function renderTable(){
     const mid = advanced
       ? `<td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="inTok" value="${tk.in.toLocaleString('en-US')}"></td><td class="num tok"><input type="text" inputmode="numeric" data-i="${i}" data-f="outTok" value="${tk.out.toLocaleString('en-US')}"></td>`
       : `<td class="cmplx">${cdrop(i,'cx',wf.cx,CX_ORDER.map(k=>({v:k,label:TOKENS[k].label})))}</td>`;
-    tr.innerHTML = `<td class="wf-name"><input type="text" data-i="${i}" data-f="name" value="${wf.name.replace(/"/g,'&quot;')}"></td>${modelSel}${mid}<td class="num"><span class="calc" id="cpr-${i}">$0</span></td><td class="num runs"><input type="number" min="0" step="1" data-i="${i}" data-f="runs" value="${wf.runs}"></td><td class="num"><span class="calc" id="cm-${i}">$0</span></td><td><button class="delbtn" data-del="${i}" title="Remove" aria-label="Remove workflow">${TRASH}</button></td>`;
+    tr.innerHTML = `<td class="wf-name"><input type="text" data-i="${i}" data-f="name" value="${wf.name.replace(/"/g,'&quot;')}"></td>${modelSel}${mid}<td class="num"><span class="calc" id="cpr-${i}">$0</span></td><td class="runs"><div class="slide"><input type="number" min="0" step="1" data-i="${i}" data-f="runs" value="${wf.runs}"><input type="range" min="0" max="300" step="1" data-i="${i}" data-f="runs" value="${wf.runs}" aria-label="Runs per month"></div></td><td class="num"><span class="calc" id="cm-${i}">$0</span><div class="mbar"><i id="mb-${i}"></i></div></td><td><button class="delbtn" data-del="${i}" title="Remove" aria-label="Remove workflow">${TRASH}</button></td>`;
     body.appendChild(tr);
   });
+  body.querySelectorAll('input[type=range]').forEach(fill);
 
   refresh();
 }
@@ -359,13 +375,16 @@ function renderTable(){
 function refresh(){
   const s=settings();
   let usage=0;
+  const monthly = workflows.map(wf => costPerRun(wf,s) * wf.runs);
+  const top = Math.max(...monthly, 0);
   workflows.forEach((wf,i)=>{
     const cpr=costPerRun(wf,s);
-    const cm=cpr*wf.runs;
+    const cm=monthly[i];
     usage+=cm;
-    const a=$('cpr-'+i), b=$('cm-'+i);
+    const a=$('cpr-'+i), b=$('cm-'+i), bar=$('mb-'+i);
     if(a) a.textContent=fmt3(cpr);
     if(b) b.textContent=fmt(cm);
+    if(bar) bar.style.width = top ? cm / top * 100 + '%' : '0';
   });
   const planMonthly=s.seats*s.seatPrice;
   const grand=planMonthly+usage;
@@ -392,6 +411,7 @@ function onEdit(e){
   if(f==='name'||f==='model'){ workflows[i][f]=t.value; }
   else if(f==='cx'){ workflows[i].cx=t.value; workflows[i].inTok=undefined; workflows[i].outTok=undefined; }
   else { workflows[i][f]=Math.max(0, parseFloat(String(t.value).replace(/[^0-9.]/g,''))||0); }
+  if(f==='runs') t.closest('.slide').querySelectorAll('input').forEach(x=>{ if(x!==t) x.value=workflows[i].runs; if(x.type==='range') fill(x); });
   refresh();
   if(e.type==='change' && (f==='inTok'||f==='outTok')) t.value = workflows[i][f].toLocaleString('en-US');
 }

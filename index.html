@@ -48,8 +48,6 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); fo
 .hero-right { text-align: right; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
 .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
 
-.dl-toolkit { font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--accent); color: #fff; border: 1px solid var(--accent); cursor: pointer; font-family: inherit; transition: all .15s; }
-.dl-toolkit:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
 .btn-ghost { font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-2); cursor: pointer; font-family: inherit; transition: all .15s; text-decoration: none; display: inline-block; text-align: center; }
 .btn-ghost:hover { border-color: var(--ink); text-decoration: none; }
 .text-link { font-size: 12px; color: var(--ink-2); text-decoration: none; padding: 2px 0; transition: color .12s; }
@@ -77,18 +75,19 @@ select:focus { outline: none; border-color: var(--ink); }
 
 /* GRID */
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; transition: all .2s ease; position: relative; cursor: pointer; }
-.card:hover { border-color: var(--ink); transform: translateY(-2px); box-shadow: var(--shadow); }
-.card-title { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0 0 14px; line-height: 1.3; letter-spacing: -0.005em; }
+.card { background: #FAF8F5; border: 1px solid #E9E5D9; border-radius: 6px; padding: 18px 18px 16px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; position: relative; cursor: pointer; }
+.card:hover { border-color: #CFC8B5; background: #fff; }
+.card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.card-icon { width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #7036FF; background: #EFE9FF; }
+.card-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #7036FF; font-weight: 500; }
+.card-arrow { margin-left: auto; color: var(--ink-3); font-size: 15px; transition: color .15s, transform .15s; }
+.card:hover .card-arrow { color: var(--ink); transform: translate(1px, -1px); }
+.card-title { font-size: 17px; font-weight: 500; color: #080707; margin: 0 0 8px; line-height: 1.3; letter-spacing: -0.005em; }
 .beta-tag { display: inline-block; margin-left: 8px; padding: 2px 7px 2px 18px; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); background: transparent; border: 1px dashed var(--ink-3); border-radius: 999px; vertical-align: middle; position: relative; top: -2px; }
 .beta-tag::before { content: ""; position: absolute; left: 7px; top: 50%; transform: translateY(-50%); width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(107,91,211,0.2); animation: beta-pulse 1.8s ease-in-out infinite; }
 @keyframes beta-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(107,91,211,0.35); } 50% { box-shadow: 0 0 0 4px rgba(107,91,211,0.0); } }
 .beta-tag-lg { padding: 3px 9px 3px 20px; font-size: 10px; }
 .beta-tag-lg::before { left: 8px; }
-.qbo-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.02em; border-radius: 999px; background: #E6F1EC; color: #1F7A52; border: 1px solid #BFE0CD; white-space: nowrap; vertical-align: middle; cursor: help; }
-.qbo-tag::before { content: "✓"; font-weight: 700; font-size: 9px; }
-.ess-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.02em; border-radius: 999px; background: var(--accent-soft); color: var(--accent-deep); border: 1px solid #C9C0EE; white-space: nowrap; vertical-align: middle; cursor: help; }
-.ess-tag::before { content: "★"; font-size: 9px; }
 
 /* Highlight toggles */
 .hl-filters { display: flex; align-items: center; gap: 8px; margin: -8px 0 24px; flex-wrap: wrap; }
@@ -112,22 +111,12 @@ select:focus { outline: none; border-color: var(--ink); }
 .essential-highlight .card:not(.card-essential) { opacity: 0.5; }
 .qbo-highlight .card:not(.card-qbo):hover,
 .essential-highlight .card:not(.card-essential):hover { opacity: 1; }
-.meta-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; min-height: 22px; flex-wrap: wrap; }
-.meta-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); width: 64px; flex-shrink: 0; padding-top: 3px; }
-.pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
-.pill-cat { color: var(--ink); background: rgba(0,0,0,0.05); position: relative; padding-left: 18px; }
-.pill-cat::before { content: ''; position: absolute; left: 7px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--cat-color, var(--ink-3)); }
-.pill-role { background: #F1ECDF; color: var(--ink-2); }
-.pill-type { font-weight: 600; padding-left: 9px; padding-right: 9px; border: 1px solid; }
-.pill-type-workflows  { background: #FEF3E0; color: #B86E00; border-color: #F6D9A7; }
-.pill-type-automation { background: #EDEAF8; color: #4F3FB8; border-color: #D4CDF1; }
-.pill-type-insights   { background: #E6F5EC; color: #0E7A4A; border-color: #BFE3CD; }
-.card-desc { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; margin: 12px 0 16px; flex: 1; }
-.card-actions { display: flex; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
-.card-actions button { flex: 1; padding: 7px 8px; border: 1px solid var(--line-2); background: var(--surface); border-radius: 6px; font-size: 11.5px; color: var(--ink-2); cursor: pointer; font-family: inherit; font-weight: 500; transition: all .12s; }
-.card-actions button:hover { border-color: var(--ink); color: var(--ink); }
-.card-actions button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
-.card-actions button.primary:hover { background: var(--accent); border-color: var(--accent); }
+.card-desc { font-size: 13px; color: rgba(8,7,7,.62); line-height: 1.5; margin: 0 0 16px; flex: 1; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid #E9E5D9; }
+.card-out { font-family: "DM Mono", ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.card-out .fec-dia { margin: 0 6px; }
+.card-foot button { padding: 7px 14px; border: 1px solid var(--line-2); background: var(--surface); border-radius: 6px; font-size: 11.5px; font-weight: 500; color: var(--ink); cursor: pointer; font-family: inherit; flex-shrink: 0; }
+.card-foot button:hover { background: #0B0B0B; color: #fff; border-color: #0B0B0B; }
 
 /* CATEGORY DIVIDERS */
 .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin: 32px 0 14px; display: flex; align-items: center; gap: 10px; }
@@ -146,15 +135,37 @@ select:focus { outline: none; border-color: var(--ink); }
 .modal-title { font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
 .modal-close { background: none; border: none; cursor: pointer; padding: 4px; color: var(--ink-3); font-size: 22px; line-height: 1; }
 .modal-close:hover { color: var(--ink); }
-.modal-meta { padding: 18px 28px; border-bottom: 1px solid var(--line); background: #FBF9F4; }
-.modal-meta-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
-.modal-meta-row:last-child { margin-bottom: 0; }
-.modal-meta-row .meta-label { width: 80px; }
 .modal-body { padding: 22px 28px; font-size: 13.5px; line-height: 1.65; color: var(--ink); max-height: 320px; overflow-y: auto; }
 .modal-body p { margin: 0 0 12px; }
 .modal-actions { padding: 16px 28px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: flex-end; background: #FAF7F1; }
 .modal-actions button { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); transition: all .15s; }
 .modal-actions button:hover { border-color: var(--ink); }
+/* Skill pop-up */
+#modal .modal { max-width: 760px; border-radius: 8px; }
+.mx-head { padding: 26px 30px 22px; background: #FAF8F5; border-bottom: 1px solid #E9E5D9; }
+.mx-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.mx-icon { width: 32px; height: 32px; border-radius: 4px; background: #EFE9FF; color: #7036FF; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.mx-type { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #7036FF; font-weight: 500; }
+.mx-close { margin-left: auto; background: none; border: 0; color: var(--ink-3); font-size: 22px; cursor: pointer; line-height: 1; padding: 4px; }
+.mx-close:hover { color: var(--ink); }
+.mx-title { font-family: var(--serif); font-size: 34px; font-weight: 400; line-height: 1.02; text-transform: uppercase; letter-spacing: 0.005em; margin: 0 0 10px; color: #080707; }
+.mx-sum { font-size: 14.5px; line-height: 1.55; color: rgba(8,7,7,.7); margin: 0 0 16px; max-width: 60ch; }
+.mx-outs { display: flex; gap: 8px; flex-wrap: wrap; }
+.mx-out { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #E9E5D9; border-radius: 4px; padding: 5px 10px; font-size: 12.5px; color: #080707; }
+.mx-out i { color: #7036FF; font-size: 15px; }
+.mx-facts { display: grid; grid-template-columns: 1.3fr 1fr 1fr; border-bottom: 1px solid #E9E5D9; }
+.mx-fact { padding: 14px 18px; border-left: 1px solid #E9E5D9; }
+.mx-fact:first-child { border-left: 0; padding-left: 30px; }
+.mx-label { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(8,7,7,.5); margin-bottom: 6px; }
+.mx-val { font-size: 13px; color: #080707; line-height: 1.5; }
+.mx-val code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
+#modal .modal-body { padding: 22px 30px; }
+#modal .modal-body > p { color: rgba(8,7,7,.7); }
+#modal .modal-actions { background: #fff; border-top: 1px solid #E9E5D9; padding: 14px 30px; }
+#modal .modal-actions button { border-radius: 4px; }
+#modal .modal-actions .btn-dark { background: #080707; border-color: #080707; color: #fff; }
+#modal .modal-actions .btn-dark:hover { background: #7036FF; border-color: #7036FF; }
+@media (max-width: 640px) { .mx-facts { grid-template-columns: 1fr; } .mx-fact { border-left: 0; border-top: 1px solid #E9E5D9; padding-left: 30px; } .mx-title { font-size: 26px; } }
 .btn-primary { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
 .btn-primary:hover { background: var(--accent-deep) !important; border-color: var(--accent-deep) !important; }
 .btn-copy.copied { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
@@ -187,14 +198,15 @@ select:focus { outline: none; border-color: var(--ink); }
 @media (max-width: 560px) { .prov-layout { grid-template-columns: 1fr; } }
 
 
-.m-tabs { display: flex; gap: 4px; margin: 16px 0 12px; border-bottom: 1px solid var(--line); }
-.m-tab { background: none; border: none; padding: 8px 14px; font-size: 12px; font-weight: 500; color: var(--ink-3); cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .12s; }
+.m-tabs { display: flex; gap: 20px; margin: 16px 0 12px; border-bottom: 1px solid #E9E5D9; }
+.m-tab { background: none; border: none; padding: 8px 0; font-size: 13px; font-weight: 500; color: rgba(8,7,7,.5); cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .m-tab:hover { color: var(--ink); }
-.m-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.m-tab.active { color: #7036FF; border-bottom-color: #7036FF; }
 .m-tab-body { min-height: 200px; }
 .prompt-box { background: #FBF9F4; border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; font-family: "SF Mono", Menlo, monospace; font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; margin: 0; color: var(--ink); }
 .ask-list { margin: 0; padding: 0; list-style: none; }
-.ask-list li { padding: 8px 12px; background: #FBF9F4; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 6px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: var(--ink-2); font-style: italic; }
+.ask-list li { display: flex; gap: 10px; align-items: center; padding: 9px 12px; background: #fff; border: 1px solid #EFECE3; border-radius: 4px; margin-bottom: 6px; font-size: 13px; color: #080707; }
+.ask-list li::before { content: '›'; color: #7036FF; font-weight: 600; font-size: 16px; line-height: 1; }
 .md-preview { font-size: 13px; line-height: 1.65; color: var(--ink-2); padding: 2px 2px 4px; }
 .md-preview > *:first-child { margin-top: 0 !important; }
 .md-preview > *:last-child { margin-bottom: 0 !important; }
@@ -278,42 +290,13 @@ select:focus { outline: none; border-color: var(--ink); }
 .how-foot-text a { color: var(--accent-deep); font-weight: 500; text-decoration: none; }
 .how-foot-text a:hover { text-decoration: underline; }
 
-/* Section headers (Gallery + Library) */
+/* Section headers */
 .sec-head { margin: 0 0 14px; padding-top: 22px; border-top: 1px solid var(--line); }
 .sec-head-first { padding-top: 0; border-top: none; }
 .sec-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); display: block; margin: 0 0 6px; }
 .sec-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin: 0; letter-spacing: -0.015em; line-height: 1.15; }
 
-/* Gallery — main page carousel */
-.gallery { margin: 4px 0 28px; }
-.gallery-wrap { position: relative; }
-.gallery-track { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 4px 4px 4px 0; -ms-overflow-style: none; scrollbar-width: none; }
-.gallery-track::-webkit-scrollbar { display: none; }
-.gallery-frame { flex: 0 0 320px; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; padding: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; transition: all 0.18s ease; cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
-.gallery-frame:hover { border-color: var(--ink-2); transform: translateY(-1px); box-shadow: var(--shadow); }
-.gallery-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.gallery-frame-video { position: relative; cursor: pointer; }
-.gallery-frame-video img { object-fit: cover; border-radius: 7px; }
-.gallery-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: rgba(20,19,15,0.78); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; padding-left: 4px; pointer-events: none; box-shadow: 0 4px 14px rgba(0,0,0,0.3); transition: transform 0.15s ease; }
-.gallery-frame-video:hover .gallery-play { transform: translate(-50%, -50%) scale(1.08); }
-.gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line-2); cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--ink-2); font-family: inherit; box-shadow: 0 2px 8px rgba(20,19,15,0.08); transition: all 0.15s ease; }
-.gallery-arrow:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
-.gallery-arrow:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
-.gallery-arrow-prev { left: -10px; }
-.gallery-arrow-next { right: -10px; }
 
-/* Lightbox */
-.lightbox { position: fixed; inset: 0; background: rgba(20,19,15,0.85); display: none; align-items: center; justify-content: center; padding: 40px; z-index: 200; cursor: zoom-out; }
-.lightbox.open { display: flex; }
-.lightbox img { max-width: calc(100% - 120px); max-height: 100%; width: auto; height: auto; border-radius: 6px; box-shadow: 0 24px 64px rgba(0,0,0,0.4); background: var(--bg); padding: 24px; }
-.lightbox iframe { width: min(1100px, calc(100% - 120px)); aspect-ratio: 16 / 9; max-height: 100%; border: 0; border-radius: 8px; box-shadow: 0 24px 64px rgba(0,0,0,0.4); background: #000; }
-.lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: rgba(255,255,255,0.8); font-size: 28px; cursor: pointer; line-height: 1; padding: 4px 10px; z-index: 2; }
-.lightbox-close:hover { color: #fff; }
-.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); font-size: 30px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: all 0.15s ease; z-index: 2; backdrop-filter: blur(8px); }
-.lightbox-nav:hover:not(:disabled) { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
-.lightbox-nav:disabled { opacity: 0.25; cursor: default; }
-.lightbox-prev { left: 24px; }
-.lightbox-next { right: 24px; }
 
 /* SHARED SITE NAV */
 .site-nav{line-height:1.45;-webkit-font-smoothing:antialiased;position:sticky; top: 0; z-index: 50; background: rgba(247,244,238,0.88); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
@@ -324,55 +307,34 @@ select:focus { outline: none; border-color: var(--ink); }
 .site-nav-links a { font-size: 13px; font-weight: 500; color: var(--ink-2); text-decoration: none; padding: 7px 13px; border-radius: 7px; transition: all .12s; white-space: nowrap; }
 .site-nav-links a:hover { color: var(--ink); background: rgba(20,19,15,0.05); }
 .site-nav-links a.active { color: var(--accent-deep); background: var(--accent-soft); }
-@media (max-width: 700px) { .site-nav-inner { gap: 10px; padding: 0 16px; } .site-nav-links a { padding: 7px 9px; font-size: 12px; } }
+@media (max-width: 700px) { .site-nav-inner { gap: 10px; padding: 0 16px; } .site-nav-links a { padding: 7px 9px; font-size: 12px; } .site-nav-links{min-width:0;overflow-x:auto;scrollbar-width:none} }
 
 /* CROSS-LINK BANDS (Why + Cost) */
-.band { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
-.band-shift { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0; }
-.band-shift-text { padding: 28px 30px; display: flex; flex-direction: column; justify-content: center; }
-.band-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
-.band-quote { font-family: ui-serif, Georgia, "Times New Roman", serif; font-size: 26px; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 14px; }
-.band-quote em { font-style: italic; color: var(--accent); }
-.band-desc { font-size: 13.5px; color: var(--ink-2); line-height: 1.6; margin: 0 0 20px; max-width: 52ch; }
-.band-cta { align-self: flex-start; font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: var(--accent); color: #fff; text-decoration: none; border: 1px solid var(--accent); transition: all .15s; }
-.band-cta:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
-.band-shift-art { background: linear-gradient(135deg, var(--accent-soft) 0%, #F3F0FB 100%); border-left: 1px solid var(--line); display: flex; align-items: center; justify-content: center; padding: 24px; }
-.band-shift-art .figure { width: 100%; max-width: 320px; }
-.band-shift-art svg { width: 100%; height: auto; display: block; }
-.band-shift-art .fig-cap { font-size: 11.5px; color: var(--ink-2); line-height: 1.45; margin: 14px 2px 0; text-align: center; }
-.band-shift-art .fig-cap strong { color: var(--ink); font-weight: 600; }
-
-.band-cost { padding: 28px 30px; }
-
-/* FLIP CARD (op model / cost) */
-.band-flip { margin: 6px 0 30px; }
-.flip-tabs { display: flex; align-items: center; gap: 2px; padding: 6px 20px 0; border-bottom: 1px solid var(--line); }
-.flip-tab { background: none; border: none; padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--ink-3); cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .12s, border-color .12s; }
-.flip-tab:hover { color: var(--ink); }
-.flip-tab.active { color: var(--accent-deep); border-bottom-color: var(--accent); font-weight: 600; }
-.flip-shell { position: relative; }
-.flip-card { position: relative; width: 100%; }
-.flip-face { opacity: 1; transition: opacity .45s ease; }
-.flip-face.hidden { display: none; }
-.band-cost-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
-.band-cost-title { font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -0.015em; color: var(--ink); margin: 0; }
-.band-cost-title em { font-style: italic; color: var(--accent); }
-.band-cost-sub { font-size: 13px; color: var(--ink-2); line-height: 1.55; max-width: 60ch; margin: 6px 0 0; }
-.band-cost-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
-.band-cost-stat { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: #FBF9F4; }
-.band-cost-stat .v { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
-.band-cost-stat .l { font-size: 11px; color: var(--ink-3); margin-top: 4px; line-height: 1.4; }
-@media (max-width: 760px) { .band-shift { grid-template-columns: 1fr; } .band-shift-art { border-left: none; border-top: 1px solid var(--line); } .band-cost-stats { grid-template-columns: 1fr; } }
+/* Finance Engineer Course banner: dark band in the course page's own style */
+.fec { position: relative; background: #0B0B0B; border-radius: 14px; overflow: hidden; margin: 6px 0 30px; }
+.fec-pixels { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fec-inner { position: relative; padding: 24px 32px; max-width: 700px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.fec-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 4px; }
+.fec-mono { font-family: "DM Mono", "SF Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; margin: 0; }
+.fec-mono-dim { color: rgba(255,255,255,.55); }
+.fec-dia { color: var(--accent); margin: 0 5px; font-size: 8px; vertical-align: 1px; }
+.fec-title { font-family: var(--serif); font-weight: 500; font-size: 32px; line-height: 1; text-transform: uppercase; color: #fff; margin: 2px 0 0; }
+.fec-sub { color: rgba(255,255,255,.78); font-size: 13.5px; line-height: 1.55; margin: 0; max-width: 48ch; }
+.fec-cta { background: #fff; color: #0B0B0B; font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 6px; text-decoration: none; }
+.fec-cta:hover { background: var(--accent-soft); }
+@media (max-width: 760px) { .fec-inner { padding: 22px 20px 24px; } .fec-title { font-size: 26px; } }
 
 @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 880px) { .grid { grid-template-columns: repeat(2, 1fr); } .filters { grid-template-columns: 1fr 1fr; grid-auto-flow: row; } .stat-meta { display: none; } .hero { flex-direction: column; align-items: flex-start; gap: 18px; } .hero-right { align-items: flex-start; text-align: left; } .how-modal .modal-title { font-size: 26px; } .how-modal .modal-head { padding: 22px 24px 8px; } .how-modal .modal-body { padding: 4px 24px 24px; } .how-step { grid-template-columns: 64px 1fr; gap: 16px; padding: 22px 0 24px; } .how-step-num { font-size: 24px; } .gallery-frame { flex-basis: 280px; } }
-@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .hero-title { font-size: 36px; } .stat { padding: 0 16px; min-width: 90px; } .stat:first-child { padding-left: 0; } .how-modal .modal-title { font-size: 22px; } .how-step { grid-template-columns: 1fr; gap: 4px; padding: 20px 0 22px; } .how-step-num { font-size: 22px; } .gallery-frame { flex-basis: 240px; } }
+@media (max-width: 880px) { .grid { grid-template-columns: repeat(2, 1fr); } .filters { grid-template-columns: 1fr 1fr; grid-auto-flow: row; } .stat-meta { display: none; } .hero { flex-direction: column; align-items: flex-start; gap: 18px; } .hero-right { align-items: flex-start; text-align: left; } .how-modal .modal-title { font-size: 26px; } .how-modal .modal-head { padding: 22px 24px 8px; } .how-modal .modal-body { padding: 4px 24px 24px; } .how-step { grid-template-columns: 64px 1fr; gap: 16px; padding: 22px 0 24px; } .how-step-num { font-size: 24px; } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .hero-title { font-size: 36px; } .stat { padding: 0 16px; min-width: 90px; } .stat:first-child { padding-left: 0; } .how-modal .modal-title { font-size: 22px; } .how-step { grid-template-columns: 1fr; gap: 4px; padding: 20px 0 22px; } .how-step-num { font-size: 22px; } }
 </style>
 <!-- PostHog analytics: autocaptures pageviews + clicks. Replace the key below. -->
 <script>
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'https://us.i.posthog.com', defaults: '2025-05-24' });
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 </head>
 <body>
 <nav class="site-nav">
@@ -397,6 +359,7 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
       <a href="prompt-library.html">Prompt Library</a>
       <a href="operating-model.html">The new way of working</a>
       <a href="cost-calculator.html">What it costs</a>
+      <a href="resources.html">Resources</a>
     </div>
   </div>
 </nav>
@@ -411,7 +374,6 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
       </div>
     </div>
     <div class="hero-right">
-      <button class="dl-toolkit" onclick="downloadToolkit()">⬇ Download full toolkit</button>
       <a class="text-link" href="https://github.com/numeric-io/mcp-community" target="_blank" rel="noopener">View on GitHub →</a>
     </div>
   </header>
@@ -424,109 +386,20 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
     <div class="stat-meta">All skills connect to Numeric via the Numeric MCP. <a href="https://help.numeric.io/articles/7292808089-numeric-mcp-server" target="_blank" rel="noopener" style="color:var(--accent-deep)">Connect your workspace →</a></div>
   </div>
 
-  <section class="band band-flip">
-    <div class="flip-tabs">
-      <button class="flip-tab active" type="button" id="flip-tab-0" onclick="setFlip(0)">The new way of working</button>
-      <button class="flip-tab" type="button" id="flip-tab-1" onclick="setFlip(1)">What it costs</button>
-    </div>
-    <div class="flip-shell" id="flip-shell">
-      <div class="flip-card" id="flip-card">
-        <div class="flip-face flip-face-front" id="flip-face-front">
-          <div class="band-shift">
-            <div class="band-shift-text">
-              <p class="band-eyebrow">The new way of working</p>
-              <p class="band-quote">The keystrokes leave. <em>The judgment stays.</em></p>
-              <p class="band-desc">These skills hand the rote work — pulling data, drafting, formatting — to your AI assistant, so your team spends its hours on the judgment only people bring: the review, the call, the relationships. See what AI-enabled close work looks like, and how the machine earns more of the routine over time.</p>
-              <a class="band-cta" href="operating-model.html" onclick="window.posthog&&posthog.capture('cta_read_explainer')">Read the explainer →</a>
-            </div>
-            <div class="band-shift-art">
-              <figure class="figure" aria-label="Chart: how the close workday shifts from rote work toward judgment with AI">
-                <svg viewBox="0 0 300 196" xmlns="http://www.w3.org/2000/svg" role="img">
-                  <text x="6" y="13" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#8A857A">HOW THE CLOSE DAY IS SPENT</text>
-
-                  <!-- Row 1: by hand -->
-                  <text x="6" y="40" font-size="12" font-weight="600" fill="#14130F">By hand</text>
-                  <rect x="6"   y="48" width="214" height="26" rx="6" fill="#CFC8B8"/>
-                  <rect x="224" y="48" width="70"  height="26" rx="6" fill="#6B5BD3"/>
-                  <text x="113" y="65" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">Rote · 75%</text>
-                  <text x="259" y="65" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">25%</text>
-
-                  <!-- Row 2: with AI -->
-                  <text x="6" y="104" font-size="12" font-weight="600" fill="#14130F">With AI skills</text>
-                  <rect x="6"   y="112" width="74"  height="26" rx="6" fill="#CFC8B8"/>
-                  <rect x="84"  y="112" width="210" height="26" rx="6" fill="#6B5BD3"/>
-                  <text x="43"  y="129" font-size="11" font-weight="600" fill="#5C5746" text-anchor="middle">25%</text>
-                  <text x="189" y="129" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Judgment · 75%</text>
-
-                  <!-- Legend -->
-                  <rect x="6"   y="166" width="11" height="11" rx="3" fill="#CFC8B8"/>
-                  <text x="22"  y="175" font-size="10.5" fill="#8A857A">Rote — data, drafting, formatting</text>
-                  <rect x="6"   y="183" width="11" height="11" rx="3" fill="#6B5BD3"/>
-                  <text x="22"  y="192" font-size="10.5" fill="#8A857A">Judgment — review, decisions, people</text>
-                </svg>
-                <figcaption class="fig-cap">Same work — <strong>fewer keystrokes, more judgment.</strong></figcaption>
-              </figure>
-            </div>
-          </div>
-        </div>
-        <div class="flip-face flip-face-back hidden" id="flip-face-back">
-          <div class="band-cost">
-            <div class="band-cost-head">
-              <div>
-                <h2 class="band-cost-title">What it might cost to run your <em>month-end close</em></h2>
-                <p class="band-cost-sub">Two core components: a fixed per-seat plan covering Claude across web, desktop, Code, and Cowork — plus variable token usage that scales with how often each workflow runs. Model the mix for your own team.</p>
-              </div>
-              <a class="band-cta" href="cost-calculator.html" onclick="window.posthog&&posthog.capture('cta_open_calculator')">Open the cost calculator →</a>
-            </div>
-            <div class="band-cost-stats">
-              <div class="band-cost-stat"><div class="v">$200<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Plan — 10 seats at $20/seat, fixed</div></div>
-              <div class="band-cost-stat"><div class="v">~$342<span style="font-size:13px;color:var(--ink-3);font-weight:500">/mo</span></div><div class="l">Token usage — default close workflow mix, variable</div></div>
-              <div class="band-cost-stat"><div class="v">~$54<span style="font-size:13px;color:var(--ink-3);font-weight:500">/seat/mo</span></div><div class="l">Effective all-in, before any time saved</div></div>
-            </div>
-            <p class="band-cost-sub" style="margin:0">Illustrative — a 10-person team on the default workflow mix at September 2026 API rates. Swap in your own seat count, run volumes, and model choices in the calculator.</p>
-          </div>
-        </div>
+  <section class="fec">
+    <canvas class="fec-pixels" aria-hidden="true"></canvas>
+    <div class="fec-inner">
+      <p class="fec-mono fec-mono-dim">Free · CPE-accredited · Self-study</p>
+      <h2 class="fec-title">The Finance Engineer Course</h2>
+      <p class="fec-sub">Become the greatest finance engineer on your team. No coding required.</p>
+      <div class="fec-row">
+        <a class="fec-cta" href="https://www.numeric.io/finance-engineer-course" target="_blank" rel="noopener" onclick="window.posthog&&posthog.capture('cta_finance_engineer_course')">Register free →</a>
+        <p class="fec-mono">5.5 CPE credits <span class="fec-dia">◆</span> 5 modules <span class="fec-dia">◆</span> 15 chapters <span class="fec-dia">◆</span> ~5 hours</p>
       </div>
     </div>
   </section>
 
-  <section class="gallery">
-    <div class="sec-head sec-head-first">
-      <div class="sec-eyebrow">Gallery</div>
-      <h2 class="sec-title">Examples from the wild</h2>
-    </div>
-    <div class="gallery-wrap">
-      <button class="gallery-arrow gallery-arrow-prev" type="button" onclick="galleryScroll(-1)" aria-label="Previous">‹</button>
-      <div class="gallery-track" id="gallery-track">
-        <a class="gallery-frame gallery-frame-video" href="https://www.loom.com/embed/cff9383995204a2690745ec05ddbf5bf" onclick="openLightbox(this.href, '');return false" title="End to End Accruals Processing using the Numeric MCP">
-          <img src="https://cdn.loom.com/sessions/thumbnails/cff9383995204a2690745ec05ddbf5bf-4721fb30789479ab.gif" alt="End to End Accruals Processing using the Numeric MCP" loading="lazy" />
-          <span class="gallery-play" aria-hidden="true">▶</span>
-        </a>
-        <a class="gallery-frame gallery-frame-video" href="https://www.loom.com/embed/fde92f5fa7e34c1eae249a78b181bfd3" onclick="openLightbox(this.href, '');return false" title="Creating Journal Entries via the Numeric MCP">
-          <img src="https://cdn.loom.com/sessions/thumbnails/fde92f5fa7e34c1eae249a78b181bfd3-8a39b1319ed43e7d.gif" alt="Creating Journal Entries via the Numeric MCP" loading="lazy" />
-          <span class="gallery-play" aria-hidden="true">▶</span>
-        </a>
-        <a class="gallery-frame" href="assets/mcp-overview.png" onclick="openLightbox(this.href, '');return false">
-          <img src="assets/mcp-overview.png" alt="" loading="lazy" />
-        </a>
-        <a class="gallery-frame" href="assets/mcp-architecture.png" onclick="openLightbox(this.href, '');return false">
-          <img src="assets/mcp-architecture.png" alt="" loading="lazy" />
-        </a>
-        <a class="gallery-frame" href="assets/service-leave-accrual.png" onclick="openLightbox(this.href, '');return false">
-          <img src="assets/service-leave-accrual.png" alt="" loading="lazy" />
-        </a>
-        <a class="gallery-frame" href="assets/close-dashboard.png" onclick="openLightbox(this.href, '');return false">
-          <img src="assets/close-dashboard.png" alt="" loading="lazy" />
-        </a>
-        <a class="gallery-frame" href="assets/fsli-breakdown.png" onclick="openLightbox(this.href, '');return false">
-          <img src="assets/fsli-breakdown.png" alt="" loading="lazy" />
-        </a>
-      </div>
-      <button class="gallery-arrow gallery-arrow-next" type="button" onclick="galleryScroll(1)" aria-label="Next">›</button>
-    </div>
-  </section>
-
-  <div class="sec-head">
+  <div class="sec-head sec-head-first">
     <div class="sec-eyebrow">Skills</div>
     <h2 class="sec-title">Browse the library</h2>
   </div>
@@ -559,27 +432,16 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
 
 <div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="modal">
-    <div class="modal-head">
-      <h2 class="modal-title" id="m-title"></h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-meta" id="m-meta"></div>
+    <div class="mx-head" id="m-head"></div>
+    <div class="mx-facts" id="m-meta"></div>
     <div class="modal-body" id="m-body"></div>
     <div class="modal-actions">
       <button onclick="closeModal()">Close</button>
-      <button class="btn-primary" id="m-download" onclick="downloadActive()">⬇ Download</button>
+      <button class="btn-dark" id="m-download" onclick="downloadActive()">Download skill</button>
     </div>
   </div>
 </div>
 
-
-<div class="lightbox" id="lightbox" onclick="if(event.target===this) closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
-  <button class="lightbox-nav lightbox-prev" id="lightbox-prev" type="button" onclick="event.stopPropagation();lightboxStep(-1)" aria-label="Previous">‹</button>
-  <img id="lightbox-img" src="" alt="" />
-  <iframe id="lightbox-frame" src="" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="Video"></iframe>
-  <button class="lightbox-nav lightbox-next" id="lightbox-next" type="button" onclick="event.stopPropagation();lightboxStep(1)" aria-label="Next">›</button>
-</div>
 
 <div class="modal-overlay" id="about-overlay" onclick="if(event.target===this) closeAbout()">
   <div class="modal how-modal">
@@ -712,153 +574,234 @@ const TYPES = {
   "Insights":   { color: "#17B26A" },
 };
 
+// Output formats shown on cards and in the pop-up: [Tabler icon, label]
+const OUTPUTS = {
+  excel:   ["ti-file-spreadsheet", "Excel"],
+  csv:     ["ti-file-type-csv", "CSV"],
+  je:      ["ti-file-invoice", "JE import"],
+  slack:   ["ti-brand-slack", "Slack"],
+  numeric: ["ti-circle-check", "Numeric"],
+  dash:    ["ti-layout-dashboard", "Dashboard"],
+  cal:     ["ti-calendar", "Calendar"],
+  email:   ["ti-mail", "Email"],
+  pdf:     ["ti-file-type-pdf", "PDF"],
+  zip:     ["ti-package", "Skill .zip"],
+  chat:    ["ti-message", "Chat summary"],
+  doc:     ["ti-file-text", "Doc"],
+  score:   ["ti-gauge", "Scorecard"],
+};
+
 const SKILLS = [
   // Setup & Migration
   { name: "accounting-skill-builder", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Controller", "Close Manager", "Implementation"],
     title: "Skill Builder — Build Production-Ready Skills",
+    summary: "Interviews you about a workflow and builds a production-ready skill around your Numeric data and controls. A five-reviewer panel signs off before you get the installable bundle.",
+    icon: "ti-tool", outputs: ["zip"],
     desc: "Build a production-ready Numeric skill tailored to your team's exact process — one that survives a real close, not a demo. It interviews you to understand the workflow, designs the automation around your Numeric data and controls (and the Numeric MCP toolkit), builds it, then runs it through a five-reviewer panel (controller, process expert, auditor, adversarial, on-call) that must sign off before you ship. Start from scratch or fork one of the Numeric skills here as a base. The output is a working .zip skill bundle you can install, refine, and reuse.",
     asks: ["Build me a skill for our accruals process", "Help me automate my flux review", "Customize close-pulse for our team", "Design a skill to replace this spreadsheet"] },
 
   { name: "checklist-to-numeric", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Close Manager"],
     title: "Checklist Importer — Spreadsheet to Numeric",
+    summary: "Turns any close checklist spreadsheet into a Numeric import workbook, auto-detecting the columns. Clean tasks land on the import tab and anything questionable is flagged with the reason.",
+    icon: "ti-list-check", outputs: ["excel"],
     desc: "Converts any close checklist spreadsheet into a Numeric-ready import workbook. Auto-detects column mappings from any xlsx or csv format. Clean validated tasks land on the import tab; anything that needs review is flagged separately with the issue called out.",
     asks: ["Import my close checklist into Numeric", "Convert this spreadsheet into Numeric tasks", "Migrate my checklist to Numeric"] },
   { name: "rec-to-numeric", qbo: true, type: "Workflows", category: "Setup & Migration", roles: ["Implementation", "Controller"],
     title: "Rec Assignment Importer — Spreadsheet to Numeric",
+    summary: "Turns your balance sheet rec assignments workbook into a Numeric import file. Maps preparers and reviewers to emails and resolves entity IDs and old account names along the way.",
+    icon: "ti-arrows-exchange", outputs: ["excel"],
     desc: "Converts an existing balance sheet reconciliation assignments workbook into a Numeric-ready import file. Pulls the live chart of accounts, maps preparers and reviewers to emails, handles entity ID lookups and legacy account name aliases, and outputs a clean 3-tab Excel workbook ready to upload directly to Numeric.",
     asks: ["Build the rec import file", "Convert our BS rec assignments to Numeric", "Import balance sheet recs into Numeric"] },
 
   // Journals & Transactions
   { name: "complete-accruals-task", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Accrual Identification & Journal Entry",
+    summary: "Reads your accrual tasks and GL data to find what needs to be accrued. Builds the supporting workbook and the journal entries, ready to post to NetSuite.",
+    icon: "ti-receipt", outputs: ["excel", "je"],
     desc: "Pulls accrual-related tasks from your Numeric close checklist, analyzes the underlying GL data to identify potential accruals that need to be booked, and builds the full supporting workbook as evidence — then generates the corresponding journal entries ready for NetSuite posting. The entire accrual workflow in one conversation.",
     asks: ["Run the accruals for this period", "What accruals do we need to book?", "Identify and create the month-end accrual entries"] },
   { name: "journal-entry", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "AP Analyst"],
     title: "Journal Entry — Generate, Validate & Post",
+    summary: "Turns open journal entry tasks into balanced entries with a formula-first Excel workpaper. Posts straight to NetSuite, or hands you an import file for QuickBooks Online, Xero, or Sage Intacct.",
+    icon: "ti-notebook", outputs: ["excel", "je"],
     desc: "Pulls outstanding journal entry tasks from your Numeric close checklist, reads the supporting workbook or documentation, generates balanced journal entries with a formula-first Excel workpaper, and emits an import file in your ERP's format — NetSuite, QuickBooks Online, Xero, or Sage Intacct. Posts directly to NetSuite via the NetSuite MCP; for the others it hands you a ready-to-import file. From checklist task to booked entry — no manual rekeying.",
     asks: ["Post the outstanding journal entries", "Process the JE tasks from the checklist", "Generate the JE import file for QuickBooks", "Complete and post the JEs with this support"] },
   { name: "dept-anomaly-scan", type: "Insights", category: "Journals & Transactions", roles: ["Senior Accountant", "Audit Lead"],
     title: "Department Anomaly Scan — GL Miscoding Cleanup",
+    summary: "Scans your GL for spend hitting the wrong department, like vendors that are consistently miscoded. Surfaces the patterns and generates the reclass journal entry to fix them.",
+    icon: "ti-radar", outputs: ["je"],
     desc: "Scans your Numeric workspace's GL data for department coding anomalies — expenses hitting the wrong cost center, vendors consistently miscoded, accounts landing in unexpected departments. Surfaces patterns and generates the NetSuite reclass journal entry CSV to fix them.",
     asks: ["Scan for department anomalies", "Find GL miscodings", "Anything miscoded this period?"] },
 
   // Close Management
   { name: "close-pulse", essential: true, qbo: true, type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Pulse — Live Close Dashboard",
+    summary: "Shows where your close stands without opening Numeric: completion rates, overdue items by materiality, and blockers. Tells you whether you're ahead of or behind pace.",
+    icon: "ti-activity", outputs: ["chat"],
     desc: "You shouldn't have to open Numeric to know where your close stands. Close Pulse pulls task completion rates, surfaces overdue items flagged by materiality, maps blocking dependencies, and tells you whether you're ahead or behind pace — all in a single conversation. Built for controllers and close managers who need a fast, honest read on close health.",
     asks: ["How's the close going?", "What's overdue?", "Are we on track?", "Who's behind?"] },
   { name: "close-retro", qbo: true, type: "Insights", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Retrospective — Post-Close Analysis",
+    summary: "Reviews a finished close using task timelines, review cycles, late submissions, and workload. Shows which tasks keep running late and which reviewers are bottlenecks.",
+    icon: "ti-history", outputs: ["slack", "dash"],
     desc: "Every close has a story. Close Retro reads it for you — straight from your Numeric close data. After each period, it analyzes Numeric task completion timelines, review cycle counts, late submissions, assignee workload, and pace versus prior periods — then surfaces the patterns that matter. Which tasks consistently run late? Which reviewers are bottlenecks?",
     asks: ["How did the close go?", "What took longest?", "Compare this close to last quarter"] },
   { name: "overdue-task-nudge", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager"],
     title: "Overdue Task Nudges — Automated Reminders",
+    summary: "Finds overdue and due-soon tasks and sends each assignee a specific Slack reminder. Logs every nudge on the task so nobody gets chased twice.",
+    icon: "ti-bell-ringing", outputs: ["slack"],
     desc: "Chasing people down during close is a full-time job. This skill handles it. Reads your Numeric checklist for tasks that are overdue or due soon and sends targeted Slack DMs to assignees with contextual messages — not generic notifications. Reads reminder preferences from each Numeric task and logs every nudge back as a task comment to prevent duplicates.",
     asks: ["Remind assignees about overdue tasks", "Send close reminders", "Nudge people on late recs"] },
   { name: "cross-workspace-dashboard", qbo: true, type: "Insights", category: "Close Management", roles: ["Controller", "CFO"],
     title: "Cross-Workspace Dashboard — Portfolio View",
+    summary: "Rolls up close progress across all your Numeric workspaces into one portfolio view. Compares completion, overdue counts, pace, and workload side by side.",
+    icon: "ti-building-community", outputs: ["dash", "excel"],
     desc: "Managing multiple workspaces? This skill rolls up close progress across all your Numeric workspaces into a single portfolio-level view — completion rates, overdue counts, pace comparisons, and workload distribution side by side. Outputs as an HTML dashboard and companion Excel workbook.",
     asks: ["Close status across all entities", "Which workspaces are behind?", "Portfolio close view"] },
   { name: "close-checklist-diagnostic", qbo: true, type: "Insights", category: "Close Management", roles: ["Controller", "Close Manager", "Implementation"],
     title: "Close Checklist Diagnostic — Score & Coach Your Process",
+    summary: "Scores your close checklist on accountability, controls, completeness, and structure. Then coaches you through fixes and drafts missing task descriptions, without changing anything in Numeric.",
+    icon: "ti-stethoscope", outputs: ["score"],
     desc: "Reads your full Numeric close checklist and scores it across accountability, controls, completeness, structure, hygiene, and dependencies — then coaches you through fixes one mode at a time. Output is a controller-safe HTML scorecard suitable for sharing with a CFO or audit committee, plus an interactive Q&A that names specific Numeric tasks, suggests reassignments, and drafts missing descriptions. Read-only — never modifies your Numeric workspace.",
     asks: ["Diagnose my close checklist", "Score my close process", "Where are the gaps in my close?", "Coach me through improving my close"] },
 
   // Flux & Variance
   { name: "automatically-draft-flux-explanations", essential: true, type: "Automation", category: "Flux & Variance", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Auto-Draft Flux Explanations",
+    summary: "Drafts a first-pass explanation for every flux you're assigned, using six months of transaction history. Posts each draft to Numeric for you to review and submit.",
+    icon: "ti-chart-arrows-vertical", outputs: ["numeric"],
     desc: "Loops through every flux task assigned to the current user where an explanation has been requested, pulls six months of transaction line history per account, and posts concise first-pass drafts directly back to Numeric — ready for the preparer to review and submit. Appends below existing content rather than overwriting.",
     asks: ["Write my flux explanations", "Draft all my fluxes for this month", "Run the flux analysis for close"] },
   { name: "consolidated-flux", qbo: true, type: "Workflows", category: "Flux & Variance", roles: ["Controller", "CFO"],
     title: "Consolidated Flux — Variance Commentary Rollup",
+    summary: "Stitches flux commentary from across entities, reports, and periods into one narrative. Rolls child account explanations up to the group level and trends them across months.",
+    icon: "ti-stack-2", outputs: ["excel"],
     desc: "Pulls flux commentary from across your Numeric entities, reports, and periods and stitches it into a single unified narrative — rolling child account explanations up to group level, trending commentary across months. Essential for multi-entity teams running consolidation in Numeric who need one coherent story across the books.",
     asks: ["Consolidate flux across entities", "Roll up variance commentary", "Unified variance view"] },
 
   // Reporting & Analysis
   { name: "executive-report", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
     title: "Executive Report — Board-Ready Statements",
+    summary: "Turns a Numeric report into a polished, presentation-ready financial statement. Collapses child accounts into summary groups and rolls flux commentary into one-line notes.",
+    icon: "ti-briefcase", outputs: ["excel", "pdf"],
     desc: "Takes your Numeric report and produces the statements themselves — a polished, presentation-ready financial statement with child accounts collapsed into executive summary groups, flux commentary rolled into one-line annotations, and professional formatting. Output: a styled Excel workbook or PDF. This is the numbers artifact for CFO decks, board packages, and investor reporting — for the written narrative memo and the send (doc, approvals, review meeting), pair it with Stakeholder Deck Drafter.",
     asks: ["Format the financials for the board", "CFO-ready income statement", "Collapse the P&L into summary groups"] },
   { name: "financial-metrics", qbo: true, type: "Insights", category: "Reporting & Analysis", roles: ["Controller", "CFO", "FP&A Analyst"],
     title: "Financial Metrics — Ratios & Analytics Inline",
+    summary: "Adds standard financial ratios directly onto your income statement and balance sheet. Covers profitability, liquidity, solvency, and working capital for covenant and investor reporting.",
+    icon: "ti-math-function", outputs: ["excel"],
     desc: "Standard financial ratios computed directly onto your Numeric report. Covers profitability, liquidity, solvency, and working capital metrics — placed inline on both income statements and balance sheets. Useful for covenant reporting, investor updates, and management analysis.",
     asks: ["Add financial ratios to this report", "What's our gross margin?", "Check covenant compliance"] },
   { name: "report-txn-detail", type: "Workflows", category: "Reporting & Analysis", roles: ["Staff Accountant", "Senior Accountant", "Controller"],
     title: "Report + Transaction Detail",
+    summary: "Exports any Numeric report alongside every GL transaction behind it, in one workbook. Handy for explaining variances or answering auditor requests without a separate export.",
+    icon: "ti-zoom-in", outputs: ["excel"],
     desc: "Pulls any Numeric report alongside every underlying GL transaction line — in a single Excel workbook with two tabs. The financial statement on one side, every journal entry behind each number on the other. Built for controllers who need to explain variances or provide detail to auditors without a separate export.",
     asks: ["Report with transaction detail", "Income statement with journal entries", "Show me what makes up each line"] },
   { name: "clean-report-export", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["FP&A Analyst", "Controller"],
     title: "Clean Report Export — Analysis-Ready Data",
+    summary: "Exports any Numeric financial statement as a clean CSV or TSV, with no summary rows or formatting to strip out. Drops straight into Excel, pandas, or your BI tool.",
+    icon: "ti-table-export", outputs: ["csv"],
     desc: "Exports any Numeric financial statement as a clean CSV or TSV — no summary rows, no formatting artifacts, no manual cleanup. Drop it straight into Excel, pandas, or any BI tool. Supports multiple reports in a single run.",
     asks: ["Export the income statement", "Get me a clean CSV", "Pull the report data for analysis"] },
   { name: "ar-ap-aging", type: "Workflows", category: "Reporting & Analysis", roles: ["AR Analyst", "AP Analyst", "Controller"],
     title: "AR / AP Aging — Aging Schedule",
+    summary: "Builds an AR or AP aging from Numeric transaction lines, matching payments to the oldest open items first. Buckets balances from current to 90+ days, with a row that ties back to the GL.",
+    icon: "ti-hourglass", outputs: ["excel"],
     desc: "Pulls transaction lines from Numeric, FIFO-matches reductions against open items, buckets balances into Current / 1-30 / 31-60 / 61-90 / 90+ day bands, and produces a two-sheet Excel workbook with a GL reconciliation row. Works for both AR and AP in the same skill.",
     asks: ["Build me an AR aging", "AP aging as of March 31", "Who owes us money?", "What vendors are past due?"] },
 
   // Reconciliation
   { name: "numeric-rec-workbook", essential: true, qbo: true, type: "Workflows", category: "Reconciliation", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Numeric Rec Workbook — Leadsheet Builder",
+    summary: "Builds a leadsheet for any GL account with four periods of live balances and a rollforward tab. Can also add a Numeric tab to an existing workbook without touching your other sheets.",
+    icon: "ti-scale", outputs: ["excel"],
     desc: "Builds a polished Numeric Leadsheet workbook for any GL account — four periods of live balance data, EOMONTH date formulas, and a rollforward tab. One row per account × entity. Also supports adding a Numeric tab to an existing workbook without touching your other sheets.",
     asks: ["Build rec support for Prepaid", "Make me the leadsheet for this account"] },
 
   // Audit & Compliance
   { name: "audit-evidence-export", qbo: true, type: "Workflows", category: "Audit & Compliance", roles: ["Audit Lead", "Controller"],
     title: "Audit Evidence Export — Close Activity Workbook",
+    summary: "Packages a close period's full activity history into an Excel workbook for your auditors. Covers rec sign-offs, checklist completions, review notes, and a timeline of who did what.",
+    icon: "ti-file-certificate", outputs: ["excel"],
     desc: "Packages the complete activity history of any Numeric close period into a structured five-sheet Excel workbook — reconciliation submissions and approvals, checklist completions, review notes, and a full timeline of who did what and when. Hand it to your auditors and move on.",
     asks: ["Audit evidence for December close", "SOX evidence package", "Reconciliation sign-off history"] },
   { name: "skill-reviewer", type: "Insights", category: "Audit & Compliance", roles: ["Controller", "Audit Lead"],
     title: "Skill Reviewer — Audit-Readiness Review & Score",
+    summary: "Reviews any skill that touches financial data and tells you whether its work would survive an external audit. Scores segregation of duties, evidence trails, and materiality the same way every time.",
+    icon: "ti-shield-check", outputs: ["score"],
     desc: "Reviews any Claude Skill that touches financial data and tells you, control by control, whether its work product would survive external auditor scrutiny (PwC, EY, Deloitte). The model finds facts and evidence quotes; a bundled deterministic Python engine computes every score, blocker, and verdict — same findings in, same review out, every time. Output is a written controls walkthrough plus a styled HTML dashboard and an exportable run record. Covers segregation of duties, evidence trails, IPE risk, and materiality.",
     asks: ["Review this skill", "Is my skill audit-ready?", "SOX review my skill", "Grade this SKILL.md"] },
 
   // Close Management (new)
   { name: "close-heartbeat", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Heartbeat — Scheduled Daily Status to Slack",
+    summary: "Posts a close status digest to Slack every weekday morning: completion, overdue items, blockers, and pace. Stops on its own when the period is marked complete.",
+    icon: "ti-heartbeat", outputs: ["slack"],
     desc: "Reads live close health from Numeric — task completion, overdue items, blocking dependencies, and pace versus your deadline — and posts a structured digest each weekday morning during the close, then self-cancels when Numeric marks the period complete. Numeric is the source of truth; Slack is just where the daily read-out lands (falls back to an in-chat summary if no Slack connector is present).",
     asks: ["Set up daily close updates to Slack", "Schedule a close heartbeat", "Post close status to #accounting-close every morning"] },
   { name: "close-day-zero-kickoff", qbo: true, type: "Workflows", category: "Close Management", roles: ["Close Manager", "Controller"],
     title: "Close Kickoff — Open the Period in One Step",
+    summary: "Opens the new period in one step, setting due dates from a template and carrying assignments forward. Then announces everyone's task list in Slack.",
+    icon: "ti-flag", outputs: ["numeric", "slack"],
     desc: "Sets up your Numeric close checklist for the new period in one step: populates task due dates from a template (holiday-aware), and carries preparer/reviewer assignments forward from the prior period's Numeric tasks — without overwriting manual changes. Writes the assignments and dates straight into Numeric, then announces everyone's task list to Slack and optionally drops a kickoff event on the calendar. Full confirmation gate before anything is written.",
     asks: ["Kick off the month-end close", "Open the new close checklist", "Set up this month's close tasks"] },
   { name: "close-calendar-blocker", qbo: true, type: "Automation", category: "Close Management", roles: ["Close Manager"],
     title: "Close Calendar Blocker — Reserve Time for Close Work",
+    summary: "Turns each close task into a focus-time block on its owner's calendar, plus review slots for reviewers. Flags out-of-office conflicts and skips blocks it already created.",
+    icon: "ti-calendar-event", outputs: ["cal"],
     desc: "Pulls every close task's owner and due date from your Numeric checklist and turns it into focused-work calendar blocks per preparer, plus consolidated review slots for reviewers — so Numeric deadlines land on people's actual calendars. Detects OOO conflicts and writes due-date adjustments back into Numeric (with an audit comment), and skips duplicate blocks on re-runs. Numeric is the schedule of record; the calendar is just the delivery surface.",
     asks: ["Block calendars for close", "Add close due dates to everyone's calendar", "Reserve focus time for close tasks"] },
   { name: "review-queue-packager", qbo: true, type: "Automation", category: "Close Management", roles: ["Controller", "Close Manager"],
     title: "Review Queue Packager — Route Reviews to Reviewers",
+    summary: "Bundles every task awaiting review with its transaction detail and flux notes, sorted by risk for each reviewer. Enforces segregation of duties and sends each queue by Slack or email.",
+    icon: "ti-inbox", outputs: ["slack", "email"],
     desc: "Finds every Numeric task in review state and bundles each one's supporting Numeric transaction detail and flux commentary into a personalized, risk-sorted queue per reviewer. Enforces segregation of duties from Numeric's preparer/reviewer fields, withholds transaction detail for sensitive accounts, and logs each send back to the Numeric task to prevent duplicates. Routes via Slack or email — but the queue, the context, and the controls all come from Numeric.",
     asks: ["Route the review queue", "Notify reviewers what's ready", "Send pending approvals to reviewers"] },
 
   // Flux & Variance (new)
   { name: "pre-close-variance-alert", qbo: true, type: "Insights", category: "Flux & Variance", roles: ["Controller", "Close Manager"],
     title: "Pre-Close Variance Alert — Catch Surprises Early",
+    summary: "Compares this month's actuals to last month and budget before flux review starts. Flags material movers early and stops re-flagging items you've already acknowledged.",
+    icon: "ti-alert-triangle", outputs: ["slack"],
     desc: "Reads your Numeric report data to compare current-month actuals against prior period and budget before the flux step, then drills into Numeric transaction lines for the biggest movers — flagging accounts over a materiality threshold so you investigate surprises on day 3, not day 8. Learns which movements you've acknowledged (stored on the Numeric task) so it stops re-flagging known recurring items. Posts to Slack, but every number and every threshold lives in Numeric.",
     asks: ["What's already moved this month?", "Run a pre-close variance check", "Alert me on big variances before close"] },
 
   // Journals & Transactions (new)
   { name: "prepaid-amortization-scheduler", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Prepaid Amortization — Schedule, Workpaper & JE",
+    summary: "Keeps your prepaid amortization schedule in Numeric and calculates this month's entries. Ties the schedule to the actual balance, then builds the workpaper and the journal entry.",
+    icon: "ti-calendar-time", outputs: ["excel", "je"],
     desc: "Maintains your prepaid amortization schedule inside Numeric: computes the current period's straight-line entries with rounding true-up, reconciles the schedule against the actual prepaid balance via Numeric transaction lines before posting, and builds the workpaper plus a NetSuite-ready JE CSV. The schedule lives on the Numeric task description and carries forward every month — pull it up, confirm, post. No spreadsheet, no separate tracker.",
     asks: ["Run the prepaid amortization", "Generate this month's prepaid entries", "Amortize prepaids and build the workpaper"] },
   { name: "vendor-accrual-confirmation-mailer", essential: true, type: "Automation", category: "Journals & Transactions", roles: ["Staff Accountant", "Senior Accountant"],
     title: "Vendor Accrual Confirmations — Cutoff Outreach",
+    summary: "Finds vendors that billed last month but not this one, and estimates each likely accrual. Once you confirm, it emails the vendors and logs every request on the task.",
+    icon: "ti-mail-forward", outputs: ["email"],
     desc: "Reads your Numeric accrual task and the underlying GL transaction lines to find vendors that billed last period but haven't yet this one — the likely accruals — and estimates each from Numeric spend history. After you confirm the estimates and recipients, it emails the vendors to confirm and logs every outreach back to the Numeric task. Confirmed contacts and exclusions persist on the Numeric task, so each month refines rather than restarts.",
     asks: ["Send accrual confirmation emails", "Confirm period-end services with vendors", "Email vendors to confirm accruals"] },
   { name: "intercompany-elimination-checker", type: "Workflows", category: "Journals & Transactions", roles: ["Controller", "Senior Accountant"],
     title: "Intercompany Elimination — Match & Eliminate",
+    summary: "Matches intercompany payables and receivables across every entity and surfaces mismatches. Generates the correcting and elimination entries, and remembers known pairs for next close.",
+    icon: "ti-arrows-left-right", outputs: ["excel", "je"],
     desc: "Queries Numeric transaction lines across every entity in your consolidated workspace to match intercompany payable/receivable pairs, surface mismatches, and generate the correcting and elimination JEs for consolidation. Confirmed counterparty rules persist on the Numeric task, so next close auto-matches the known and only asks about the new. Built for multi-entity teams who close a group in Numeric.",
     asks: ["Check intercompany balances", "Find IC mismatches across entities", "Generate intercompany elimination entries"] },
 
   // Reporting & Analysis (new)
   { name: "stakeholder-deck-drafter", qbo: true, type: "Workflows", category: "Reporting & Analysis", roles: ["Controller", "CFO"],
     title: "Stakeholder Deck Drafter — Board Narrative & Distribution",
+    summary: "Drafts the narrative for your board or CFO package from Numeric metrics and flux notes. Then handles the send: shares the doc after your approval and schedules the review meeting.",
+    icon: "ti-presentation", outputs: ["doc"],
     desc: "Writes the story around the numbers and runs the send. Pulls headline metrics and flux commentary from Numeric and drafts the prose sections of the board/CFO package — revenue, opex, and headcount narratives from your preparers' flux notes — then builds a restricted-access doc, waits for your review and approval, shares it, and schedules the review meeting. This is the narrative memo and distribution workflow; for the formatted statements themselves, run Executive Report and attach its output.",
     asks: ["Draft the board narrative", "Write the close summary and schedule the review", "Turn our flux notes into the board memo"] },
 
 ];
 
 let active = null;
+
+// Card and pop-up titles drop the subtitle after the em dash.
+const shortTitle = s => s.title.split(' — ')[0];
+const outputLabels = s => s.outputs.map(k => escapeHtml(OUTPUTS[k][1])).join('<span class="fec-dia">◆</span>');
 
 function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
@@ -873,7 +816,7 @@ function render() {
     if (type && s.type !== type) return false;
     if (role && !s.roles.includes(role)) return false;
     if (q) {
-      const blob = (s.title + ' ' + s.desc + ' ' + s.roles.join(' ') + ' ' + (s.asks||[]).join(' ') + ' ' + s.category + ' ' + s.type).toLowerCase();
+      const blob = (s.title + ' ' + s.summary + ' ' + s.desc + ' ' + s.roles.join(' ') + ' ' + (s.asks||[]).join(' ') + ' ' + s.category + ' ' + s.type).toLowerCase();
       if (!blob.includes(q)) return false;
     }
     return true;
@@ -903,13 +846,12 @@ function render() {
     byCat[c].forEach((s) => {
       const idx = SKILLS.indexOf(s);
       html += `<div class="card${s.qbo ? ' card-qbo' : ''}${s.essential ? ' card-essential' : ''}" onclick="openModal(${idx})">
-        <h3 class="card-title">${escapeHtml(s.title)}${s.beta ? '<span class="beta-tag">Beta</span>' : ''}</h3>
-        <div class="meta-row"><span class="meta-label">Type</span><span class="pill pill-type pill-type-${s.type.toLowerCase()}">${escapeHtml(s.type)}</span></div>
-        <div class="meta-row"><span class="meta-label">Role</span>${s.roles.map(r=>`<span class="pill pill-role">${escapeHtml(r)}</span>`).join('')}</div>
-        <p class="card-desc">${escapeHtml(s.desc)}</p>
-        <div class="card-actions">
-          <button class="primary" onclick="event.stopPropagation();downloadSkill(${idx},this)">Download</button>
-          <button onclick="event.stopPropagation();openModal(${idx})">Details</button>
+        <div class="card-head"><span class="card-icon"><i class="ti ${s.icon}"></i></span><span class="card-eyebrow">${escapeHtml(s.type)}</span><span class="card-arrow">↗</span></div>
+        <h3 class="card-title">${escapeHtml(shortTitle(s))}${s.beta ? '<span class="beta-tag">Beta</span>' : ''}</h3>
+        <p class="card-desc">${escapeHtml(s.summary)}</p>
+        <div class="card-foot">
+          <span class="card-out">${outputLabels(s)}</span>
+          <button onclick="event.stopPropagation();downloadSkill(${idx},this)">Download</button>
         </div>
       </div>`;
     });
@@ -920,12 +862,15 @@ function render() {
 
 function openModal(i) {
   const s = SKILLS[i]; active = i;
-  document.getElementById('m-title').innerHTML = escapeHtml(s.title) + (s.beta ? '<span class="beta-tag beta-tag-lg">Beta</span>' : '');
+  document.getElementById('m-head').innerHTML = `
+    <div class="mx-top"><span class="mx-icon"><i class="ti ${s.icon}"></i></span><span class="mx-type">${escapeHtml(s.type)} · ${escapeHtml(s.category)}</span><button class="mx-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+    <h2 class="mx-title">${escapeHtml(shortTitle(s))}${s.beta ? '<span class="beta-tag beta-tag-lg">Beta</span>' : ''}</h2>
+    <p class="mx-sum">${escapeHtml(s.summary)}</p>
+    <div class="mx-outs">${s.outputs.map(k => `<span class="mx-out"><i class="ti ${OUTPUTS[k][0]}"></i>${escapeHtml(OUTPUTS[k][1])}</span>`).join('')}</div>`;
   document.getElementById('m-meta').innerHTML = `
-    <div class="modal-meta-row"><span class="meta-label">Skill</span><span class="pill pill-role">${s.name}</span></div>
-    <div class="modal-meta-row"><span class="meta-label">Type</span><span class="pill pill-type pill-type-${s.type.toLowerCase()}">${escapeHtml(s.type)}</span></div>
-    <div class="modal-meta-row"><span class="meta-label">Role</span>${s.roles.map(r=>`<span class="pill pill-role">${escapeHtml(r)}</span>`).join('')}</div>
-    ${(s.essential || s.qbo) ? '<div class="modal-meta-row"><span class="meta-label">Tags</span>' + (s.essential ? '<span class="ess-tag" title="Core monthly-close workflow.">Essential</span>' : '') + (s.qbo ? '<span class="qbo-tag" title="Runs without transaction-level data.">QBO/Sage/Xero Optimized</span>' : '') + '</div>' : ''}`;
+    <div class="mx-fact"><div class="mx-label">For</div><div class="mx-val">${s.roles.map(escapeHtml).join(', ')}</div></div>
+    <div class="mx-fact"><div class="mx-label">Skill ID</div><div class="mx-val"><code>${s.name}</code></div></div>
+    <div class="mx-fact"><div class="mx-label">Tags</div><div class="mx-val">${[s.essential ? 'Essential' : '', s.qbo ? 'QBO/Sage/Xero optimized' : ''].filter(Boolean).join(', ') || '—'}</div></div>`;
   document.getElementById('m-body').innerHTML = `
     <p>${escapeHtml(s.desc)}</p>
     <div class="m-tabs">
@@ -959,7 +904,6 @@ const REPO = "numeric-io/mcp-community";
 const RAW_BASE = `https://cdn.jsdelivr.net/gh/${REPO}@main/skills`;
 // Per-skill .zip bundles are committed to /dist and served straight from the page.
 const ZIP_BASE = "dist";
-const TOOLKIT_FILE = "numeric-mcp-toolkit.zip";
 
 // Map skill data name → committed bundle filename in /dist
 const SKILL_ASSET = {
@@ -1004,50 +948,39 @@ function skillAssetUrl(name) { return `${ZIP_BASE}/${SKILL_ASSET[name] || name +
 function skillRawSlug(name) { return SKILL_SLUG[name] || name; }
 
 // ---- Provider picker: one file, install steps per AI assistant ----
-const TOOLKIT_URL = `https://github.com/${REPO}/releases/latest/download/${TOOLKIT_FILE}`;
 
 const PROVIDERS = [
   {
     id: 'claude', name: 'Claude', tag: 'Code · Cowork · Desktop', btn: 'Claude', color: 'var(--je)',
-    steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install these skills"</strong>.',
-         '<strong>Manual:</strong> add the skills you want under Settings → Capabilities → Skills.']
-      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong>.',
+    steps: () =>
+      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your chat, and say "install this skill"</strong>.',
          '<strong>Manual:</strong> Claude.ai or Desktop — add it under Settings → Capabilities → Skills. Claude Code — unzip into <code>~/.claude/skills/</code>.']
   },
   {
     id: 'codex', name: 'OpenAI Codex', tag: 'CLI', btn: 'Codex', color: 'var(--report)',
-    steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install these skills"</strong>.',
-         '<strong>Manual:</strong> unzip and put the skills under <code>~/.agents/skills/</code> (all projects) or <code>.agents/skills/</code> (this repo) — or run <code>python3 tools/sync_skills.py --user</code>.']
-      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong>.',
+    steps: () =>
+      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Codex session, and say "install this skill"</strong>.',
          '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (this project) or <code>~/.agents/skills/</code> (all projects).']
   },
   {
     id: 'gemini', name: 'Gemini CLI', tag: 'Antigravity', btn: 'Gemini', color: 'var(--flux)',
-    steps: ctx => ctx.kind === 'toolkit'
-      ? ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skills</strong>.',
-         '<strong>Manual:</strong> unzip into <code>~/.agents/skills/</code>, or run <code>python3 tools/sync_skills.py --user</code>.']
-      : ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skill</strong>. (Or install from the repo: <code>gemini skills install &lt;git-url&gt;</code>, with <code>--scope workspace</code> to limit to this project.)',
+    steps: () =>
+      ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your Gemini session, and ask it to install the skill</strong>. (Or install from the repo: <code>gemini skills install &lt;git-url&gt;</code>, with <code>--scope workspace</code> to limit to this project.)',
          '<strong>Manual:</strong> unzip the folder into <code>.agents/skills/</code> (or <code>~/.agents/skills/</code>).']
   },
   {
     id: 'other', name: 'Cursor, VS Code & more', tag: '30+ standard agents', btn: 'your tool', color: 'var(--recon)',
-    steps: ctx =>
+    steps: () =>
       ['<strong>Easiest:</strong> download the <code>.zip</code>, <strong>drop it into your agent\'s chat, and say "install this skill"</strong>.',
        '<strong>Manual:</strong> unzip and place the skill folder under <code>.agents/skills/</code> in your project (or <code>~/.agents/skills/</code> for all projects) — the shared path every standard agent reads.']
   },
 ];
 
-let dlContext = { kind: 'toolkit', name: null, url: TOOLKIT_URL, label: 'the full toolkit' };
+let dlContext = null;
 let provSelected = localStorage.getItem('numeric-provider') || 'claude';
 
 function openProviderModal(kind, name) {
-  if (kind === 'skill') {
-    dlContext = { kind, name, url: skillAssetUrl(name), label: `the ${name} skill` };
-  } else {
-    dlContext = { kind: 'toolkit', name: null, url: TOOLKIT_URL, label: 'the full toolkit' };
-  }
+  dlContext = { kind, name, url: skillAssetUrl(name), label: `the ${name} skill` };
   document.getElementById('prov-sub').innerHTML =
     `You're getting <strong>${escapeHtml(dlContext.label)}</strong>. Easiest install for any tool: <strong>drop the .zip into your chat and ask your assistant to install it</strong>. Pick your tool for the exact steps.`;
   renderProviders();
@@ -1062,7 +995,7 @@ function renderProviders() {
     </button>`).join('');
   const p = PROVIDERS.find(x => x.id === provSelected) || PROVIDERS[0];
   document.getElementById('prov-panel-title').textContent = `Install in ${p.name}`;
-  document.getElementById('prov-steps').innerHTML = p.steps(dlContext).map(s => `<div class="prov-alt">${s}</div>`).join('<div class="prov-or">or</div>');
+  document.getElementById('prov-steps').innerHTML = p.steps().map(s => `<div class="prov-alt">${s}</div>`).join('<div class="prov-or">or</div>');
   const dl = document.getElementById('prov-download');
   dl.style.setProperty('--dl-color', p.color);
   dl.textContent = `⬇ Download for ${p.btn}`;
@@ -1075,7 +1008,7 @@ function selectProvider(id) {
 }
 
 function confirmDownload() {
-  if (window.posthog) posthog.capture('download', { kind: dlContext.kind, item: dlContext.name || 'full-toolkit', tool: provSelected });
+  if (window.posthog) posthog.capture('download', { kind: dlContext.kind, item: dlContext.name, tool: provSelected });
   window.open(dlContext.url, '_blank');
 }
 
@@ -1089,10 +1022,6 @@ function downloadSkill(i, btn) {
 function downloadActive() {
   if (active === null) return;
   openProviderModal('skill', SKILLS[active].name);
-}
-
-function downloadToolkit() {
-  openProviderModal('toolkit');
 }
 
 function clearFilters() {
@@ -1200,105 +1129,23 @@ function renderMarkdown(src) {
 function openAbout() { document.getElementById('about-overlay').classList.add('open'); }
 function closeAbout() { document.getElementById('about-overlay').classList.remove('open'); }
 
-let lightboxItems = [];
-let lightboxIndex = -1;
-
-function getLightboxItems() {
-  const track = document.getElementById('gallery-track');
-  if (!track) return [];
-  return Array.from(track.querySelectorAll('.gallery-frame')).map(a => a.href);  // resolved URL, must match this.href passed by onclick
-}
-function showLightbox(idx) {
-  if (idx < 0 || idx >= lightboxItems.length) return;
-  lightboxIndex = idx;
-  const src = lightboxItems[idx];
-  const img = document.getElementById('lightbox-img');
-  const frame = document.getElementById('lightbox-frame');
-  if (src.includes('loom.com/embed')) {
-    img.style.display = 'none'; img.src = '';
-    frame.src = src; frame.style.display = 'block';
-  } else {
-    frame.style.display = 'none'; frame.src = '';   // unload video so audio stops
-    img.src = src; img.style.display = 'block';
+// Course banner pattern: squares and x's in the style of the course page, denser toward the right.
+function drawCoursePixels() {
+  const c = document.querySelector('.fec-pixels');
+  if (!c) return;
+  const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  c.width = r.width * dpr; c.height = r.height * dpr;
+  const g = c.getContext('2d'); g.scale(dpr, dpr);
+  if (r.width < 600) return;   // no room beside the text on phones
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let x = 0; x < r.width; x += 11) for (let y = 0; y < r.height; y += 11) {
+    if (rnd() > Math.min(0.45, Math.max(0, (x / r.width - 0.55) * 1.1))) continue;
+    g.fillStyle = g.strokeStyle = `rgba(255,255,255,${0.55 + rnd() * 0.45})`;
+    if (rnd() < 0.18) { g.lineWidth = 1.2; g.beginPath(); g.moveTo(x + 2, y + 2); g.lineTo(x + 7, y + 7); g.moveTo(x + 7, y + 2); g.lineTo(x + 2, y + 7); g.stroke(); }
+    else { const sz = rnd() < 0.5 ? 4 : 6; g.fillRect(x + (7 - sz) / 2, y + (7 - sz) / 2, sz, sz); }
   }
-  updateLightboxNav();
 }
-function updateLightboxNav() {
-  const prev = document.getElementById('lightbox-prev');
-  const next = document.getElementById('lightbox-next');
-  if (!prev || !next) return;
-  prev.disabled = lightboxIndex <= 0;
-  next.disabled = lightboxIndex >= lightboxItems.length - 1;
-}
-function openLightbox(src, alt) {
-  lightboxItems = getLightboxItems();
-  const idx = Math.max(0, lightboxItems.indexOf(src));
-  showLightbox(idx);
-  document.getElementById('lightbox').classList.add('open');
-}
-function lightboxStep(dir) {
-  showLightbox(lightboxIndex + dir);
-}
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  const frame = document.getElementById('lightbox-frame');
-  if (frame) frame.src = '';   // stop playback on close
-}
-
-function galleryScroll(dir) {
-  const track = document.getElementById('gallery-track');
-  if (!track) return;
-  const card = track.querySelector('.gallery-frame');
-  if (!card) return;
-  const step = card.offsetWidth + 14;
-  track.scrollBy({ left: dir * step, behavior: 'smooth' });
-}
-function updateGalleryArrows() {
-  const track = document.getElementById('gallery-track');
-  if (!track) return;
-  const prev = document.querySelector('.gallery-arrow-prev');
-  const next = document.querySelector('.gallery-arrow-next');
-  if (!prev || !next) return;
-  const atStart = track.scrollLeft <= 2;
-  const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-  prev.disabled = atStart;
-  next.disabled = atEnd;
-}
-
-let flipState = 0;
-let flipAutoTimer = null;
-let flipBusy = false;
-function setFlip(which) {
-  const front = document.getElementById('flip-face-front');
-  const back = document.getElementById('flip-face-back');
-  const tab0 = document.getElementById('flip-tab-0');
-  const tab1 = document.getElementById('flip-tab-1');
-  if (!front || !back || flipBusy) return;
-  const goingBack = which === 'toggle' ? flipState === 0 : which === 1;
-  if (goingBack === (flipState === 1)) { startFlipAuto(); return; }
-  flipState = goingBack ? 1 : 0;
-  tab0.classList.toggle('active', !goingBack);
-  tab1.classList.toggle('active', goingBack);
-  const outgoing = goingBack ? front : back;
-  const incoming = goingBack ? back : front;
-  flipBusy = true;
-  outgoing.style.opacity = '0';
-  setTimeout(() => {
-    outgoing.classList.add('hidden');
-    incoming.classList.remove('hidden');
-    incoming.style.opacity = '0';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => { incoming.style.opacity = '1'; });
-    });
-    setTimeout(() => { flipBusy = false; }, 450);
-  }, 450);
-  if (window.posthog) posthog.capture(goingBack ? 'cta_open_calculator_flip' : 'cta_read_explainer_flip');
-  startFlipAuto();
-}
-function startFlipAuto() {
-  clearInterval(flipAutoTimer);
-  flipAutoTimer = setInterval(() => setFlip(flipState === 0 ? 1 : 0), 7000);
-}
+window.addEventListener('resize', drawCoursePixels);
 
 // init
 (function init() {
@@ -1319,19 +1166,9 @@ function startFlipAuto() {
   typeSel.addEventListener('change', render);
   roleSel.addEventListener('change', render);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeLightbox(); closeModal(); closeAbout(); closeProvider(); }
-    if (document.getElementById('lightbox').classList.contains('open')) {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); lightboxStep(-1); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); lightboxStep(1); }
-    }
+    if (e.key === 'Escape') { closeModal(); closeAbout(); closeProvider(); }
   });
-  const gtrack = document.getElementById('gallery-track');
-  if (gtrack) {
-    gtrack.addEventListener('scroll', updateGalleryArrows, { passive: true });
-    window.addEventListener('resize', updateGalleryArrows);
-    updateGalleryArrows();
-  }
-  startFlipAuto();
+  drawCoursePixels();
   render();
   openFromHash();
 })();

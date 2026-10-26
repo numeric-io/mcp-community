@@ -100,7 +100,7 @@ footer{padding:40px 0 80px;color:var(--ink3);font-size:13px;display:flex;justify
 .site-nav-links a{font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 13px;border-radius:7px;transition:all .12s;white-space:nowrap}
 .site-nav-links a:hover{color:var(--ink);background:rgba(20,19,15,.05)}
 .site-nav-links a.active{color:var(--accent-deep);background:rgba(107,91,211,.12)}
-@media (max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px}}
+@media (max-width:700px){.site-nav-inner{gap:10px;padding:0 16px}.site-nav-links a{padding:7px 9px;font-size:12px} .site-nav-links{min-width:0;overflow-x:auto;scrollbar-width:none}}
 
 @media (max-width:860px){
   .scrolly{grid-template-columns:1fr;gap:0}
@@ -140,6 +140,7 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
       <a href="prompt-library.html">Prompt Library</a>
       <a href="operating-model.html" class="active">The new way of working</a>
       <a href="cost-calculator.html">What it costs</a>
+      <a href="resources.html">Resources</a>
     </div>
   </div>
 </nav>
