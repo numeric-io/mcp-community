@@ -41,6 +41,8 @@
   .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
   .meta{font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#7036FF}
   .card h2{font-size:17px;font-weight:500;color:#080707;letter-spacing:-.005em;line-height:1.3;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card h2 a{color:inherit;text-decoration:none}
+  .card h2 a:hover{color:#7036FF}
   .card p{font-size:13px;color:rgba(8,7,7,.62);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .tags{display:flex;flex-wrap:wrap;gap:4px 0;margin-top:auto;padding-top:12px;border-top:1px solid #E9E5D9}
   .tag{font-family:"DM Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
@@ -111,7 +113,7 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
 <div class="wrap">
   <header class="top">
     <h1>MCP <em>Resources</em></h1>
-    <div class="sub">Webinar recordings, training sessions, and demos for getting more out of Claude and the Numeric MCP.</div>
+    <div class="sub">Webinars, training, demos, and articles for getting more out of Claude and the Numeric MCP.</div>
   </header>
 
   <div class="chips" id="chips"></div>
@@ -131,7 +133,48 @@ posthog.init('phc_jeOYHCdClq8WqvlUtrmUAaqR6hDE5wFgPl0H2862BH2', { api_host: 'htt
 <script>
 // Add new recordings here. type: "Webinar" | "Training" | "Demo", or a list like ["Training", "Demo"]. date: YYYY-MM-DD (sorts newest first).
 // skills: names from the Skills page; each becomes a link to that skill. slides is optional.
+// Articles use link instead of video and open the post on numeric.io in a new tab.
 const RESOURCES = [
+  {
+    type: "Article",
+    title: "Numeric's MCP Server: How to Connect and 11 Key Use Cases",
+    date: "2026-10-15",
+    description: "How to connect your Numeric workspace to Claude or another AI client, with 11 ways teams use it.",
+    link: "https://www.numeric.io/blog/numeric-mcp-server",
+    thumb: "https://cdn.prod.website-files.com/683cd0b88bd8a76ef55c1487/69cd44ba0b5af23f769bc3ba_Numeric_1.svg",
+  },
+  {
+    type: "Article",
+    title: "QuickBooks MCP: Setup Guide for Controllers",
+    date: "2026-10-07",
+    description: "Connecting QuickBooks to Claude and Numeric, and using it in your month-end close.",
+    link: "https://www.numeric.io/blog/quickbooks-mcp",
+    thumb: "https://cdn.prod.website-files.com/683cd0b88bd8a76ef55c1487/6ac68ec4213aa94251a15c19_Template%20-%20Purple.png",
+  },
+  {
+    type: "Article",
+    title: "NetSuite MCP: Setup Guide for Controllers",
+    date: "2026-09-29",
+    description: "What the NetSuite MCP is, how to connect an AI client to your ERP, and how it works with Numeric.",
+    link: "https://www.numeric.io/blog/netsuite-mcp",
+    thumb: "https://cdn.prod.website-files.com/683cd0b88bd8a76ef55c1487/69f3eb076715914adaaf82a4_%5BNEW%5D%20Blog%20Cover%20Photos%20(20).png",
+  },
+  {
+    type: "Article",
+    title: "Numeric MCP Usage Report: How Finance Teams Use AI",
+    date: "2026-07-31",
+    description: "Usage data from finance teams on how they use the Numeric MCP for close tasks, reports, and analysis.",
+    link: "https://www.numeric.io/blog/numeric-mcp-usage-report",
+    thumb: "https://cdn.prod.website-files.com/683cd0b88bd8a76ef55c1487/6a6e601bc29460ea76446f17_Infographic%20-%20MCP%20Adoption%20Metrics%20(10).png",
+  },
+  {
+    type: "Article",
+    title: "How Alexandria Ramirez Won Numeric's First Finance Engineer Cup",
+    date: "2026-07-31",
+    description: "Inside Four-Eye Check, the winning build: two independent AI agents reconcile the same feed and flag disagreements for review.",
+    link: "https://www.numeric.io/blog/how-alexandria-ramirez-won-numerics-first-finance-engineer-cup",
+    thumb: "https://cdn.prod.website-files.com/683cd0b88bd8a76ef55c1487/6a73d3492d1de064298f18ec_Eng%20Blog%20customer%20love%20%20(11).png",
+  },
   {
     type: ["Training", "Demo"],
     title: "How to build a skill",
@@ -179,6 +222,15 @@ const RESOURCES = [
   },
   {
     type: "Demo",
+    title: "Finance Engineer Cup: Live Finals",
+    date: "2026-06-25",
+    length: "62 min",
+    description: "Four finalists demo AI builds for their own close, live, with judges' questions and scoring.",
+    video: "https://www.youtube.com/embed/Y9HQ6ze-DI4",
+    thumb: "https://i.ytimg.com/vi/Y9HQ6ze-DI4/hqdefault.jpg",
+  },
+  {
+    type: "Demo",
     title: "Numeric MCP Announcement + Walkthrough",
     date: "2026-05-06",
     length: "2 min",
@@ -206,7 +258,7 @@ const RESOURCES = [
   },
 ];
 
-const TYPES = ["All", "Webinar", "Training", "Demo"];
+const TYPES = ["All", "Webinar", "Training", "Demo", "Article"];
 let filter = "All";
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -219,13 +271,18 @@ function render() {
     .sort((a, b) => b.date.localeCompare(a.date));
   document.getElementById("grid").innerHTML = items.length ? items.map(r => `
     <article class="card">
-      <a class="thumb" href="${esc(r.video)}" onclick="openVideo(this.href, this.title);return false" title="${esc(r.title)}">
+      ${r.link
+        ? `<a class="thumb" href="${esc(r.link)}" target="_blank" rel="noopener" title="${esc(r.title)}">
+        <img src="${esc(r.thumb)}" alt="${esc(r.title)}" loading="lazy" />
+        <span class="play" aria-hidden="true">↗</span>
+      </a>`
+        : `<a class="thumb" href="${esc(r.video)}" onclick="openVideo(this.href, this.title);return false" title="${esc(r.title)}">
         <img src="${esc(r.thumb)}" alt="${esc(r.title)}" loading="lazy" />
         <span class="play" aria-hidden="true">▶</span>
-      </a>
+      </a>`}
       <div class="body">
         <div class="meta">${esc([].concat(r.type).join(" / "))} · ${fmtDate(r.date)}${r.length ? " · " + esc(r.length) : ""}</div>
-        <h2>${esc(r.title)}</h2>
+        <h2>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title)}</h2>
         ${r.description ? `<p>${esc(r.description)}</p>` : ""}
         ${r.slides ? `<div class="links"><a href="${esc(r.slides)}" target="_blank" rel="noopener">Slides →</a></div>` : ""}
         ${r.skills && r.skills.length ? `<div class="tags">${r.skills.map(s =>
