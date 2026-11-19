@@ -4,6 +4,7 @@ Run it; there is no need to read it. Standard library only (Python 3.9+; openpyx
 
   costkit.py init WORK --skill SKILL --request TEXT --outcome-unit TEXT --mode assess|optimize [--account A.json] [--env E] [--force]
   costkit.py static SKILL [--save WORK]                         checks on the skill's files (no run needed)
+  costkit.py env                                                whether this chat has session records, so cost can be measured
   costkit.py turns [--skill NAME] [--transcript F]             the person's messages in this chat, and a suggested run window
   costkit.py assess WORK --skill SKILL --outcomes N --start S [--end E] [--transcript F]   measure and record a real run
   costkit.py measure (--agent-id ID | --transcript F | --sdk-result F) [--save WORK --round R]   measure a test run
@@ -15,6 +16,7 @@ Run it; there is no need to read it. Standard library only (Python 3.9+; openpyx
   costkit.py check WORK --skill SKILL --outcomes N (--agent-id ID | --transcript F | --sdk-result F)
   costkit.py mark WORK --id ID [ID ...] --status STATUS [--round R]
   costkit.py judge WORK --id ID --decision TEXT --note TEXT
+  costkit.py review WORK --file ITEMS.json                     save the qualitative review (reference/review.md); replaces the last one
   costkit.py report WORK                                        write WORK/report.html
 
 Rounds: real-<date> (assess), baseline, round2, round3 (optimize), check-<date> (quarterly test check).
@@ -38,6 +40,7 @@ CEILING_FACTOR = 1.5            # ceiling = baseline tool calls (and requests) x
 RECHECK_DAYS = 91
 ROUND_RE = re.compile(r"^(baseline|round\d+|check-\d{4}-\d{2}-\d{2}|real-\d{4}-\d{2}-\d{2}(-\d+)?)$")
 LEVERS = ("batching", "caching", "effort", "model_per_step")
+VERDICTS = ["failed", "unnecessary", "misplaced", "excessive", "appropriate"]   # most serious first; the first that fits wins
 STATUSES = ["approved", "applied", "not applied", "needs API access", "declined by the person"]
 
 
@@ -88,11 +91,20 @@ def detect_env():
     """cowork or claude-code, from the entrypoint the app writes into this chat's session file."""
     files = [f for f in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl"))]
     if not files:
-        return "claude-code"
+        return "chat" if os.path.isdir("/mnt/skills") else "claude-code"   # the claude.ai sandbox keeps skills there
     for r in read_rows(max(files, key=os.path.getmtime))[:50]:
         if r.get("entrypoint"):
-            return "cowork" if "cowork" in r["entrypoint"] else "claude-code"
+            return "cowork" if "cowork" in r["entrypoint"] or r["entrypoint"] == "local-agent" else "claude-code"
     return "claude-code"
+
+
+def cmd_env(a):
+    files = [f for f in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")) if "/subagents/" not in f]
+    if files:
+        print(f"session records found; environment {detect_env()}; cost can be measured here")
+    else:
+        print(f"no session records; environment {detect_env()}. Cost cannot be measured and changes cannot be tested here: "
+              "only the file checks and the qualitative review work.")
 
 
 def check_steps(path):
@@ -131,7 +143,7 @@ def cmd_init(a):
         arch = os.path.join(w, "sessions", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
         os.makedirs(arch)
         for x in ("runs", "kept", "applied.json", "judgments.json", "ceiling.json", "findings_static.json", "findings_run.json",
-                  "report.html", "config.json") + (("candidate",) if a.fresh_candidate else ()):
+                  "report.html", "config.json", "review.json") + (("candidate",) if a.fresh_candidate else ()):
             if os.path.exists(os.path.join(w, x)):
                 shutil.move(os.path.join(w, x), os.path.join(arch, x))
         print(f"archived the previous session's working files to {arch}")
@@ -1196,6 +1208,39 @@ def cmd_judge(a):
     print(f"logged judgment for {a.id}")
 
 
+def cmd_review(a):
+    """Save the whole review from one JSON file: a list of {kind, item, verdict, note, fix}. It replaces the last review,
+    so a review always describes one run."""
+    w = os.path.abspath(a.work)
+    cfg_of(w)
+    try:
+        items = load_json(a.file)
+    except ValueError as ex:
+        die(f"{a.file} is not valid JSON: {ex}")
+    if not isinstance(items, list) or not items:
+        die(f"{a.file} must hold a list of items")
+    seen = set()
+    for i, x in enumerate(items, 1):
+        if not isinstance(x, dict):
+            die(f"item {i} is not an object")
+        for k in ("kind", "item", "verdict", "note"):
+            if not str(x.get(k) or "").strip():
+                die(f"item {i} has no {k}")
+        if x["kind"] not in ("run", "skill"):
+            die(f"item {i}: kind must be run or skill")
+        if x["verdict"] not in VERDICTS:
+            die(f"item {i}: verdict must be one of {', '.join(VERDICTS)}")
+        if x["verdict"] != "appropriate" and not str(x.get("fix") or "").strip():
+            die(f"item {i} ({x['item']}): a verdict other than appropriate needs a fix")
+        if (x["kind"], x["item"]) in seen:
+            die(f"item {i}: {x['item']!r} appears twice")
+        seen.add((x["kind"], x["item"]))
+    save_json(os.path.join(w, "review.json"), [{k: x.get(k) for k in ("kind", "item", "verdict", "note", "fix")} | {"date": str(datetime.date.today())}
+                                               for x in items])
+    counts = {v: sum(x["verdict"] == v for x in items) for v in VERDICTS}
+    print(f"saved {len(items)} items: " + ", ".join(f"{n} {v}" for v, n in counts.items() if n))
+
+
 # ---------------------------------------------------------------- report
 CSS = """:root{--bg:#fff;--fg:#1b1d21;--muted:#6b7078;--line:#e3e5e8;--accent:#0f766e;--callout:#eef7f6;--bad:#b42318}
 @media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e7e9ec;--muted:#9aa0a8;--line:#2c3036;--accent:#5eead4;--callout:#16302d;--bad:#f97066}}
@@ -1223,8 +1268,9 @@ def cmd_report(a):
     cfg = cfg_of(w)
     recs = records(w)
     reals = reals_of(recs)
-    if not baseline_of(recs) and not reals:
-        die("no runs recorded")
+    review = load_json(os.path.join(w, "review.json"), [])
+    if not baseline_of(recs) and not reals and not review:
+        die("no runs recorded and no review logged")
     e = html.escape
     static = load_json(os.path.join(w, "findings_static.json"), {"findings": []})
     judg = load_json(os.path.join(w, "judgments.json"), {})
@@ -1256,7 +1302,10 @@ def cmd_report(a):
                  + (f"The best kept test run, {e(best['round'])}, scores {best['score']} against the baseline's 100, a reduction of {100 - best['score']:.0f}%."
                     if best is not base else "No change round has improved on the baseline yet.")
                  + (f" The loop stopped because {e(stop_reason)}." if stop_reason else ""))
-    s.append(f"The skill has a ceiling of {ceil['tool_calls']} tool calls, which is {e(ceil['enforced'])}." if ceil else "The skill has no cost ceiling yet.")
+    if recs:
+        s.append(f"The skill has a ceiling of {ceil['tool_calls']} tool calls, which is {e(ceil['enforced'])}." if ceil else "The skill has no cost ceiling yet.")
+    else:   # nothing measured: a ceiling needs a measured run, so its finding cannot be acted on here
+        static["findings"] = [f for f in static["findings"] if f["check"] != "S11"]
     if checks:
         s.append(f"The latest quarterly test check ({e(checks[-1]['round'][6:])}) scored {e(checks[-1]['score_label'])}.")
     th_test = ("<tr><th>Run</th><th>Weighted tokens per outcome</th><th>List-price cost per outcome</th><th>Tokens processed</th><th>Tool calls</th>"
@@ -1325,13 +1374,24 @@ def cmd_report(a):
         not_tested.append("Test runs could read connected sources but not write to them, so steps that post or submit were not exercised in those runs.")
     if cfg.get("mode") == "assess" and not base:
         not_tested.append("This was an assessment only: no change was tested, so the estimated savings are not yet measured.")
-    nxt = datetime.date.fromisoformat(recs[-1]["date"]) + datetime.timedelta(days=RECHECK_DAYS)
+    nxt = datetime.date.fromisoformat(recs[-1]["date"] if recs else str(datetime.date.today())) + datetime.timedelta(days=RECHECK_DAYS)
+    rv = sorted(review, key=lambda x: (VERDICTS.index(x["verdict"]), x["kind"]))
+    review_rows = "".join(f"<tr><td>{e(x['kind'])}</td><td>{e(x['item'])}</td><td>{e(x['verdict'])}</td><td>{e(x['note'])}</td>"
+                          f"<td>{e(x.get('fix') or '')}</td></tr>" for x in rv)
+    if review:
+        counts = {v: sum(x["verdict"] == v for x in review) for v in VERDICTS}
+        s.append(f"The qualitative review ({e(review[0]['date'])}) rated {counts['appropriate']} of {len(review)} items appropriate"
+                 + "".join(f", {n} {v}" for v, n in counts.items() if n and v != "appropriate") + ".")
+    # A page with no measured run (a claude.ai chat, or a review alone) leaves out every section about cost.
+    title = "Skill cost report" if recs else "Skill review"
     page = f"""<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
-<title>Skill cost report</title><style>{CSS}h3{{font-size:15px;margin:18px 0 6px}}</style></head><body>
-<h1>Cost report: {e(os.path.basename(cfg['skill']))}</h1>
-<p class=muted>Mode: {e(cfg.get('mode', 'optimize'))}. Request: {e(cfg['request'])}. Outcome unit: {unit}. Environment: {e(cfg['env'])}.</p>
+<title>{title}</title><style>{CSS}h3{{font-size:15px;margin:18px 0 6px}}</style></head><body>
+<h1>{title}: {e(os.path.basename(cfg['skill']))}</h1>
+<p class=muted>Mode: {e(cfg.get('mode', 'optimize'))}. Request: {e(cfg['request'])}. {f'Outcome unit: {unit}. ' if recs else ''}Environment: {e(cfg['env'])}.</p>
 <h2>Summary</h2><div class=callout>{' '.join(s)}</div>
-<h2>Measurements by run</h2>
+"""
+    if recs:
+        page += f"""<h2>Measurements by run</h2>
 <p>Each request is priced at list price from its own usage fields: its model, cache writes and reads, fast mode, US-only inference, Haiku's long-prompt tier and web searches. The score is the cost per outcome as an index against the reference run's 100, with both runs priced at today's prices.json, so a price change moves neither side; lower is better. Real runs and test runs are scored separately, because a real run includes the interview, corrections and delivery steps that a test run leaves out. Weighted tokens (each model's tokens in its own input-token units) are shown for reference. (source: transcript usage fields, read by costkit; prices: {e(load_prices().get('source') or 'prices.json')})</p>
 {tables}
 <h2>Cost by step</h2>
@@ -1339,13 +1399,18 @@ def cmd_report(a):
 <div class=wrap><table><tr><th>Step</th><th>List-price cost</th><th>Weighted tokens</th><th>Share</th><th>Tool calls</th><th>Tool minutes</th><th>Errors</th></tr>{step_rows or '<tr><td colspan=7>Not measured.</td></tr>'}</table></div>
 {(f"<p>The app's own cost record for the whole chat shows ${app['cost_usd']} (" + ", ".join(f"{e(k)} ${v}" for k, v in (app.get('by_model') or {}).items()) + "). It covers the whole chat, is written from time to time and can include usage that no transcript shows, so it is a cross-check, not the figure above.</p>") if app else ""}
 {f"<p>Context compactions: {src_meas.get('compactions', 0)}. API errors: {src_meas.get('api_errors', 0)}.</p>" if src_meas else ""}
+"""
+    page += f"""{f"<h2>Qualitative review</h2><p>The model's judgment of each step of the run and each part of the skill, against reference/review.md: whether it was needed, in the right place and the right size. Items that need a change come first.</p><div class=wrap><table><tr><th>Kind</th><th>Item</th><th>Verdict</th><th>Why</th><th>Fix</th></tr>{review_rows}</table></div>" if review else ""}
 <h2>Findings, ranked by estimated tokens saved per run</h2>{''.join(cards) or '<p>No findings.</p>'}
-<h2>How the skill runs</h2><div class=wrap><table><tr><th>Lever</th><th>Status</th><th>Evidence</th></tr>{lever_rows or '<tr><td colspan=3>Not measured.</td></tr>'}</table></div>
+"""
+    page += f"""<h2>How the skill runs</h2><div class=wrap><table><tr><th>Lever</th><th>Status</th><th>Evidence</th></tr>{lever_rows or '<tr><td colspan=3>Not measured.</td></tr>'}</table></div>
 <p>Batching and prompt caching are API features. In Cowork and the chat app, caching is automatic and the lever is not breaking it; batching needs a script that sends the per-item step through the Batch API.</p>
 <h2>Controls</h2><p>{(f"Ceiling: {ceil['tool_calls']} tool calls, or {ceil['max_turns']} turns through the SDK or command line. It is {e(ceil['enforced'])}.") if ceil else "No ceiling has been set."}</p>
 <h2>Not tested</h2><ul>{''.join(f'<li>{e(x)}</li>' for x in not_tested) or '<li>Nothing outside the scope above.</li>'}</ul>
 <h2>Next check</h2><p>Assess the next real run on or after {nxt}, or sooner if a new model ships, in the chat where that run happens. It is scored against the first real run.</p>
-</body></html>"""
+""" if recs else ("<h2>Cost</h2><p>Cost was not measured: this chat keeps no usage records and cannot start "
+                                         "a test run. To measure cost and test changes, run this skill in Claude Code or Cowork.</p>")
+    page += "</body></html>"
     out = os.path.join(w, "report.html")
     with open(out, "w", encoding="utf-8") as fh:
         fh.write(page)
@@ -1356,7 +1421,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sp = ap.add_subparsers(dest="cmd", required=True)
     p = sp.add_parser("init"); p.add_argument("work"); p.add_argument("--skill", required=True); p.add_argument("--request", required=True)
-    p.add_argument("--outcome-unit", required=True); p.add_argument("--env", choices=["cowork", "claude-code", "sdk"])
+    p.add_argument("--outcome-unit", required=True); p.add_argument("--env", choices=["cowork", "claude-code", "sdk", "chat"])
     p.add_argument("--mode", choices=["assess", "optimize"], required=True); p.add_argument("--account"); p.add_argument("--force", action="store_true")
     p.add_argument("--fresh-candidate", action="store_true", help="with --force: archive the candidate copy too and start from the original")
     p = sp.add_parser("static"); p.add_argument("skill_dir"); p.add_argument("--save"); p.add_argument("--env", default="cowork")
@@ -1372,18 +1437,20 @@ def main():
     p = sp.add_parser("decide"); p.add_argument("work")
     p = sp.add_parser("ceiling"); p.add_argument("work"); p.add_argument("--budget-usd", type=float)
     p = sp.add_parser("check"); p.add_argument("work"); p.add_argument("--skill", required=True); p.add_argument("--outcomes", type=int, required=True); src(p)
+    sp.add_parser("env")
     p = sp.add_parser("turns"); p.add_argument("--transcript"); p.add_argument("--skill", help="the target skill's folder name, to suggest the window")
     p = sp.add_parser("assess"); p.add_argument("work"); p.add_argument("--skill", required=True); p.add_argument("--outcomes", type=int, required=True)
     p.add_argument("--start", type=int, required=True); p.add_argument("--end", type=int); p.add_argument("--transcript"); p.add_argument("--reviewer-edits", type=int)
     p = sp.add_parser("mark"); p.add_argument("work"); p.add_argument("--id", nargs="+", required=True)
     p.add_argument("--status", choices=STATUSES, required=True); p.add_argument("--round")
     p = sp.add_parser("judge"); p.add_argument("work"); p.add_argument("--id", required=True); p.add_argument("--decision", required=True); p.add_argument("--note", required=True)
+    p = sp.add_parser("review"); p.add_argument("work"); p.add_argument("--file", required=True)
     p = sp.add_parser("report"); p.add_argument("work")
     a = ap.parse_args()
     if getattr(a, "budget_usd", None) is not None and a.budget_usd <= 0:
         die("--budget-usd must be above 0")
     {"init": cmd_init, "static": cmd_static, "measure": cmd_measure, "compare-outputs": cmd_compare, "record": cmd_record,
-     "decide": cmd_decide, "ceiling": cmd_ceiling, "check": cmd_check, "turns": cmd_turns, "assess": cmd_assess, "mark": cmd_mark, "judge": cmd_judge, "report": cmd_report}[a.cmd](a)
+     "decide": cmd_decide, "ceiling": cmd_ceiling, "check": cmd_check, "turns": cmd_turns, "env": cmd_env, "assess": cmd_assess, "mark": cmd_mark, "judge": cmd_judge, "review": cmd_review, "report": cmd_report}[a.cmd](a)
 
 
 if __name__ == "__main__":
