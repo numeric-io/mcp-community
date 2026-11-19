@@ -1,9 +1,16 @@
 name: Release
 
+# Runs on a manual v* tag, and on every push to main that changes a skill or
+# the plugin manifest, so the Releases-tab toolkit zip never lags skills/.
+# Auto releases are tagged v1.2.<run number>. (GitHub skips path filters for
+# tag pushes, so manual tags still always release.)
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "skills/**"
+      - ".claude-plugin/**"
 
 jobs:
   release:
@@ -56,6 +63,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v1.2.{0}', github.run_number) }}
+          target_commitish: ${{ github.sha }}
+          make_latest: true
           files: |
             numeric-mcp-toolkit.zip
             dist/*.zip

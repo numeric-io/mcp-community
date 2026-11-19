@@ -174,6 +174,7 @@ Or via CLI — run these as separate commands:
 ```
 /plugin install numeric-mcp-toolkit
 ```
+To get new and updated skills automatically, turn on auto-update for this marketplace in `/plugin` → **Marketplaces**. Or update by hand with `claude plugin marketplace update numeric-mcp-toolkit` and then `claude plugin update numeric-mcp-toolkit@numeric-mcp-toolkit`.
 
 </td>
 <td width="50%" valign="top">
